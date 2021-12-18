@@ -1,6 +1,4 @@
-package com.j23.server.models;
-
-import org.hibernate.annotations.ManyToAny;
+package com.j23.server.models.auth;
 
 import javax.persistence.*;
 import java.util.Set;

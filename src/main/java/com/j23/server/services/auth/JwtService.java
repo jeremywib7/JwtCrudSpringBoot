@@ -1,8 +1,8 @@
-package com.j23.server.services;
+package com.j23.server.services.auth;
 
-import com.j23.server.models.JwtRequest;
-import com.j23.server.models.JwtResponse;
-import com.j23.server.models.User;
+import com.j23.server.models.auth.JwtRequest;
+import com.j23.server.models.auth.JwtResponse;
+import com.j23.server.models.auth.User;
 import com.j23.server.repos.UserRepo;
 import com.j23.server.util.JwtUtil;
 import org.springframework.beans.factory.annotation.Autowired;

@@ -1,6 +1,6 @@
-package com.j23.server.services;
+package com.j23.server.services.auth;
 
-import com.j23.server.models.Role;
+import com.j23.server.models.auth.Role;
 import com.j23.server.repos.RoleRepo;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;

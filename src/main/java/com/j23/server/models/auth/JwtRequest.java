@@ -1,4 +1,4 @@
-package com.j23.server.models;
+package com.j23.server.models.auth;
 
 public class JwtRequest {
     private String userName;

@@ -1,6 +1,6 @@
 package com.j23.server.repos;
 
-import com.j23.server.models.Role;
+import com.j23.server.models.auth.Role;
 import org.springframework.data.repository.CrudRepository;
 import org.springframework.stereotype.Repository;
 

@@ -1,7 +1,14 @@
 package com.j23.server.models;
 
+import com.fasterxml.jackson.annotation.JsonFormat;
+import org.hibernate.validator.constraints.Length;
+import org.springframework.format.annotation.DateTimeFormat;
+
 import javax.persistence.*;
+import javax.validation.constraints.Size;
 import java.io.Serializable;
+import java.security.Timestamp;
+import java.time.LocalDate;
 import java.util.Date;
 
 @Entity
@@ -11,18 +18,22 @@ public class Member implements Serializable {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(nullable = false, updatable = false)
     private Long id;
+
     private String name;
     private String gender;
-    private Date dateJoined;
-    private Integer phoneNumber;
+
+    @JsonFormat(pattern = "YYYY-MM-DD", shape = JsonFormat.Shape.STRING)
+    private LocalDate dateJoined;
+
+    private Long phoneNumber;
     private String rank;
     private String nationality;
     private String address;
     private String imageUrl;
     private String memberCode;
-    private Integer bankAccount;
+    private Long bankAccount;
 
-    public Member(Long id, String name, String gender, Date dateJoined, Integer phoneNumber, String rank, String nationality, String address, String imageUrl, String memberCode, Integer bankAccount) {
+    public Member(Long id, String name, String gender, LocalDate dateJoined, Long phoneNumber, String rank, String nationality, String address, String imageUrl, String memberCode, Long bankAccount) {
         this.id = id;
         this.name = name;
         this.gender = gender;
@@ -37,7 +48,7 @@ public class Member implements Serializable {
     }
 
     public Member() {
-        
+
     }
 
     public Long getId() {
@@ -64,19 +75,19 @@ public class Member implements Serializable {
         this.gender = gender;
     }
 
-    public Date getDateJoined() {
+    public LocalDate getDateJoined() {
         return dateJoined;
     }
 
-    public void setDateJoined(Date dateJoined) {
+    public void setDateJoined(LocalDate dateJoined) {
         this.dateJoined = dateJoined;
     }
 
-    public Integer getPhoneNumber() {
+    public Long getPhoneNumber() {
         return phoneNumber;
     }
 
-    public void setPhoneNumber(Integer phoneNumber) {
+    public void setPhoneNumber(Long phoneNumber) {
         this.phoneNumber = phoneNumber;
     }
 
@@ -104,14 +115,6 @@ public class Member implements Serializable {
         this.address = address;
     }
 
-    public Integer getBankAccount() {
-        return bankAccount;
-    }
-
-    public void setBankAccount(Integer bankAccount) {
-        this.bankAccount = bankAccount;
-    }
-
     public String getImageUrl() {
         return imageUrl;
     }
@@ -126,6 +129,14 @@ public class Member implements Serializable {
 
     public void setMemberCode(String memberCode) {
         this.memberCode = memberCode;
+    }
+
+    public Long getBankAccount() {
+        return bankAccount;
+    }
+
+    public void setBankAccount(Long bankAccount) {
+        this.bankAccount = bankAccount;
     }
 
     @Override

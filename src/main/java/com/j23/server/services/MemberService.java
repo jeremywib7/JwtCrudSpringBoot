@@ -20,7 +20,7 @@ public class MemberService {
     }
 
     public Member addMember(Member member) {
-        member.setMemberCode(String.valueOf(UUID.randomUUID()));m
+        member.setMemberCode(String.valueOf(UUID.randomUUID()));
         return memberRepo.save(member);
     }
 

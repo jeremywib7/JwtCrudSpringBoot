@@ -1,6 +1,5 @@
 package com.j23.server.configuration;
 
-import com.j23.server.services.JwtService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;

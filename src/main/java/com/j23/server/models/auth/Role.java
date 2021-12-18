@@ -1,4 +1,4 @@
-package com.j23.server.models;
+package com.j23.server.models.auth;
 
 import javax.persistence.Column;
 import javax.persistence.Entity;

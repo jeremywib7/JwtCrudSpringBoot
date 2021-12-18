@@ -1,8 +1,8 @@
-package com.j23.server.controllers;
+package com.j23.server.controllers.auth;
 
-import com.j23.server.models.JwtRequest;
-import com.j23.server.models.JwtResponse;
-import com.j23.server.services.JwtService;
+import com.j23.server.models.auth.JwtRequest;
+import com.j23.server.models.auth.JwtResponse;
+import com.j23.server.services.auth.JwtService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.PostMapping;

@@ -1,6 +1,4 @@
-package com.j23.server.models;
-
-import com.j23.server.models.User;
+package com.j23.server.models.auth;
 
 public class JwtResponse {
     private User user;

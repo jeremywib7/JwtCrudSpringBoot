@@ -1,6 +1,6 @@
 package com.j23.server.configuration;
 
-import com.j23.server.services.JwtService;
+import com.j23.server.services.auth.JwtService;
 import com.j23.server.util.JwtUtil;
 import io.jsonwebtoken.ExpiredJwtException;
 import org.springframework.beans.factory.annotation.Autowired;

@@ -1,7 +1,7 @@
-package com.j23.server.controllers;
+package com.j23.server.controllers.auth;
 
-import com.j23.server.models.Role;
-import com.j23.server.services.RoleService;
+import com.j23.server.models.auth.Role;
+import com.j23.server.services.auth.RoleService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;

@@ -1,7 +1,7 @@
-package com.j23.server.controllers;
+package com.j23.server.controllers.auth;
 
-import com.j23.server.models.User;
-import com.j23.server.services.UserService;
+import com.j23.server.models.auth.User;
+import com.j23.server.services.auth.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
