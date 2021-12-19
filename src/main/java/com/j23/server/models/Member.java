@@ -22,8 +22,8 @@ public class Member implements Serializable {
     private String name;
     private String gender;
 
-    @JsonFormat(pattern = "YYYY-MM-DD", shape = JsonFormat.Shape.STRING)
-    private LocalDate dateJoined;
+    @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "yyyy-MM-dd")
+    private java.sql.Date dateJoined;
 
     private Long phoneNumber;
     private String rank;
@@ -33,7 +33,7 @@ public class Member implements Serializable {
     private String memberCode;
     private Long bankAccount;
 
-    public Member(Long id, String name, String gender, LocalDate dateJoined, Long phoneNumber, String rank, String nationality, String address, String imageUrl, String memberCode, Long bankAccount) {
+    public Member(Long id, String name, String gender, java.sql.Date dateJoined, Long phoneNumber, String rank, String nationality, String address, String imageUrl, String memberCode, Long bankAccount) {
         this.id = id;
         this.name = name;
         this.gender = gender;
@@ -75,11 +75,11 @@ public class Member implements Serializable {
         this.gender = gender;
     }
 
-    public LocalDate getDateJoined() {
+    public java.sql.Date getDateJoined() {
         return dateJoined;
     }
 
-    public void setDateJoined(LocalDate dateJoined) {
+    public void setDateJoined(java.sql.Date dateJoined) {
         this.dateJoined = dateJoined;
     }
 
