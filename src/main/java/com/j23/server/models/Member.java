@@ -6,10 +6,12 @@ import org.springframework.format.annotation.DateTimeFormat;
 
 import javax.persistence.*;
 import javax.validation.constraints.Size;
+import java.awt.*;
+import java.io.File;
 import java.io.Serializable;
 import java.security.Timestamp;
+import java.sql.Date;
 import java.time.LocalDate;
-import java.util.Date;
 
 @Entity
 public class Member implements Serializable {
@@ -33,7 +35,7 @@ public class Member implements Serializable {
     private String memberCode;
     private Long bankAccount;
 
-    public Member(Long id, String name, String gender, java.sql.Date dateJoined, Long phoneNumber, String rank, String nationality, String address, String imageUrl, String memberCode, Long bankAccount) {
+    public Member(Long id, String name, String gender, Date dateJoined, Long phoneNumber, String rank, String nationality, String address, String imageUrl, String memberCode,  Long bankAccount) {
         this.id = id;
         this.name = name;
         this.gender = gender;
@@ -138,6 +140,7 @@ public class Member implements Serializable {
     public void setBankAccount(Long bankAccount) {
         this.bankAccount = bankAccount;
     }
+
 
     @Override
     public String toString() {
