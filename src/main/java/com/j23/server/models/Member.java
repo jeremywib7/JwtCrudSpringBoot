@@ -21,8 +21,10 @@ public class Member implements Serializable {
     @Column(nullable = false, updatable = false)
     private Long id;
 
-    private String name;
+    private String firstName;
+    private String lastName;
     private String gender;
+    private String email;
 
     @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "yyyy-MM-dd")
     private java.sql.Date dateJoined;
@@ -35,9 +37,11 @@ public class Member implements Serializable {
     private String memberCode;
     private Long bankAccount;
 
-    public Member(Long id, String name, String gender, Date dateJoined, Long phoneNumber, String rank, String nationality, String address, String imageUrl, String memberCode,  Long bankAccount) {
+    public Member(Long id, String firstName, String lastName, String email, String gender, Date dateJoined, Long phoneNumber, String rank, String nationality, String address, String imageUrl, String memberCode, Long bankAccount) {
         this.id = id;
-        this.name = name;
+        this.firstName = firstName;
+        this.lastName = lastName;
+        this.email = email;
         this.gender = gender;
         this.dateJoined = dateJoined;
         this.phoneNumber = phoneNumber;
@@ -61,12 +65,28 @@ public class Member implements Serializable {
         this.id = id;
     }
 
-    public String getName() {
-        return name;
+    public String getFirstName() {
+        return firstName;
     }
 
-    public void setName(String name) {
-        this.name = name;
+    public void setFirstName(String firstName) {
+        this.firstName = firstName;
+    }
+
+    public String getLastName() {
+        return lastName;
+    }
+
+    public void setLastName(String lastName) {
+        this.lastName = lastName;
+    }
+
+    public String getEmail() {
+        return email;
+    }
+
+    public void setEmail(String email) {
+        this.email = email;
     }
 
     public String getGender() {
@@ -146,7 +166,7 @@ public class Member implements Serializable {
     public String toString() {
         return "Member{" +
                 "id=" + id +
-                ", name='" + name + '\'' +
+                ", name='" + firstName + '\'' +
                 ", gender='" + gender + '\'' +
                 ", dateJoined=" + dateJoined +
                 ", phoneNumber=" + phoneNumber +
