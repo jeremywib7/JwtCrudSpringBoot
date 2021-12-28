@@ -4,9 +4,6 @@ import com.j23.server.exception.UserNotFoundException;
 import com.j23.server.models.Member;
 import com.j23.server.repos.MemberRepo;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.data.domain.Page;
-import org.springframework.data.domain.PageRequest;
-import org.springframework.data.domain.Pageable;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.stereotype.Service;
 
@@ -27,11 +24,8 @@ public class MemberService {
         return memberRepo.save(member);
     }
 
-    public List<Member> findAllMembers(int pageNo, int pageSize) {
-        Pageable paging = PageRequest.of(pageNo, pageSize);
-        Page<Member> pagedResults = memberRepo.findAll(paging);
-        return pagedResults.toList();
-//        return memberRepo.findAll();
+    public List<Member> findAllMembers() {
+        return memberRepo.findAll();
     }
 
     public Member updateMember(Member member) {

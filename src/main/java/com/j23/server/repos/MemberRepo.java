@@ -2,13 +2,12 @@ package com.j23.server.repos;
 
 import com.j23.server.models.Member;
 import org.springframework.data.jpa.repository.JpaRepository;
-import org.springframework.data.repository.PagingAndSortingRepository;
 import org.springframework.stereotype.Repository;
 
 import java.util.Optional;
 
 @Repository
-public interface MemberRepo extends PagingAndSortingRepository<Member, Long> {
+public interface MemberRepo extends JpaRepository<Member, Long> {
 
     void deleteMemberById(Long id);
 
