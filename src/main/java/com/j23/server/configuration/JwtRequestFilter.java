@@ -3,6 +3,7 @@ package com.j23.server.configuration;
 import com.j23.server.services.auth.JwtService;
 import com.j23.server.util.JwtUtil;
 import io.jsonwebtoken.ExpiredJwtException;
+import io.jsonwebtoken.SignatureException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.context.SecurityContextHolder;
@@ -39,12 +40,15 @@ public class JwtRequestFilter extends OncePerRequestFilter {
             try {
                 userName = jwtUtil.getUsernameFromToken(jwtToken);
             } catch (IllegalArgumentException e) {
-                System.out.println("Unable to get JWT Token");
+                JwtAuthenticationEntryPoint.message = "Unable to get JWT Token";
             } catch (ExpiredJwtException e) {
-                System.out.println("JWT Token expired");
+                JwtAuthenticationEntryPoint.message = "JWT Token is expired";
+            } catch (SignatureException e) {
+                JwtAuthenticationEntryPoint.message = "Invalid JWT Token";
             }
+
         } else {
-            System.out.println("JWT token does not start with bearer");
+            JwtAuthenticationEntryPoint.message = "JWT token does not start with bearer";
         }
 
         if (userName != null && SecurityContextHolder.getContext().getAuthentication() == null) {

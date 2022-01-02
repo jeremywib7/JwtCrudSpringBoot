@@ -1,5 +1,7 @@
 package com.j23.server.services.auth;
 
+import com.j23.server.exception.UserNotFoundException;
+import com.j23.server.models.Employee;
 import com.j23.server.models.auth.Role;
 import com.j23.server.models.auth.User;
 import com.j23.server.repos.RoleRepo;
@@ -26,11 +28,32 @@ public class UserService {
         return new BCryptPasswordEncoder();
     }
 
+    @Autowired
+    public UserService(UserRepo userRepo) {
+        this.userRepo = userRepo;
+    }
+
+    public Iterable<User> findAllUser() {
+        return userRepo.findAll();
+    }
+
+    public User updateUser(User user) {
+        return userRepo.save(user);
+    }
+
+    public User findUserById(Long id) {
+        return userRepo.findById(String.valueOf(id)).orElseThrow(() -> new UserNotFoundException("User by id " + id + " was not found"));
+    }
+
+    public void deleteUser(Long id) {
+        userRepo.deleteById(String.valueOf(id));
+    }
+
     public User registerNewUser(User user) {
-        Role role = roleRepo.findById("User").get();
-        Set<Role> roles = new HashSet<>();
-        roles.add(role);
-        user.setRole(roles);
+//        Role role = roleRepo.findById("User").get();
+//        Set<Role> roles = new HashSet<>();
+//        roles.add(role);
+//        user.setRole(roles);
 
         user.setUserPassword(getEncodedPassword(user.getUserPassword()));
         return userRepo.save(user);

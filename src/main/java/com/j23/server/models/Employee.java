@@ -1,20 +1,13 @@
 package com.j23.server.models;
 
 import com.fasterxml.jackson.annotation.JsonFormat;
-import org.hibernate.validator.constraints.Length;
-import org.springframework.format.annotation.DateTimeFormat;
 
 import javax.persistence.*;
-import javax.validation.constraints.Size;
-import java.awt.*;
-import java.io.File;
 import java.io.Serializable;
-import java.security.Timestamp;
 import java.sql.Date;
-import java.time.LocalDate;
 
 @Entity
-public class Member implements Serializable {
+public class Employee implements Serializable {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -30,30 +23,26 @@ public class Member implements Serializable {
     private java.sql.Date dateJoined;
 
     private Long phoneNumber;
-    private String rank;
-    private String nationality;
     private String address;
     private String imageUrl;
-    private String memberCode;
+    private String employeeCode;
     private Long bankAccount;
 
-    public Member(Long id, String firstName, String lastName, String email, String gender, Date dateJoined, Long phoneNumber, String rank, String nationality, String address, String imageUrl, String memberCode, Long bankAccount) {
+    public Employee(Long id, String firstName, String lastName, String gender, String email, Date dateJoined, Long phoneNumber, String address, String imageUrl, String employeeCode, Long bankAccount) {
         this.id = id;
         this.firstName = firstName;
         this.lastName = lastName;
-        this.email = email;
         this.gender = gender;
+        this.email = email;
         this.dateJoined = dateJoined;
         this.phoneNumber = phoneNumber;
-        this.rank = rank;
-        this.nationality = nationality;
         this.address = address;
         this.imageUrl = imageUrl;
-        this.memberCode = memberCode;
+        this.employeeCode = employeeCode;
         this.bankAccount = bankAccount;
     }
 
-    public Member() {
+    public Employee() {
 
     }
 
@@ -105,28 +94,20 @@ public class Member implements Serializable {
         this.dateJoined = dateJoined;
     }
 
+    public String getEmployeeCode() {
+        return employeeCode;
+    }
+
+    public void setEmployeeCode(String employeeCode) {
+        this.employeeCode = employeeCode;
+    }
+
     public Long getPhoneNumber() {
         return phoneNumber;
     }
 
     public void setPhoneNumber(Long phoneNumber) {
         this.phoneNumber = phoneNumber;
-    }
-
-    public String getRank() {
-        return rank;
-    }
-
-    public void setRank(String rank) {
-        this.rank = rank;
-    }
-
-    public String getNationality() {
-        return nationality;
-    }
-
-    public void setNationality(String nationality) {
-        this.nationality = nationality;
     }
 
     public String getAddress() {
@@ -143,14 +124,6 @@ public class Member implements Serializable {
 
     public void setImageUrl(String imageUrl) {
         this.imageUrl = imageUrl;
-    }
-
-    public String getMemberCode() {
-        return memberCode;
-    }
-
-    public void setMemberCode(String memberCode) {
-        this.memberCode = memberCode;
     }
 
     public Long getBankAccount() {
@@ -170,11 +143,8 @@ public class Member implements Serializable {
                 ", gender='" + gender + '\'' +
                 ", dateJoined=" + dateJoined +
                 ", phoneNumber=" + phoneNumber +
-                ", rank='" + rank + '\'' +
-                ", nationality='" + nationality + '\'' +
                 ", address='" + address + '\'' +
                 ", imageUrl='" + imageUrl + '\'' +
-                ", memberCode='" + memberCode + '\'' +
                 ", bankAccount=" + bankAccount +
                 '}';
     }
