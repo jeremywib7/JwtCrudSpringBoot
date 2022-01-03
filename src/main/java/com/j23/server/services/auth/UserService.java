@@ -41,11 +41,11 @@ public class UserService {
         return userRepo.save(user);
     }
 
-    public User findUserById(Long id) {
-        return userRepo.findById(String.valueOf(id)).orElseThrow(() -> new UserNotFoundException("User by id " + id + " was not found"));
+    public User findUserById(String id) {
+        return userRepo.findById(String.valueOf(id)).orElseThrow(() -> new UserNotFoundException("username " + id + " was not found"));
     }
 
-    public void deleteUser(Long id) {
+    public void deleteUser(String id) {
         userRepo.deleteById(String.valueOf(id));
     }
 
