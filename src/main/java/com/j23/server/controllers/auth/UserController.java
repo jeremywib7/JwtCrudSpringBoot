@@ -5,6 +5,7 @@ import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.j23.server.models.Employee;
 import com.j23.server.models.auth.User;
+import com.j23.server.repos.UserRepo;
 import com.j23.server.services.auth.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.dao.EmptyResultDataAccessException;
@@ -27,9 +28,11 @@ public class UserController {
     JsonNode json;
     ObjectMapper mapper = new ObjectMapper();
 
-
     @Autowired
     private UserService userService;
+
+    @Autowired
+    private UserRepo userRepo;
 
     @PostConstruct
     public void initRolesAndUsers() {
@@ -38,6 +41,9 @@ public class UserController {
 
     @PostMapping({"/register"})
     public User registerNewUser(@RequestBody User user) {
+        if (userRepo.existsByUsername(user.getUsername())) {
+            throw new ResponseStatusException(HttpStatus.CONFLICT,"Username already exists");
+        }
         return userService.registerNewUser(user);
     }
 
@@ -54,8 +60,8 @@ public class UserController {
     }
 
     @GetMapping("/find/{username}")
-    public ResponseEntity<User> getUserById(@PathVariable("username") String username) {
-        User user = userService.findUserById(username);
+    public ResponseEntity<User> getUserByUsername(@PathVariable("username") String username) {
+        User user = userService.findUserByUsername(username);
         return new ResponseEntity<>(user, HttpStatus.OK);
     }
 
