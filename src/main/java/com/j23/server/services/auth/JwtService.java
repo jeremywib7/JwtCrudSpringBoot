@@ -6,6 +6,7 @@ import com.j23.server.models.auth.User;
 import com.j23.server.repos.UserRepo;
 import com.j23.server.util.JwtUtil;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.BadCredentialsException;
 import org.springframework.security.authentication.DisabledException;
@@ -15,6 +16,7 @@ import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.stereotype.Service;
+import org.springframework.web.server.ResponseStatusException;
 
 import java.util.HashSet;
 import java.util.Set;
@@ -60,20 +62,20 @@ public class JwtService implements UserDetailsService {
 
     private Set getAuthorities(User user) {
         Set authorities = new HashSet();
-        user.getRole().forEach(role -> {
-            authorities.add(new SimpleGrantedAuthority("ROLE_" + role.getRoleName()));
-        });
-
+        authorities.add(new SimpleGrantedAuthority("ROLE_" + user.getRole().getRoleName()));
+//        user.getRole().forEach(role -> {
+//            authorities.add(new SimpleGrantedAuthority("ROLE_" + role.getRoleName()));
+//        });
         return authorities;
     }
 
-    private void authenticate(String userName, String userPassword) throws Exception {
+    private void authenticate(String userName, String userPassword) {
         try {
             authenticationManager.authenticate(new UsernamePasswordAuthenticationToken(userName, userPassword));
         } catch (DisabledException e) {
-            throw new Exception("User is disabled");
+            throw new ResponseStatusException(HttpStatus.FORBIDDEN,"User is disabled");
         } catch (BadCredentialsException e) {
-            throw new Exception("Bad credentials from user");
+            throw new ResponseStatusException(HttpStatus.UNAUTHORIZED,"Wrong username or password");
         }
     }
 }

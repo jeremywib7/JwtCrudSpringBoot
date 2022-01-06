@@ -13,6 +13,7 @@ import org.springframework.stereotype.Service;
 
 import java.util.HashSet;
 import java.util.Set;
+import java.util.UUID;
 
 @Service
 public class UserService {
@@ -38,15 +39,17 @@ public class UserService {
     }
 
     public User updateUser(User user) {
+        user.setUserPassword(getEncodedPassword(user.getUserPassword()));
+        user.setUserCode(user.getUserCode());
         return userRepo.save(user);
     }
 
-    public User findUserById(String id) {
-        return userRepo.findById(String.valueOf(id)).orElseThrow(() -> new UserNotFoundException("username " + id + " was not found"));
+    public User findUserByUsername(String username) {
+        return userRepo.findById(username).orElseThrow(() -> new UserNotFoundException("username " + username + " was not found"));
     }
 
-    public void deleteUser(String id) {
-        userRepo.deleteById(String.valueOf(id));
+    public void deleteUser(String username) {
+        userRepo.deleteById(username);
     }
 
     public User registerNewUser(User user) {
@@ -54,8 +57,8 @@ public class UserService {
 //        Set<Role> roles = new HashSet<>();
 //        roles.add(role);
 //        user.setRole(roles);
-
-        user.setUserPassword(getEncodedPassword(user.getUserPassword()));
+        user.setUserCode(String.valueOf(UUID.randomUUID()));
+        user.setUserPassword(getEncodedPassword("1234"));
         return userRepo.save(user);
     }
 
@@ -77,9 +80,9 @@ public class UserService {
         adminUser.setUserLastName("admin");
         adminUser.setUsername("admin123");
         adminUser.setUserPassword(getEncodedPassword("admin@pass"));
-        Set<Role> adminRoles = new HashSet<>();
-        adminRoles.add(adminRole);
-        adminUser.setRole(adminRoles);
+//        Role adminRoles = new Role();
+//        adminRoles.add(adminRole);
+        adminUser.setRole(adminRole);
         userRepo.save(adminUser);
 
 //        User user = new User();

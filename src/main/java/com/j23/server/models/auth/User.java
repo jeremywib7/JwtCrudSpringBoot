@@ -10,7 +10,7 @@ import java.util.Set;
 public class User {
 
     @Id
-    @Column(nullable = false, updatable = false)
+    @Column(nullable = false, updatable = false, unique = true)
     private String username;
     private String userFirstName;
     private String userLastName;
@@ -27,7 +27,7 @@ public class User {
     private String userCode;
     private Long bankAccount;
 
-    @ManyToMany(fetch = FetchType.EAGER, cascade = CascadeType.ALL)
+    @ManyToOne(fetch = FetchType.EAGER, cascade = CascadeType.ALL)
     @JoinTable(name = "USER_ROLE",
             joinColumns = {
                     @JoinColumn(name = "USER_ID")
@@ -36,7 +36,7 @@ public class User {
                     @JoinColumn(name = "ROLE_ID")
             }
     )
-    private Set<Role> role;
+    private Role role;
 
     public String getUsername() {
         return username;
@@ -70,11 +70,11 @@ public class User {
         this.userPassword = userPassword;
     }
 
-    public Set<Role> getRole() {
+    public Role getRole() {
         return role;
     }
 
-    public void setRole(Set<Role> role) {
+    public void setRole(Role role) {
         this.role = role;
     }
 
