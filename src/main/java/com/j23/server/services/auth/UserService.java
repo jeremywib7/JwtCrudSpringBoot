@@ -52,6 +52,8 @@ public class UserService {
         userRepo.deleteById(username);
     }
 
+    Role role = new Role();
+
     public User registerNewUser(User user) {
 //        Role role = roleRepo.findById("User").get();
 //        Set<Role> roles = new HashSet<>();
@@ -59,6 +61,7 @@ public class UserService {
 //        user.setRole(roles);
         user.setUserCode(String.valueOf(UUID.randomUUID()));
         user.setUserPassword(getEncodedPassword("1234"));
+
         return userRepo.save(user);
     }
 
