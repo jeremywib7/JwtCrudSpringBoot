@@ -79,9 +79,9 @@ public class UserService {
 
 //        create user with role
         User adminUser = new User();
-        adminUser.setUserFirstName("admin");
-        adminUser.setUserLastName("admin");
-        adminUser.setUsername("admin123");
+        adminUser.setUserFirstName("Admin");
+        adminUser.setUserLastName("Admin");
+        adminUser.setUsername("Admin");
         adminUser.setUserPassword(getEncodedPassword("admin@pass"));
 //        Role adminRoles = new Role();
 //        adminRoles.add(adminRole);
