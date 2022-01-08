@@ -65,12 +65,11 @@ public class UserController {
         return new ResponseEntity<>(user, HttpStatus.OK);
     }
 
-    @PutMapping("/delete/{username}")
+    @DeleteMapping("/delete/{username}")
     public ResponseEntity<?> deleteUser(@PathVariable("username") String username) {
 
         try {
-            userService.deleteUser(username);
-            localDateTime = LocalDateTime.now();
+            userService.deleteUserByUsername(username);
             json = mapper.readTree("{\"status\": 200, \"message\": \"User " + username + " deleted successfully\"}");
 
             return ResponseEntity.status(HttpStatus.OK).body(json);

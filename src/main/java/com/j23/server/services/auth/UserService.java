@@ -48,7 +48,7 @@ public class UserService {
         return userRepo.findById(username).orElseThrow(() -> new UserNotFoundException("username " + username + " was not found"));
     }
 
-    public void deleteUser(String username) {
+    public void deleteUserByUsername(String username) {
         userRepo.deleteById(username);
     }
 
@@ -60,8 +60,7 @@ public class UserService {
 //        roles.add(role);
 //        user.setRole(roles);
         user.setUserCode(String.valueOf(UUID.randomUUID()));
-        user.setUserPassword(getEncodedPassword("1234"));
-
+        user.setUserPassword(getEncodedPassword(user.getUserPassword()));
         return userRepo.save(user);
     }
 

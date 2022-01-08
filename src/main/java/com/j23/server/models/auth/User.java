@@ -4,13 +4,12 @@ import com.fasterxml.jackson.annotation.JsonFormat;
 
 import javax.persistence.*;
 import java.sql.Date;
-import java.util.Set;
 
 @Entity
 public class User {
 
     @Id
-    @Column(nullable = false, updatable = false, unique = true)
+    @Column(updatable = false)
     private String username;
     private String userFirstName;
     private String userLastName;
@@ -27,7 +26,7 @@ public class User {
     private String userCode;
     private Long bankAccount;
 
-    @ManyToOne(fetch = FetchType.EAGER, cascade = CascadeType.ALL)
+    @ManyToOne(fetch = FetchType.EAGER)
     @JoinTable(name = "USER_ROLE",
             joinColumns = {
                     @JoinColumn(name = "USER_ID")
@@ -36,6 +35,7 @@ public class User {
                     @JoinColumn(name = "ROLE_ID")
             }
     )
+
     private Role role;
 
     public String getUsername() {
@@ -66,9 +66,7 @@ public class User {
         return userPassword;
     }
 
-    public void setUserPassword(String userPassword) {
-        this.userPassword = userPassword;
-    }
+    public void setUserPassword(String userPassword) { this.userPassword = userPassword; }
 
     public Role getRole() {
         return role;
