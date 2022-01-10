@@ -1,9 +1,15 @@
 package com.j23.server.models.auth;
 
 import com.fasterxml.jackson.annotation.JsonFormat;
+import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
+import com.fasterxml.jackson.databind.annotation.JsonSerialize;
+import com.fasterxml.jackson.datatype.jsr310.deser.LocalDateDeserializer;
+import com.fasterxml.jackson.datatype.jsr310.ser.LocalDateSerializer;
+import org.springframework.format.annotation.DateTimeFormat;
 
 import javax.persistence.*;
 import java.sql.Date;
+import java.time.LocalDate;
 
 @Entity
 public class User {
@@ -17,8 +23,10 @@ public class User {
     private String gender;
     private String email;
 
-    @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "yyyy-MM-dd")
-    private java.sql.Date dateJoined;
+    @JsonFormat(pattern = "dd/MM/yyyy")
+    @JsonDeserialize(using = LocalDateDeserializer.class)
+    @JsonSerialize(using = LocalDateSerializer.class)
+    private LocalDate dateJoined;
 
     private Long phoneNumber;
     private String address;
@@ -92,11 +100,11 @@ public class User {
         this.email = email;
     }
 
-    public Date getDateJoined() {
+    public LocalDate getDateJoined() {
         return dateJoined;
     }
 
-    public void setDateJoined(Date dateJoined) {
+    public void setDateJoined(LocalDate dateJoined) {
         this.dateJoined = dateJoined;
     }
 

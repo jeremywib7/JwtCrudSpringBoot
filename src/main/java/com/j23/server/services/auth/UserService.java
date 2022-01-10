@@ -11,6 +11,7 @@ import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
+import java.time.LocalDate;
 import java.util.HashSet;
 import java.util.Set;
 import java.util.UUID;
@@ -39,8 +40,6 @@ public class UserService {
     }
 
     public User updateUser(User user) {
-        user.setUserPassword(getEncodedPassword(user.getUserPassword()));
-        user.setUserCode(user.getUserCode());
         return userRepo.save(user);
     }
 
