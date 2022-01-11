@@ -1,8 +1,6 @@
 package com.j23.server.controllers;
 
 import com.j23.server.models.auth.User;
-import com.j23.server.services.auth.JwtService;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -12,7 +10,6 @@ import java.io.*;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
-import java.util.stream.Collectors;
 
 @RestController
 @CrossOrigin

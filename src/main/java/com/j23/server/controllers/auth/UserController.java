@@ -3,7 +3,7 @@ package com.j23.server.controllers.auth;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
-import com.j23.server.models.Employee;
+import com.j23.server.configuration.ResponseHandler;
 import com.j23.server.models.auth.User;
 import com.j23.server.repos.UserRepo;
 import com.j23.server.services.auth.UserService;
@@ -24,7 +24,6 @@ import java.util.List;
 @RequestMapping("/user")
 public class UserController {
 
-    LocalDateTime localDateTime;
     JsonNode json;
     ObjectMapper mapper = new ObjectMapper();
 
@@ -40,11 +39,14 @@ public class UserController {
     }
 
     @PostMapping({"/register"})
-    public User registerNewUser(@RequestBody User user) {
+    public ResponseEntity<Object> registerNewUser(@RequestBody User user) {
         if (userRepo.existsByUsername(user.getUsername())) {
             throw new ResponseStatusException(HttpStatus.CONFLICT,"Username already exists");
         }
-        return userService.registerNewUser(user);
+
+        User result = userService.registerNewUser(user);
+
+        return ResponseHandler.generateResponse("Successfully registered user!", HttpStatus.OK, result);
     }
 
     @GetMapping("/all")
@@ -54,9 +56,9 @@ public class UserController {
     }
 
     @PutMapping("/update")
-    public ResponseEntity<User> updateUser(@RequestBody User user) {
+    public ResponseEntity<Object> updateUser(@RequestBody User user) {
         User updateUser = userService.updateUser(user);
-        return new ResponseEntity<>(updateUser, HttpStatus.OK);
+        return ResponseHandler.generateResponse("Successfully update user!", HttpStatus.OK, updateUser);
     }
 
     @GetMapping("/find/{username}")
