@@ -41,11 +41,12 @@ public class JwtService implements UserDetailsService {
 
         final UserDetails userDetails = loadUserByUsername(userName);
 
-        String newGeneratedToken = jwtUtil.generateToken(userDetails);
+        String newGeneratedToken = jwtUtil.generateJwtToken(userDetails);
+        String refreshToken = jwtUtil.generateRefreshToken(userDetails);
 
         User user = userRepo.findById(userName).get();
 
-        return new JwtResponse(user, newGeneratedToken);
+        return new JwtResponse(user, newGeneratedToken, refreshToken);
     }
 
     @Override
