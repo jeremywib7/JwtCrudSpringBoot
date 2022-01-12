@@ -1,19 +1,15 @@
 package com.j23.server.services.auth;
 
 import com.j23.server.exception.UserNotFoundException;
-import com.j23.server.models.Employee;
 import com.j23.server.models.auth.Role;
 import com.j23.server.models.auth.User;
-import com.j23.server.repos.RoleRepo;
-import com.j23.server.repos.UserRepo;
+import com.j23.server.repos.auth.RoleRepo;
+import com.j23.server.repos.auth.UserRepo;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
-import java.time.LocalDate;
-import java.util.HashSet;
-import java.util.Set;
 import java.util.UUID;
 
 @Service

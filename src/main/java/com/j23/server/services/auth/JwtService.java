@@ -3,7 +3,7 @@ package com.j23.server.services.auth;
 import com.j23.server.models.auth.JwtRequest;
 import com.j23.server.models.auth.JwtResponse;
 import com.j23.server.models.auth.User;
-import com.j23.server.repos.UserRepo;
+import com.j23.server.repos.auth.UserRepo;
 import com.j23.server.util.JwtUtil;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
@@ -33,7 +33,7 @@ public class JwtService implements UserDetailsService {
     @Autowired
     private AuthenticationManager authenticationManager;
 
-    public JwtResponse createJwtToken(JwtRequest jwtRequest) throws Exception {
+    public JwtResponse createJwtToken(JwtRequest jwtRequest) {
         String userName = jwtRequest.getUserName();
         String userPass = jwtRequest.getUserPassword();
 

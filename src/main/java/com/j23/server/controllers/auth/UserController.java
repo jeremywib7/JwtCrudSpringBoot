@@ -5,7 +5,7 @@ import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.j23.server.configuration.ResponseHandler;
 import com.j23.server.models.auth.User;
-import com.j23.server.repos.UserRepo;
+import com.j23.server.repos.auth.UserRepo;
 import com.j23.server.services.auth.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.dao.EmptyResultDataAccessException;
@@ -16,7 +16,6 @@ import org.springframework.web.bind.annotation.*;
 import org.springframework.web.server.ResponseStatusException;
 
 import javax.annotation.PostConstruct;
-import java.time.LocalDateTime;
 import java.util.List;
 
 @RestController

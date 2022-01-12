@@ -1,4 +1,4 @@
-package com.j23.server.repos;
+package com.j23.server.repos.auth;
 
 import com.j23.server.models.auth.Role;
 import org.springframework.data.repository.CrudRepository;
