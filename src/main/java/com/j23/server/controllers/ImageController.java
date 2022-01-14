@@ -13,27 +13,27 @@ import java.nio.file.Path;
 import java.nio.file.Paths;
 
 @RestController
+@CrossOrigin
 @RequestMapping("/images")
 public class ImageController {
+    String folder = "D:\\ImageData\\"; // my file path
 
-    @CrossOrigin
     @GetMapping("{username}")
     public void downloadUserImage(@PathVariable("username") String username, HttpServletResponse response) {
         try {
-            File fileToDownload = new File("D:\\ImageData\\"+ username);
+            File fileToDownload = new File("D:\\ImageData\\" + username);
 
-            try (InputStream inputStream  = new FileInputStream(fileToDownload)) {
+            try (InputStream inputStream = new FileInputStream(fileToDownload)) {
                 response.setContentType("application/force-download");
                 response.setHeader("Content-Disposition", "attachment: filename=" + username);
                 IOUtils.copy(inputStream, response.getOutputStream());
                 response.flushBuffer();
             }
-        } catch(Exception e) {
+        } catch (Exception e) {
             throw new RuntimeException(e);
         }
     }
 
-    @CrossOrigin
     @PostMapping
     public ResponseEntity<?> uploadUserImage(
             @RequestParam("username") String username,
@@ -44,7 +44,6 @@ public class ImageController {
             throw new RuntimeException("File given is  not valid");
         }
 
-        String folder = "D:\\ImageData\\"; // my file path
         String fileName = file.getOriginalFilename();
 
         try {
@@ -52,7 +51,7 @@ public class ImageController {
             Files.createDirectories(pathFolder);
 //            Path pathFile = Paths.get(folder + username +"." + fileName.substring(fileName.lastIndexOf(".") + 1));
 
-            Path pathFile = Paths.get(folder + username+"." + fileName.substring(fileName.lastIndexOf(".") + 1));
+            Path pathFile = Paths.get(folder + username + "." + fileName.substring(fileName.lastIndexOf(".") + 1));
 
             Files.write(pathFile, file.getBytes());
         } catch (IOException e) {
@@ -62,18 +61,18 @@ public class ImageController {
         return new ResponseEntity<>(HttpStatus.OK);
     }
 
-//    public static String getResourceFileAsString(String folder) {
-//        InputStream is = getResourceFileAsInputStream(folder);
-//        if (is != null) {
-//            BufferedReader reader = new BufferedReader(new InputStreamReader(is));
-//            return (String)reader.lines().collect(Collectors.joining(System.lineSeparator()));
-//        } else {
-//            throw new RuntimeException("resource not found");
-//        }
-//    }
-//
-//    public static InputStream getResourceFileAsInputStream(String folder) {
-//        ClassLoader classLoader = ImageController.class.getClassLoader();
-//        return classLoader.getResourceAsStream(folder);
-//    }
+    @DeleteMapping("{imageUrl}")
+    public void deleteFile(@PathVariable("imageUrl") String imageUrl) {
+
+        try {
+            Path pathFile = Paths.get(folder + imageUrl);
+            if (Files.exists(pathFile)) {
+                Files.delete(pathFile);
+            }
+        } catch (Exception e) {
+            throw new RuntimeException(e);
+        }
+
+    }
+
 }
