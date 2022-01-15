@@ -11,6 +11,7 @@ import java.io.*;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
+import java.util.Objects;
 
 @RestController
 @CrossOrigin
@@ -19,7 +20,15 @@ public class ImageController {
     String folder = "D:\\ImageData\\"; // my file path
 
     @GetMapping("{username}")
-    public void downloadUserImage(@PathVariable("username") String username, HttpServletResponse response) {
+    public void downloadUserImage(
+            @PathVariable("username") String username,
+            @RequestParam("accessToken") String accessToken,
+            HttpServletResponse response) {
+
+        if (!Objects.equals(accessToken, "1234")) {
+            throw new RuntimeException("YOU STUPID");
+        }
+
         try {
             File fileToDownload = new File("D:\\ImageData\\" + username);
 
