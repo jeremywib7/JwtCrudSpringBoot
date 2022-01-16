@@ -1,5 +1,9 @@
 package com.j23.server.controllers;
 
+import com.fasterxml.jackson.core.JsonProcessingException;
+import com.fasterxml.jackson.databind.JsonNode;
+import com.fasterxml.jackson.databind.ObjectMapper;
+import com.j23.server.configuration.ResponseHandler;
 import org.apache.tomcat.util.http.fileupload.IOUtils;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -12,22 +16,23 @@ import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.util.Objects;
+import java.util.Random;
 
 @RestController
 @CrossOrigin
 @RequestMapping("/images")
 public class ImageController {
+
+    JsonNode json;
+    ObjectMapper mapper = new ObjectMapper();
+
     String folder = "D:\\ImageData\\"; // my file path
 
-    @GetMapping("{username}")
+    @GetMapping("/{username}")
     public void downloadUserImage(
             @PathVariable("username") String username,
             @RequestParam("accessToken") String accessToken,
             HttpServletResponse response) {
-
-        if (!Objects.equals(accessToken, "1234")) {
-            throw new RuntimeException("YOU STUPID");
-        }
 
         try {
             File fileToDownload = new File("D:\\ImageData\\" + username);

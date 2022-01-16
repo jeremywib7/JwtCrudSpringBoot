@@ -7,6 +7,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+import javax.servlet.http.Cookie;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
@@ -18,7 +19,7 @@ public class JwtController {
     private JwtService jwtService;
 
     @PostMapping({"/authenticate"})
-    public JwtResponse createJwtToken(@RequestBody JwtRequest jwtRequest) throws Exception {
+    public JwtResponse createJwtToken(@RequestBody JwtRequest jwtRequest, HttpServletResponse res) throws Exception {
         return jwtService.createJwtToken(jwtRequest);
     }
 
