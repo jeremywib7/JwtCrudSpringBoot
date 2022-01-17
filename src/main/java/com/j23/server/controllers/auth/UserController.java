@@ -19,7 +19,7 @@ import javax.annotation.PostConstruct;
 import java.util.List;
 
 @RestController
-@CrossOrigin
+@CrossOrigin(allowCredentials = "true", origins = {"http://localhost:4200", "http://127.0.0.1:4200"})
 @RequestMapping("/user")
 public class UserController {
 
@@ -40,7 +40,7 @@ public class UserController {
     @PostMapping({"/register"})
     public ResponseEntity<Object> registerNewUser(@RequestBody User user) {
         if (userRepo.existsByUsername(user.getUsername())) {
-            throw new ResponseStatusException(HttpStatus.CONFLICT,"Username already exists");
+            throw new ResponseStatusException(HttpStatus.CONFLICT, "Username already exists");
         }
 
         User result = userService.registerNewUser(user);

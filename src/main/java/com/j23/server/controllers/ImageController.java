@@ -19,19 +19,15 @@ import java.util.Objects;
 import java.util.Random;
 
 @RestController
-@CrossOrigin
+@CrossOrigin(allowCredentials = "true", origins = {"http://localhost:4200", "http://127.0.0.1:4200"})
 @RequestMapping("/images")
 public class ImageController {
-
-    JsonNode json;
-    ObjectMapper mapper = new ObjectMapper();
 
     String folder = "D:\\ImageData\\"; // my file path
 
     @GetMapping("/{username}")
     public void downloadUserImage(
             @PathVariable("username") String username,
-            @RequestParam("accessToken") String accessToken,
             HttpServletResponse response) {
 
         try {
@@ -75,7 +71,7 @@ public class ImageController {
         return new ResponseEntity<>(HttpStatus.OK);
     }
 
-    @DeleteMapping("{imageUrl}")
+    @DeleteMapping("/{imageUrl}")
     public void deleteFile(@PathVariable("imageUrl") String imageUrl) {
 
         try {
