@@ -5,9 +5,13 @@ import com.j23.server.models.auth.User;
 import com.j23.server.models.product.Product;
 import com.j23.server.services.product.ProductService;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.rest.core.annotation.RestResource;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.server.ResponseStatusException;
 
 import java.util.List;
 
@@ -22,6 +26,20 @@ public class ProductController {
     @GetMapping("/all")
     public ResponseEntity<Object> getAllProducts() {
         List<Product> products = (List<Product>) productService.findAllProduct();
+        return ResponseHandler.generateResponse("Successfully fetch product!", HttpStatus.OK, products);
+    }
+
+    @GetMapping({"/findByCategory"})
+    @RestResource(path = "categoryid")
+    public ResponseEntity<Object> registerNewUser(@RequestParam Long id,
+                                                  @RequestParam int page,
+                                                  @RequestParam(defaultValue = "0") int size) {
+        if (size == 0) {
+            size = 10;
+        }
+
+        Page<Product> products = (Page<Product>) productService.findAllProductByCategoryId(
+                id, PageRequest.of(page, size));
         return ResponseHandler.generateResponse("Successfully fetch product!", HttpStatus.OK, products);
     }
 

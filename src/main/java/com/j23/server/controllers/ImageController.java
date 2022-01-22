@@ -44,6 +44,25 @@ public class ImageController {
         }
     }
 
+    @GetMapping("/product/{name}")
+    public void downloadProductImage(
+            @PathVariable("name") String name,
+            HttpServletResponse response) {
+
+        try {
+            File fileToDownload = new File("D:\\ImageData\\Product\\" + name);
+
+            try (InputStream inputStream = new FileInputStream(fileToDownload)) {
+                response.setContentType("application/force-download");
+                response.setHeader("Content-Disposition", "attachment: filename=" + name);
+                IOUtils.copy(inputStream, response.getOutputStream());
+                response.flushBuffer();
+            }
+        } catch (Exception e) {
+            throw new RuntimeException(e);
+        }
+    }
+
     @PostMapping
     public ResponseEntity<?> uploadUserImage(
             @RequestParam("username") String username,
