@@ -24,14 +24,19 @@ public class ProductController {
     private ProductService productService;
 
     @GetMapping("/all")
-    public ResponseEntity<Object> getAllProducts() {
-        List<Product> products = (List<Product>) productService.findAllProduct();
+    public ResponseEntity<Object> getAllProducts(@RequestParam int page,
+                                                 @RequestParam(defaultValue = "0") int size) {
+
+        if (size == 0) {
+            size = 10;
+        }
+
+        Page<Product> products = (Page<Product>) productService.findAllProduct(PageRequest.of(page, size));
         return ResponseHandler.generateResponse("Successfully fetch product!", HttpStatus.OK, products);
     }
 
     @GetMapping({"/findByCategory"})
-    @RestResource(path = "categoryid")
-    public ResponseEntity<Object> registerNewUser(@RequestParam Long id,
+    public ResponseEntity<Object> getProductsByCategory(@RequestParam Long id,
                                                   @RequestParam int page,
                                                   @RequestParam(defaultValue = "0") int size) {
         if (size == 0) {

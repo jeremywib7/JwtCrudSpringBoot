@@ -17,8 +17,8 @@ public class ProductService {
         return productRepository.save(product);
     }
 
-    public Iterable<Product> findAllProduct() {
-        return productRepository.findAll();
+    public Page<Product> findAllProduct(Pageable pageable) {
+        return productRepository.findAll(pageable);
     }
 
     public Page<Product> findAllProductByCategoryId(Long id, Pageable pageable) {
