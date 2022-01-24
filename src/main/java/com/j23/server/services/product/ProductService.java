@@ -7,6 +7,8 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
+import java.math.BigDecimal;
+
 @Service
 public class ProductService {
 
@@ -21,8 +23,11 @@ public class ProductService {
         return productRepository.findAll(pageable);
     }
 
-    public Page<Product> findAllProductByFilter(Long id, Pageable pageable, Long minCalories, Long maxCalories) {
-        return productRepository.findByCategoryIdAndTotalCaloriesBetween(id, minCalories, maxCalories, pageable );
+    public Page<Product> findAllProductByFilter(Long id, Pageable pageable, Long minCalories, Long maxCalories,
+                                                BigDecimal minPrice, BigDecimal maxPrice
+    ) {
+        return productRepository.findByCategoryIdAndTotalCaloriesBetweenAndUnitPriceBetween(id, minCalories,
+                maxCalories, minPrice, maxPrice, pageable );
     }
 
 }

@@ -13,6 +13,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.server.ResponseStatusException;
 
+import java.math.BigDecimal;
 import java.util.List;
 
 @RestController
@@ -36,14 +37,20 @@ public class ProductController {
     }
 
     @GetMapping({"/findByCategory"})
-    public ResponseEntity<Object> getProductsByFilter(@RequestParam Long id,
-                                                  @RequestParam(defaultValue = "0") Long minCalories,
-                                                  @RequestParam(defaultValue = "10000") Long maxCalories,
-                                                  @RequestParam(defaultValue = "0") int page,
-                                                  @RequestParam(defaultValue = "10") int size) {
+    public ResponseEntity<Object> getProductsByFilter(@RequestParam Long categoryId,
+                                                      @RequestParam(defaultValue = "0") Long minCalories,
+                                                      @RequestParam(defaultValue = "10000") Long maxCalories,
+                                                      @RequestParam(defaultValue = "0.00") BigDecimal minPrice,
+                                                      @RequestParam(defaultValue = "1000000.00") BigDecimal maxPrice,
+                                                      @RequestParam(defaultValue = "0") int page,
+                                                      @RequestParam(defaultValue = "10") int size) {
+
+        if (size == 0) {
+            size = 10;
+        }
 
         Page<Product> products = (Page<Product>) productService.findAllProductByFilter(
-                id, PageRequest.of(page, size), minCalories, maxCalories );
+                categoryId, PageRequest.of(page, size), minCalories, maxCalories, minPrice, maxPrice);
         return ResponseHandler.generateResponse("Successfully fetch product!", HttpStatus.OK, products);
     }
 
