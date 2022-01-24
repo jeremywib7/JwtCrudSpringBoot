@@ -21,8 +21,8 @@ public class ProductService {
         return productRepository.findAll(pageable);
     }
 
-    public Page<Product> findAllProductByCategoryId(Long id, Pageable pageable) {
-        return productRepository.findByCategoryId(id, pageable);
+    public Page<Product> findAllProductByFilter(Long id, Pageable pageable, Long minCalories, Long maxCalories) {
+        return productRepository.findByCategoryIdAndTotalCaloriesBetween(id, minCalories, maxCalories, pageable );
     }
 
 }

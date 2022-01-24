@@ -31,7 +31,7 @@ public class Product {
     @Column(length = 100)
     private String name;
 
-    private String totalCalories;
+    private Long totalCalories;
 
     private String description;
 

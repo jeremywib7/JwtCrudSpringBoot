@@ -36,15 +36,14 @@ public class ProductController {
     }
 
     @GetMapping({"/findByCategory"})
-    public ResponseEntity<Object> getProductsByCategory(@RequestParam Long id,
-                                                  @RequestParam int page,
-                                                  @RequestParam(defaultValue = "0") int size) {
-        if (size == 0) {
-            size = 10;
-        }
+    public ResponseEntity<Object> getProductsByFilter(@RequestParam Long id,
+                                                  @RequestParam(defaultValue = "0") Long minCalories,
+                                                  @RequestParam(defaultValue = "10000") Long maxCalories,
+                                                  @RequestParam(defaultValue = "0") int page,
+                                                  @RequestParam(defaultValue = "10") int size) {
 
-        Page<Product> products = (Page<Product>) productService.findAllProductByCategoryId(
-                id, PageRequest.of(page, size));
+        Page<Product> products = (Page<Product>) productService.findAllProductByFilter(
+                id, PageRequest.of(page, size), minCalories, maxCalories );
         return ResponseHandler.generateResponse("Successfully fetch product!", HttpStatus.OK, products);
     }
 
