@@ -19,15 +19,29 @@ public class ProductService {
         return productRepository.save(product);
     }
 
-    public Page<Product> findAllProduct(Pageable pageable) {
-        return productRepository.findAll(pageable);
+    public Page<Product> findAllProduct(Pageable pageable, Long minCalories, Long maxCalories,
+                                        BigDecimal minPrice, BigDecimal maxPrice) {
+        return productRepository.findAllByTotalCaloriesBetweenAndUnitPriceBetween(minCalories,
+                maxCalories, minPrice, maxPrice, pageable);
     }
+
+    public Page<Product> findAllProductByName(String name, Pageable pageable) {
+        return productRepository.findAllByNameContaining(name, pageable);
+    }
+
+    public Page<Product> findAllProductByNameAndFilter(String name, Pageable pageable, Long minCalories, Long maxCalories,
+                                              BigDecimal minPrice, BigDecimal maxPrice
+    ) {
+        return productRepository.findAllByNameContainingAndTotalCaloriesBetweenAndUnitPriceBetween(name, minCalories,
+                maxCalories, minPrice, maxPrice, pageable);
+    }
+
 
     public Page<Product> findAllProductByFilter(Long id, Pageable pageable, Long minCalories, Long maxCalories,
                                                 BigDecimal minPrice, BigDecimal maxPrice
     ) {
-        return productRepository.findByCategoryIdAndTotalCaloriesBetweenAndUnitPriceBetween(id, minCalories,
-                maxCalories, minPrice, maxPrice, pageable );
+        return productRepository.findAllByCategoryIdAndTotalCaloriesBetweenAndUnitPriceBetween(id, minCalories,
+                maxCalories, minPrice, maxPrice, pageable);
     }
 
 }

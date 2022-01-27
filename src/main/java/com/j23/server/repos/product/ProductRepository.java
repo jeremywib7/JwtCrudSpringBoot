@@ -12,9 +12,20 @@ import java.math.BigDecimal;
 @Repository
 public interface ProductRepository extends JpaRepository<Product, Long> {
 
-    Page<Product> findAll(Pageable pageable);
+    Page<Product> findAllByTotalCaloriesBetweenAndUnitPriceBetween(Long minCalories,
+                                                                   Long maxCalories, BigDecimal minPrice,
+                                                                   BigDecimal maxPrice,
+                                                                   Pageable pageable);
 
-    Page<Product> findByCategoryIdAndTotalCaloriesBetweenAndUnitPriceBetween(Long id, Long minCalories,
+    Page<Product> findAllByNameContaining(String name, Pageable pageable);
+
+
+    Page<Product> findAllByNameContainingAndTotalCaloriesBetweenAndUnitPriceBetween(String name, Long minCalories,
+                                                                             Long maxCalories, BigDecimal minPrice,
+                                                                             BigDecimal maxPrice,
+                                                                             Pageable pageable);
+
+    Page<Product> findAllByCategoryIdAndTotalCaloriesBetweenAndUnitPriceBetween(Long id, Long minCalories,
                                                                              Long maxCalories, BigDecimal minPrice,
                                                                              BigDecimal maxPrice,
                                                                              Pageable pageable);

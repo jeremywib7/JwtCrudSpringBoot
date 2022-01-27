@@ -16,7 +16,7 @@ import java.time.LocalDateTime;
 
 @Entity
 @Data
-@Table(name="product")
+@Table(name = "product")
 @Setter
 @Getter
 @ToString
