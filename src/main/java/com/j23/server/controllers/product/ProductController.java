@@ -1,7 +1,9 @@
 package com.j23.server.controllers.product;
 
+import com.fasterxml.jackson.annotation.JsonView;
 import com.j23.server.configuration.ResponseHandler;
 import com.j23.server.models.product.Product;
+import com.j23.server.models.product.Views;
 import com.j23.server.services.product.ProductService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
@@ -33,41 +35,30 @@ public class ProductController {
             size = 10;
         }
 
-        Page<Product> products = (Page<Product>) productService.findAllProduct(PageRequest.of(page, size), minCalories,
+        Page<Product> products = productService.findAllProduct(PageRequest.of(page, size), minCalories,
                 maxCalories, minPrice, maxPrice);
         return ResponseHandler.generateResponse("Successfully fetch product!", HttpStatus.OK, products);
+    }
+
+    @GetMapping({"/findByNameAutoComplete"})
+    @JsonView(Views.MyResponseViews.class)
+    public ResponseEntity<Object> getProductsNameAutoComplete(@RequestParam String name) {
+        Iterable<Product> product = productService.findAllProductByNameAutoComplete(name);
+        return ResponseHandler.generateResponse("Successfully fetch product!", HttpStatus.OK, product);
     }
 
     @GetMapping({"/findByName"})
     public ResponseEntity<Object> getProductsByName(@RequestParam String name,
                                                     @RequestParam(defaultValue = "0") int page,
-                                                    @RequestParam(defaultValue = "10") int size) {
+                                                    @RequestParam(defaultValue = "3") int size) {
         if (size < 10 || size > 50) {
-            size = 10;
+            size = 3;
         }
 
-        Page<Product> products = (Page<Product>) productService.findAllProductByName(
+        Page<Product> products = productService.findAllProductByName(
                 name, PageRequest.of(page, size));
-        return ResponseHandler.generateResponse("Successfully fetch product!", HttpStatus.OK, products);
-    }
-
-    @GetMapping({"/findByNameAndFilter"})
-    public ResponseEntity<Object> getProductsByNameAndFilter(
-            @RequestParam String name,
-            @RequestParam(defaultValue = "0") Long minCalories,
-            @RequestParam(defaultValue = "10000") Long maxCalories,
-            @RequestParam(defaultValue = "0.00") BigDecimal minPrice,
-            @RequestParam(defaultValue = "1000000.00") BigDecimal maxPrice,
-            @RequestParam(defaultValue = "0") int page,
-            @RequestParam(defaultValue = "10") int size) {
-
-        if (size < 10 || size > 50) {
-            size = 10;
-        }
-
-        Page<Product> products = (Page<Product>) productService.findAllProductByName(
-                name, PageRequest.of(page, size));
-        return ResponseHandler.generateResponse("Successfully fetch product!", HttpStatus.OK, products);
+        return ResponseHandler.generateResponse("Successfully fetch product autocomplete!",
+                HttpStatus.OK, products);
     }
 
     @GetMapping({"/findByCategory"})
@@ -83,7 +74,7 @@ public class ProductController {
             size = 10;
         }
 
-        Page<Product> products = (Page<Product>) productService.findAllProductByFilter(
+        Page<Product> products = productService.findAllProductByFilter(
                 categoryId, PageRequest.of(page, size), minCalories, maxCalories, minPrice, maxPrice);
         return ResponseHandler.generateResponse("Successfully fetch product!", HttpStatus.OK, products);
     }

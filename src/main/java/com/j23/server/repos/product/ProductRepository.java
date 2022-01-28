@@ -19,11 +19,7 @@ public interface ProductRepository extends JpaRepository<Product, Long> {
 
     Page<Product> findAllByNameContaining(String name, Pageable pageable);
 
-
-    Page<Product> findAllByNameContainingAndTotalCaloriesBetweenAndUnitPriceBetween(String name, Long minCalories,
-                                                                             Long maxCalories, BigDecimal minPrice,
-                                                                             BigDecimal maxPrice,
-                                                                             Pageable pageable);
+    Iterable<Product> findAllByNameContaining(String name);
 
     Page<Product> findAllByCategoryIdAndTotalCaloriesBetweenAndUnitPriceBetween(Long id, Long minCalories,
                                                                              Long maxCalories, BigDecimal minPrice,

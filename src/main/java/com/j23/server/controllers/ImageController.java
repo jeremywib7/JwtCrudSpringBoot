@@ -23,28 +23,7 @@ import java.util.Random;
 @RequestMapping("/images")
 public class ImageController {
 
-    String folder = "D:\\ImageData\\"; // my file path
-
-    @GetMapping("/{username}")
-    public void downloadUserImage(
-            @PathVariable("username") String username,
-            HttpServletResponse response) {
-
-        try {
-            File fileToDownload = new File("D:\\ImageData\\" + username);
-
-            try (InputStream inputStream = new FileInputStream(fileToDownload)) {
-                response.setContentType("application/force-download");
-                response.setHeader("Content-Disposition", "attachment: filename=" + username);
-                IOUtils.copy(inputStream, response.getOutputStream());
-                response.flushBuffer();
-            }
-        } catch (Exception e) {
-            throw new RuntimeException(e);
-        }
-    }
-
-    @GetMapping("/product/{name}")
+    @GetMapping("/product/download/{name}")
     public void downloadProductImage(
             @PathVariable("name") String name,
             HttpServletResponse response) {
@@ -63,11 +42,34 @@ public class ImageController {
         }
     }
 
-    @PostMapping
+
+    @GetMapping("/{username}")
+    public void downloadUserImage(
+            @PathVariable("username") String username,
+            HttpServletResponse response) {
+
+        try {
+            File fileToDownload = new File("D:\\ImageData\\Product\\" + username);
+
+            try (InputStream inputStream = new FileInputStream(fileToDownload)) {
+                response.setContentType("application/force-download");
+                response.setHeader("Content-Disposition", "attachment: filename=" + username);
+                IOUtils.copy(inputStream, response.getOutputStream());
+                response.flushBuffer();
+            }
+        } catch (Exception e) {
+            throw new RuntimeException(e);
+        }
+    }
+
+
+
+    @PostMapping("/product/upload")
     public ResponseEntity<?> uploadUserImage(
             @RequestParam("username") String username,
             @RequestParam("file") MultipartFile file
     ) {
+        String folder = "D:\\ImageData\\Product\\";
 
         if (file.isEmpty()) {
             throw new RuntimeException("File given is  not valid");
@@ -92,6 +94,8 @@ public class ImageController {
 
     @DeleteMapping("/{imageUrl}")
     public void deleteFile(@PathVariable("imageUrl") String imageUrl) {
+
+        String folder = "D:\\ImageData\\Product\\";
 
         try {
             Path pathFile = Paths.get(folder + imageUrl);

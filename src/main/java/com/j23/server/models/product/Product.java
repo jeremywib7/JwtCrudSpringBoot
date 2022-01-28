@@ -1,6 +1,7 @@
 package com.j23.server.models.product;
 
 import com.fasterxml.jackson.annotation.JsonFormat;
+import com.fasterxml.jackson.annotation.JsonView;
 import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
 import com.fasterxml.jackson.databind.annotation.JsonSerialize;
 import com.fasterxml.jackson.datatype.jsr310.deser.LocalDateTimeDeserializer;
@@ -29,6 +30,7 @@ public class Product {
     private String sku;
 
     @Column(length = 100)
+    @JsonView(Views.MyResponseViews.class)
     private String name;
 
     private Long totalCalories;

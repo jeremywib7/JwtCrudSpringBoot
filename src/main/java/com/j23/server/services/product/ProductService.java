@@ -29,13 +29,9 @@ public class ProductService {
         return productRepository.findAllByNameContaining(name, pageable);
     }
 
-    public Page<Product> findAllProductByNameAndFilter(String name, Pageable pageable, Long minCalories, Long maxCalories,
-                                              BigDecimal minPrice, BigDecimal maxPrice
-    ) {
-        return productRepository.findAllByNameContainingAndTotalCaloriesBetweenAndUnitPriceBetween(name, minCalories,
-                maxCalories, minPrice, maxPrice, pageable);
+    public Iterable<Product> findAllProductByNameAutoComplete(String name) {
+        return productRepository.findAllByNameContaining(name);
     }
-
 
     public Page<Product> findAllProductByFilter(Long id, Pageable pageable, Long minCalories, Long maxCalories,
                                                 BigDecimal minPrice, BigDecimal maxPrice
