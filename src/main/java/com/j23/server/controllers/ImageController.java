@@ -43,13 +43,13 @@ public class ImageController {
     }
 
 
-    @GetMapping("/{username}")
+    @GetMapping("/user/download/{username}")
     public void downloadUserImage(
             @PathVariable("username") String username,
             HttpServletResponse response) {
 
         try {
-            File fileToDownload = new File("D:\\ImageData\\Product\\" + username);
+            File fileToDownload = new File("D:\\ImageData\\User\\" + username);
 
             try (InputStream inputStream = new FileInputStream(fileToDownload)) {
                 response.setContentType("application/force-download");
@@ -62,11 +62,9 @@ public class ImageController {
         }
     }
 
-
-
     @PostMapping("/product/upload")
-    public ResponseEntity<?> uploadUserImage(
-            @RequestParam("username") String username,
+    public ResponseEntity<?> uploadProductImage(
+            @RequestParam("name") String name,
             @RequestParam("file") MultipartFile file
     ) {
         String folder = "D:\\ImageData\\Product\\";
@@ -82,6 +80,34 @@ public class ImageController {
             Files.createDirectories(pathFolder);
 //            Path pathFile = Paths.get(folder + username +"." + fileName.substring(fileName.lastIndexOf(".") + 1));
 
+            Path pathFile = Paths.get(folder + name + "." + fileName.substring(fileName.lastIndexOf(".") + 1));
+
+            Files.write(pathFile, file.getBytes());
+        } catch (IOException e) {
+            throw new RuntimeException(e);
+        }
+
+        return new ResponseEntity<>(HttpStatus.OK);
+    }
+
+
+
+    @PostMapping("/user/upload")
+    public ResponseEntity<?> uploadUserImage(
+            @RequestParam("username") String username,
+            @RequestParam("file") MultipartFile file
+    ) {
+        String folder = "D:\\ImageData\\User\\";
+
+        if (file.isEmpty()) {
+            throw new RuntimeException("File given is  not valid");
+        }
+
+        String fileName = file.getOriginalFilename();
+
+        try {
+            Path pathFolder = Paths.get(folder);
+            Files.createDirectories(pathFolder);
             Path pathFile = Paths.get(folder + username + "." + fileName.substring(fileName.lastIndexOf(".") + 1));
 
             Files.write(pathFile, file.getBytes());
@@ -92,7 +118,7 @@ public class ImageController {
         return new ResponseEntity<>(HttpStatus.OK);
     }
 
-    @DeleteMapping("/{imageUrl}")
+    @DeleteMapping("/user/delete/{imageUrl}")
     public void deleteFile(@PathVariable("imageUrl") String imageUrl) {
 
         String folder = "D:\\ImageData\\Product\\";
