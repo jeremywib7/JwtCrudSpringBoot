@@ -28,38 +28,41 @@ public class ImageController {
             @PathVariable("name") String name,
             HttpServletResponse response) {
 
-        try {
-            File fileToDownload = new File("D:\\ImageData\\Product\\" + name);
+        File fileToDownload = new File("D:\\ImageData\\Product\\" + name);
 
-            try (InputStream inputStream = new FileInputStream(fileToDownload)) {
-                response.setContentType("application/force-download");
-                response.setHeader("Content-Disposition", "attachment: filename=" + name);
-                IOUtils.copy(inputStream, response.getOutputStream());
-                response.flushBuffer();
-            }
-        } catch (Exception e) {
-            throw new RuntimeException(e);
+        if (!fileToDownload.exists()) {
+            fileToDownload = new File("D:\\ImageData\\Product\\defaultproduct.jpg");
+        }
+
+        try (InputStream inputStream = new FileInputStream(fileToDownload)) {
+            response.setContentType("application/force-download");
+            response.setHeader("Content-Disposition", "attachment: filename=" + name);
+            IOUtils.copy(inputStream, response.getOutputStream());
+            response.flushBuffer();
+        } catch (IOException e) {
+            e.printStackTrace();
         }
     }
-
 
     @GetMapping("/user/download/{username}")
     public void downloadUserImage(
             @PathVariable("username") String username,
             HttpServletResponse response) {
+        File fileToDownload = new File("D:\\ImageData\\User\\" + username);
 
-        try {
-            File fileToDownload = new File("D:\\ImageData\\User\\" + username);
-
-            try (InputStream inputStream = new FileInputStream(fileToDownload)) {
-                response.setContentType("application/force-download");
-                response.setHeader("Content-Disposition", "attachment: filename=" + username);
-                IOUtils.copy(inputStream, response.getOutputStream());
-                response.flushBuffer();
-            }
-        } catch (Exception e) {
-            throw new RuntimeException(e);
+        if (!fileToDownload.exists()) {
+            fileToDownload = new File("D:\\ImageData\\User\\defaultuser.png");
         }
+
+        try (InputStream inputStream = new FileInputStream(fileToDownload)) {
+            response.setContentType("application/force-download");
+            response.setHeader("Content-Disposition", "attachment: filename=" + username);
+            IOUtils.copy(inputStream, response.getOutputStream());
+            response.flushBuffer();
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+
     }
 
     @PostMapping("/product/upload")
@@ -89,7 +92,6 @@ public class ImageController {
 
         return new ResponseEntity<>(HttpStatus.OK);
     }
-
 
 
     @PostMapping("/user/upload")
