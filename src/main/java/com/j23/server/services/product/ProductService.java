@@ -8,6 +8,7 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
 import java.math.BigDecimal;
+import java.util.Optional;
 
 @Service
 public class ProductService {
@@ -27,6 +28,10 @@ public class ProductService {
 
     public Page<Product> findAllProductByName(String name, Pageable pageable) {
         return productRepository.findAllByNameContaining(name, pageable);
+    }
+
+    public Optional<Product> findProductById(Long id) {
+        return productRepository.findById(id);
     }
 
     public Iterable<Product> findAllProductByNameAutoComplete(String name) {

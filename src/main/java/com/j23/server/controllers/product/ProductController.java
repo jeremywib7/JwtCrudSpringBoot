@@ -13,6 +13,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.math.BigDecimal;
+import java.util.Optional;
 
 @RestController
 @CrossOrigin(allowCredentials = "true", origins = {"http://localhost:4200", "http://127.0.0.1:4200"})
@@ -47,12 +48,18 @@ public class ProductController {
         return ResponseHandler.generateResponse("Successfully fetch product!", HttpStatus.OK, product);
     }
 
+    @GetMapping({"/findById"})
+    public ResponseEntity<Object> getProductById(@RequestParam Long id) {
+        Optional<Product> product = productService.findProductById(id);
+        return ResponseHandler.generateResponse("Successfully fetch product!", HttpStatus.OK, product);
+    }
+
     @GetMapping({"/findByName"})
     public ResponseEntity<Object> getProductsByName(@RequestParam String name,
                                                     @RequestParam(defaultValue = "0") int page,
-                                                    @RequestParam(defaultValue = "3") int size) {
+                                                    @RequestParam(defaultValue = "10") int size) {
         if (size < 10 || size > 50) {
-            size = 3;
+            size = 10;
         }
 
         Page<Product> products = productService.findAllProductByName(
