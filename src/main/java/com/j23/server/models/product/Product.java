@@ -14,6 +14,8 @@ import lombok.ToString;
 import javax.persistence.*;
 import java.math.BigDecimal;
 import java.time.LocalDateTime;
+import java.util.List;
+import java.util.UUID;
 
 @Entity
 @Data
@@ -24,23 +26,27 @@ import java.time.LocalDateTime;
 public class Product {
 
     @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Long id;
+    @Column(unique = true)
+    private String id;
 
-    private String sku;
-
-    @Column(length = 100)
+    @Column(length = 25)
     @JsonView(Views.MyResponseViews.class)
     private String name;
 
     private Long totalCalories;
 
+    private boolean discount;
+
+    @Column(length = 100)
     private String description;
 
     @Column(precision = 13, scale = 2, name = "unit_price")
     private BigDecimal unitPrice;
 
-    @Column(name = "image_url")
+    @Column(precision = 13, scale = 2, name = "discounted_price")
+    private BigDecimal discountedPrice;
+
+    @Column(name = "image_url", length = 30)
     private String imageUrl;
 
     private boolean active;
@@ -58,7 +64,11 @@ public class Product {
     private LocalDateTime updatedOn;
 
     @ManyToOne()
-    @JoinColumn(name = "category_id", nullable = false)
+    @JoinColumn(name = "category_id")
     private ProductCategory category;
+
+    @OneToMany(targetEntity = ImageArray.class, cascade = CascadeType.ALL)
+    @JoinColumn(name = "product_fk", referencedColumnName = "id")
+    private List<ImageArray> images;
 
 }

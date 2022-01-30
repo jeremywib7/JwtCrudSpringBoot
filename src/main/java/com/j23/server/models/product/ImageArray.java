@@ -1,27 +1,30 @@
 package com.j23.server.models.product;
 
+import com.fasterxml.jackson.annotation.JsonProperty;
 import lombok.Data;
 import lombok.Getter;
 import lombok.Setter;
 import lombok.ToString;
-import org.hibernate.validator.constraints.UniqueElements;
 
 import javax.persistence.*;
 import java.util.UUID;
 
 @Entity
 @Data
-@Table(name="product_category")
 @Setter
 @Getter
 @ToString
-public class ProductCategory {
+public class ImageArray {
 
     @Id
-    @Column(unique = true)
     private String id;
 
-    @Column(nullable = false)
-    private String categoryName;
+    @Column(length = 30)
+    private String imageName;
+
+    @PrePersist
+    protected void onCreate() {
+        setId(String.valueOf(UUID.randomUUID()));
+    }
 
 }

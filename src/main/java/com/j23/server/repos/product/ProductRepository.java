@@ -8,6 +8,7 @@ import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.stereotype.Repository;
 
 import java.math.BigDecimal;
+import java.util.UUID;
 
 @Repository
 public interface ProductRepository extends JpaRepository<Product, Long> {
@@ -21,9 +22,11 @@ public interface ProductRepository extends JpaRepository<Product, Long> {
 
     Iterable<Product> findAllByNameContaining(String name);
 
-    Page<Product> findAllByCategoryIdAndTotalCaloriesBetweenAndUnitPriceBetween(Long id, Long minCalories,
-                                                                             Long maxCalories, BigDecimal minPrice,
-                                                                             BigDecimal maxPrice,
-                                                                             Pageable pageable);
+    Page<Product> findAllByCategoryIdAndTotalCaloriesBetweenAndUnitPriceBetween(String id, Long minCalories,
+                                                                                Long maxCalories, BigDecimal minPrice,
+                                                                                BigDecimal maxPrice,
+                                                                                Pageable pageable);
+
+    boolean existsByName(String name);
 
 }

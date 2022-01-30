@@ -2,18 +2,24 @@ package com.j23.server.controllers.product;
 
 import com.fasterxml.jackson.annotation.JsonView;
 import com.j23.server.configuration.ResponseHandler;
+import com.j23.server.models.auth.User;
 import com.j23.server.models.product.Product;
+import com.j23.server.models.product.ProductCategory;
 import com.j23.server.models.product.Views;
+import com.j23.server.repos.product.ProductRepository;
 import com.j23.server.services.product.ProductService;
+import org.apache.coyote.Response;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.server.ResponseStatusException;
 
 import java.math.BigDecimal;
 import java.util.Optional;
+import java.util.UUID;
 
 @RestController
 @CrossOrigin(allowCredentials = "true", origins = {"http://localhost:4200", "http://127.0.0.1:4200"})
@@ -22,6 +28,9 @@ public class ProductController {
 
     @Autowired
     private ProductService productService;
+
+    @Autowired
+    private ProductRepository productRepository;
 
     @GetMapping("/all")
     public ResponseEntity<Object> getAllProducts(
@@ -39,6 +48,23 @@ public class ProductController {
         Page<Product> products = productService.findAllProduct(PageRequest.of(page, size), minCalories,
                 maxCalories, minPrice, maxPrice);
         return ResponseHandler.generateResponse("Successfully fetch product!", HttpStatus.OK, products);
+    }
+
+    @PostMapping({"/add"})
+    public ResponseEntity<Object> addProduct(@RequestBody Product product) {
+        if (productRepository.existsByName(product.getName())) {
+            throw new ResponseStatusException(HttpStatus.CONFLICT, "Product name already exists");
+        }
+
+        Product result = productService.addProduct(product);
+
+        return ResponseHandler.generateResponse("Successfully added product!", HttpStatus.OK, result);
+    }
+
+    @PutMapping("/update")
+    public ResponseEntity<Object> updateUser(@RequestBody Product product) {
+        Product updateProduct = productService.updateProduct(product);
+        return ResponseHandler.generateResponse("Successfully update product!", HttpStatus.OK, updateProduct);
     }
 
     @GetMapping({"/findByNameAutoComplete"})
@@ -69,7 +95,7 @@ public class ProductController {
     }
 
     @GetMapping({"/findByCategory"})
-    public ResponseEntity<Object> getProductsByFilter(@RequestParam Long categoryId,
+    public ResponseEntity<Object> getProductsByFilter(@RequestParam String categoryId,
                                                       @RequestParam(defaultValue = "0") Long minCalories,
                                                       @RequestParam(defaultValue = "10000") Long maxCalories,
                                                       @RequestParam(defaultValue = "0.00") BigDecimal minPrice,

@@ -8,7 +8,9 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
 import java.math.BigDecimal;
+import java.time.LocalDateTime;
 import java.util.Optional;
+import java.util.UUID;
 
 @Service
 public class ProductService {
@@ -17,6 +19,18 @@ public class ProductService {
     private ProductRepository productRepository;
 
     public Product addProduct(Product product) {
+        product.setId(String.valueOf(UUID.randomUUID()));
+
+        LocalDateTime localDateTime = LocalDateTime.now();
+        product.setCreatedOn(LocalDateTime.from(localDateTime));
+
+        return productRepository.save(product);
+    }
+
+    public Product updateProduct(Product product) {
+        LocalDateTime localDateTime = LocalDateTime.now();
+        product.setUpdatedOn(LocalDateTime.from(localDateTime));
+
         return productRepository.save(product);
     }
 
@@ -38,7 +52,7 @@ public class ProductService {
         return productRepository.findAllByNameContaining(name);
     }
 
-    public Page<Product> findAllProductByFilter(Long id, Pageable pageable, Long minCalories, Long maxCalories,
+    public Page<Product> findAllProductByFilter(String id, Pageable pageable, Long minCalories, Long maxCalories,
                                                 BigDecimal minPrice, BigDecimal maxPrice
     ) {
         return productRepository.findAllByCategoryIdAndTotalCaloriesBetweenAndUnitPriceBetween(id, minCalories,
