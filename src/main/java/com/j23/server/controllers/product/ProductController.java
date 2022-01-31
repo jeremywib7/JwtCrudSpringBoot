@@ -2,13 +2,10 @@ package com.j23.server.controllers.product;
 
 import com.fasterxml.jackson.annotation.JsonView;
 import com.j23.server.configuration.ResponseHandler;
-import com.j23.server.models.auth.User;
 import com.j23.server.models.product.Product;
-import com.j23.server.models.product.ProductCategory;
 import com.j23.server.models.product.Views;
 import com.j23.server.repos.product.ProductRepository;
 import com.j23.server.services.product.ProductService;
-import org.apache.coyote.Response;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
@@ -19,7 +16,6 @@ import org.springframework.web.server.ResponseStatusException;
 
 import java.math.BigDecimal;
 import java.util.Optional;
-import java.util.UUID;
 
 @RestController
 @CrossOrigin(allowCredentials = "true", origins = {"http://localhost:4200", "http://127.0.0.1:4200"})
@@ -33,7 +29,7 @@ public class ProductController {
     private ProductRepository productRepository;
 
     @GetMapping("/all")
-    public ResponseEntity<Object> getAllProducts(
+    public ResponseEntity<Object> getAllProductsWithFilter(
             @RequestParam(defaultValue = "0") Long minCalories,
             @RequestParam(defaultValue = "10000") Long maxCalories,
             @RequestParam(defaultValue = "0.00") BigDecimal minPrice,
@@ -41,7 +37,7 @@ public class ProductController {
             @RequestParam(defaultValue = "0") int page,
             @RequestParam(defaultValue = "10") int size) {
 
-        if (size < 10 || size > 50) {
+        if (size < 5 || size > 50) {
             size = 10;
         }
 
@@ -75,7 +71,7 @@ public class ProductController {
     }
 
     @GetMapping({"/findById"})
-    public ResponseEntity<Object> getProductById(@RequestParam Long id) {
+    public ResponseEntity<Object> getProductById(@RequestParam String id) {
         Optional<Product> product = productService.findProductById(id);
         return ResponseHandler.generateResponse("Successfully fetch product!", HttpStatus.OK, product);
     }
@@ -103,7 +99,7 @@ public class ProductController {
                                                       @RequestParam(defaultValue = "0") int page,
                                                       @RequestParam(defaultValue = "10") int size) {
 
-        if (size < 10 || size > 50) {
+        if (size < 5 || size > 50) {
             size = 10;
         }
 

@@ -44,7 +44,7 @@ public class ProductService {
         return productRepository.findAllByNameContaining(name, pageable);
     }
 
-    public Optional<Product> findProductById(Long id) {
+    public Optional<Product> findProductById(String id) {
         return productRepository.findById(id);
     }
 
