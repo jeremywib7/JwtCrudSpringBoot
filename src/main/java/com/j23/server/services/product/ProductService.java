@@ -34,6 +34,11 @@ public class ProductService {
         return productRepository.save(product);
     }
 
+    public void deleteProductById(String id) {
+        productRepository.deleteProductById(id);
+    }
+
+
     public Page<Product> findAllProduct(Pageable pageable, Long minCalories, Long maxCalories,
                                         BigDecimal minPrice, BigDecimal maxPrice) {
         return productRepository.findAllByTotalCaloriesBetweenAndUnitPriceBetween(minCalories,

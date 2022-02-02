@@ -2,6 +2,7 @@ package com.j23.server.controllers.product;
 
 import com.fasterxml.jackson.annotation.JsonView;
 import com.j23.server.configuration.ResponseHandler;
+import com.j23.server.exception.ProductNotFoundException;
 import com.j23.server.models.product.Product;
 import com.j23.server.models.product.Views;
 import com.j23.server.repos.product.ProductRepository;
@@ -74,6 +75,19 @@ public class ProductController {
     public ResponseEntity<Object> getProductById(@RequestParam String id) {
         Optional<Product> product = productService.findProductById(id);
         return ResponseHandler.generateResponse("Successfully fetch product!", HttpStatus.OK, product);
+    }
+
+    @DeleteMapping("/delete/{id}")
+    public ResponseEntity<Object> deleteProductByName(@PathVariable("id") String id) {
+
+        if (!productRepository.existsById(id)) {
+            throw new ProductNotFoundException(id);
+        }
+
+        productService.deleteProductById(id);
+        return ResponseHandler.generateResponse("Successfully delete product!", HttpStatus.OK,
+                null);
+
     }
 
     @GetMapping({"/findByName"})
