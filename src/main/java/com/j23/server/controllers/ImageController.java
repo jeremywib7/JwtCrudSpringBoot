@@ -17,15 +17,25 @@ import java.nio.file.Paths;
 @RequestMapping("/images")
 public class ImageController {
 
+//    For Windows
+//    String folder = "D:\\ImageData\\Product\\";
+
+    //    For Mac
+    String home = System.getProperty("user.home");
+    String productFolder = home + "/Desktop/Jeremy/Selfservice/Product/";
+    String userFolder = home + "/Desktop/Jeremy/Selfservice/User/";
+
     @GetMapping("/product/download/{name}")
     public void downloadProductImage(
             @PathVariable("name") String name,
             HttpServletResponse response) {
 
-        File fileToDownload = new File("D:\\ImageData\\Product\\" + name);
+//        File fileToDownload = new File("D:\\ImageData\\Product\\" + name);
+        File fileToDownload = new File(productFolder + name);
+
 
         if (!fileToDownload.exists()) {
-            fileToDownload = new File("D:\\ImageData\\Product\\defaultproduct.jpg");
+            fileToDownload = new File(productFolder + "defaultproduct.png");
         }
 
         try (InputStream inputStream = new FileInputStream(fileToDownload)) {
@@ -42,10 +52,10 @@ public class ImageController {
     public void downloadUserImage(
             @PathVariable("username") String username,
             HttpServletResponse response) {
-        File fileToDownload = new File("D:\\ImageData\\User\\" + username);
+        File fileToDownload = new File(userFolder + username);
 
         if (!fileToDownload.exists()) {
-            fileToDownload = new File("D:\\ImageData\\User\\defaultuser.png");
+            fileToDownload = new File(userFolder + "defaultuser.png");
         }
 
         try (InputStream inputStream = new FileInputStream(fileToDownload)) {
@@ -64,7 +74,6 @@ public class ImageController {
             @RequestParam("name") String name,
             @RequestParam("file") MultipartFile file
     ) {
-        String folder = "D:\\ImageData\\Product\\";
 
         if (file.isEmpty()) {
             throw new RuntimeException("File given is  not valid");
@@ -73,11 +82,11 @@ public class ImageController {
         String fileName = file.getOriginalFilename();
 
         try {
-            Path pathFolder = Paths.get(folder);
+            Path pathFolder = Paths.get(productFolder);
             Files.createDirectories(pathFolder);
 //            Path pathFile = Paths.get(folder + username +"." + fileName.substring(fileName.lastIndexOf(".") + 1));
 
-            Path pathFile = Paths.get(folder + name + "." + fileName.substring(fileName.lastIndexOf(".") + 1));
+            Path pathFile = Paths.get(productFolder + name + "." + fileName.substring(fileName.lastIndexOf(".") + 1));
 
             Files.write(pathFile, file.getBytes());
         } catch (IOException e) {
@@ -93,7 +102,6 @@ public class ImageController {
             @RequestParam("username") String username,
             @RequestParam("file") MultipartFile file
     ) {
-        String folder = "D:\\ImageData\\User\\";
 
         if (file.isEmpty()) {
             throw new RuntimeException("File given is  not valid");
@@ -102,9 +110,9 @@ public class ImageController {
         String fileName = file.getOriginalFilename();
 
         try {
-            Path pathFolder = Paths.get(folder);
+            Path pathFolder = Paths.get(userFolder);
             Files.createDirectories(pathFolder);
-            Path pathFile = Paths.get(folder + username + "." + fileName.substring(fileName.lastIndexOf(".") + 1));
+            Path pathFile = Paths.get(userFolder + username + "." + fileName.substring(fileName.lastIndexOf(".") + 1));
 
             Files.write(pathFile, file.getBytes());
         } catch (IOException e) {
