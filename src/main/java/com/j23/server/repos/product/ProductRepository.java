@@ -5,6 +5,8 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 
 import org.springframework.data.jpa.repository.JpaRepository;
+import org.springframework.data.jpa.repository.Modifying;
+import org.springframework.data.jpa.repository.Query;
 import org.springframework.stereotype.Repository;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -33,6 +35,10 @@ public interface ProductRepository extends JpaRepository<Product, Long> {
     boolean existsByName(String name);
 
     boolean existsById(String id);
+
+//    @Modifying
+//    @Query("update Product p set p.name = ?1, p.totalCalories = ?2 where u.id = ?3")
+//    void setUserInfoById(String firstname, String lastname, Integer userId);
 
     @Transactional
     void deleteProductById(String id);

@@ -48,7 +48,8 @@ public class ProductController {
     }
 
     @PostMapping({"/add"})
-    public ResponseEntity<Object> addProduct(@RequestBody Product product) {
+    public ResponseEntity<Object> addProduct(
+            @RequestBody Product product) {
         if (productRepository.existsByName(product.getName())) {
             throw new ResponseStatusException(HttpStatus.CONFLICT, "Product name already exists");
         }
@@ -59,7 +60,7 @@ public class ProductController {
     }
 
     @PutMapping("/update")
-    public ResponseEntity<Object> updateUser(@RequestBody Product product) {
+    public ResponseEntity<Object> updateProduct(@RequestBody Product product) {
         Product updateProduct = productService.updateProduct(product);
         return ResponseHandler.generateResponse("Successfully update product!", HttpStatus.OK, updateProduct);
     }

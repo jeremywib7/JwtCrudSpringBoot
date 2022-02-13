@@ -84,8 +84,6 @@ public class ImageController {
         try {
             Path pathFolder = Paths.get(productFolder);
             Files.createDirectories(pathFolder);
-//            Path pathFile = Paths.get(folder + username +"." + fileName.substring(fileName.lastIndexOf(".") + 1));
-
             Path pathFile = Paths.get(productFolder + name + "." + fileName.substring(fileName.lastIndexOf(".") + 1));
 
             Files.write(pathFile, file.getBytes());

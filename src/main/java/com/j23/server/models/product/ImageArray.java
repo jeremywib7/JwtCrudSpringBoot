@@ -7,7 +7,6 @@ import lombok.Setter;
 import lombok.ToString;
 
 import javax.persistence.*;
-import java.util.UUID;
 
 @Entity
 @Data
@@ -17,14 +16,7 @@ import java.util.UUID;
 public class ImageArray {
 
     @Id
-    private String id;
-
     @Column(length = 30)
     private String imageName;
-
-    @PrePersist
-    protected void onCreate() {
-        setId(String.valueOf(UUID.randomUUID()));
-    }
 
 }
