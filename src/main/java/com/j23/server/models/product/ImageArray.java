@@ -14,9 +14,8 @@ import javax.persistence.*;
 @Getter
 @ToString
 public class ImageArray {
-
     @Id
-    @Column(length = 30)
+    @Column(length = 100)
     private String imageName;
 
 }

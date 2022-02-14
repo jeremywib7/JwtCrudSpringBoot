@@ -19,8 +19,6 @@ public class ProductService {
     private ProductRepository productRepository;
 
     public Product addProduct(Product product) {
-        product.setId(String.valueOf(UUID.randomUUID()));
-
         LocalDateTime localDateTime = LocalDateTime.now();
         product.setCreatedOn(LocalDateTime.from(localDateTime));
 

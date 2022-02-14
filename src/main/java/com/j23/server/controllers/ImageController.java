@@ -17,20 +17,20 @@ import java.nio.file.Paths;
 @RequestMapping("/images")
 public class ImageController {
 
-//    For Windows
-//    String folder = "D:\\ImageData\\Product\\";
+    //    For Windows
+    String productFolder = "D:\\ImageData\\Product\\";
+    String userFolder = "D:\\ImageData\\User\\";
 
     //    For Mac
-    String home = System.getProperty("user.home");
-    String productFolder = home + "/Desktop/Jeremy/Selfservice/Product/";
-    String userFolder = home + "/Desktop/Jeremy/Selfservice/User/";
+//    String home = System.getProperty("user.home");
+//    String productFolder = home + "/Desktop/Jeremy/Selfservice/Product/";
+//    String userFolder = home + "/Desktop/Jeremy/Selfservice/User/";
 
     @GetMapping("/product/download/{name}")
     public void downloadProductImage(
             @PathVariable("name") String name,
             HttpServletResponse response) {
 
-//        File fileToDownload = new File("D:\\ImageData\\Product\\" + name);
         File fileToDownload = new File(productFolder + name);
 
 

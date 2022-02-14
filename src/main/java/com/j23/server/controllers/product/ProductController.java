@@ -16,7 +16,10 @@ import org.springframework.web.bind.annotation.*;
 import org.springframework.web.server.ResponseStatusException;
 
 import java.math.BigDecimal;
+import java.util.LinkedHashMap;
+import java.util.Map;
 import java.util.Optional;
+import java.util.UUID;
 
 @RestController
 @CrossOrigin(allowCredentials = "true", origins = {"http://localhost:4200", "http://127.0.0.1:4200"})
@@ -72,8 +75,21 @@ public class ProductController {
         return ResponseHandler.generateResponse("Successfully fetch product!", HttpStatus.OK, product);
     }
 
+    @GetMapping({"/uuid"})
+    public ResponseEntity<Object> getUUID() {
+        Map<String, Object> map = new LinkedHashMap<>();
+        map.put("uuid", String.valueOf(UUID.randomUUID()));
+
+        return ResponseHandler.generateResponse("Successfully fetch product!", HttpStatus.OK, map);
+    }
+
     @GetMapping({"/findById"})
     public ResponseEntity<Object> getProductById(@RequestParam String id) {
+
+        if (!productRepository.existsById(id)) {
+            throw new ResponseStatusException(HttpStatus.NOT_FOUND, "Product not found");
+        }
+
         Optional<Product> product = productService.findProductById(id);
         return ResponseHandler.generateResponse("Successfully fetch product!", HttpStatus.OK, product);
     }
