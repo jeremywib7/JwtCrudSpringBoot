@@ -7,6 +7,7 @@ import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 import org.springframework.web.server.ResponseStatusException;
 
+import java.time.LocalDateTime;
 import java.util.UUID;
 
 @Service
@@ -22,6 +23,11 @@ public class ProductCategoryService {
         }
 
         productCategory.setId(String.valueOf(UUID.randomUUID()));
+
+        LocalDateTime localDateTime = LocalDateTime.now();
+        productCategory.setCreatedOn(LocalDateTime.from(localDateTime));
+
+        productCategory.setTotalProduct(0);
 
         return productCategoryRepository.save(productCategory);
     }

@@ -32,6 +32,8 @@ public interface ProductRepository extends JpaRepository<Product, Long> {
                                                                                 BigDecimal maxPrice,
                                                                                 Pageable pageable);
 
+    Iterable<Product> findAllByCategoryId(String categoryId);
+
     boolean existsByName(String name);
 
     boolean existsById(String id);

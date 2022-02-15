@@ -39,4 +39,11 @@ public class CategoryController {
         return ResponseHandler.generateResponse("Successfully added category!", HttpStatus.OK, result);
     }
 
+    @PutMapping({"/update"})
+    public ResponseEntity<Object> updateCategory(@RequestBody ProductCategory productCategory) {
+
+        ProductCategory result = productCategoryService.addProductCategory(productCategory);
+        return ResponseHandler.generateResponse("Successfully added category!", HttpStatus.OK, result);
+    }
+
 }

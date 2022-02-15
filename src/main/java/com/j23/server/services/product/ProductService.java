@@ -55,6 +55,10 @@ public class ProductService {
         return productRepository.findAllByNameContaining(name);
     }
 
+    public Iterable<Product> findAllProductNameOnlyByCategory(String categoryId) {
+        return productRepository.findAllByCategoryId(categoryId);
+    }
+
     public Page<Product> findAllProductByFilter(String id, Pageable pageable, Long minCalories, Long maxCalories,
                                                 BigDecimal minPrice, BigDecimal maxPrice
     ) {

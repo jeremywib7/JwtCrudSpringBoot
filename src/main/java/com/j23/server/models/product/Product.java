@@ -27,10 +27,11 @@ public class Product {
 
     @Id
     @Column(unique = true)
+    @JsonView(Views.ProductNameViews.class)
     private String id;
 
     @Column(length = 25)
-    @JsonView(Views.MyResponseViews.class)
+    @JsonView(Views.ProductNameViews.class)
     private String name;
 
     private Long totalCalories;

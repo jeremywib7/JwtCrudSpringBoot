@@ -69,10 +69,17 @@ public class ProductController {
     }
 
     @GetMapping({"/findByNameAutoComplete"})
-    @JsonView(Views.MyResponseViews.class)
+    @JsonView(Views.ProductNameViews.class)
     public ResponseEntity<Object> getProductsNameAutoComplete(@RequestParam String name) {
         Iterable<Product> product = productService.findAllProductByNameAutoComplete(name);
         return ResponseHandler.generateResponse("Successfully fetch product!", HttpStatus.OK, product);
+    }
+
+    @GetMapping({"/findNameOnly/byCategory"})
+    @JsonView(Views.ProductNameViews.class)
+    public ResponseEntity<Object> getProductNameOnlyByCategory(@RequestParam String id) {
+        Iterable<Product> product = productService.findAllProductNameOnlyByCategory(id);
+        return ResponseHandler.generateResponse("Successfully fetch product by category!", HttpStatus.OK, product);
     }
 
     @GetMapping({"/uuid"})
@@ -80,7 +87,7 @@ public class ProductController {
         Map<String, Object> map = new LinkedHashMap<>();
         map.put("uuid", String.valueOf(UUID.randomUUID()));
 
-        return ResponseHandler.generateResponse("Successfully fetch product!", HttpStatus.OK, map);
+        return ResponseHandler.generateResponse("Successfully get UUID!", HttpStatus.OK, map);
     }
 
     @GetMapping({"/findById"})
