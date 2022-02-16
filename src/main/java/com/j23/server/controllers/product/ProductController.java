@@ -82,6 +82,16 @@ public class ProductController {
         return ResponseHandler.generateResponse("Successfully fetch product by category!", HttpStatus.OK, product);
     }
 
+    @GetMapping({"/count/productByCategory"})
+    @JsonView(Views.ProductNameViews.class)
+    public ResponseEntity<Object> getTotalProductByCategory(@RequestParam String id) {
+        Integer product = productService.getTotalProductOnCategory(id);
+        Map<String, Object> map = new LinkedHashMap<>();
+        map.put("totalProduct", String.valueOf(product));
+
+        return ResponseHandler.generateResponse("Successfully fetch total product!", HttpStatus.OK, map);
+    }
+
     @GetMapping({"/uuid"})
     public ResponseEntity<Object> getUUID() {
         Map<String, Object> map = new LinkedHashMap<>();

@@ -38,9 +38,11 @@ public interface ProductRepository extends JpaRepository<Product, Long> {
 
     boolean existsById(String id);
 
-//    @Modifying
-//    @Query("update Product p set p.name = ?1, p.totalCalories = ?2 where u.id = ?3")
-//    void setUserInfoById(String firstname, String lastname, Integer userId);
+    Integer countAllByCategoryId(String id);
+
+    @Modifying
+    @Query("update ProductCategory p set p.totalProduct = ?1 where p.id = ?2")
+    void updateTotalProduct(String totalProduct, Integer categoryId);
 
     @Transactional
     void deleteProductById(String id);
