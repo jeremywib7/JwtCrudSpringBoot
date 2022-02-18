@@ -1,6 +1,8 @@
 package com.j23.server.services.product;
 
+import com.j23.server.models.auth.User;
 import com.j23.server.models.product.Product;
+import com.j23.server.models.product.ProductCategory;
 import com.j23.server.repos.product.ProductRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;

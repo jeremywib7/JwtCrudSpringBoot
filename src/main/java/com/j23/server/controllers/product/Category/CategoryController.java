@@ -13,6 +13,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.server.ResponseStatusException;
 
+import javax.annotation.PostConstruct;
 import java.util.List;
 
 @RestController
@@ -26,9 +27,15 @@ public class CategoryController {
     @Autowired
     private ProductCategoryRepository productCategoryRepository;
 
+    @PostConstruct
+    public void initRolesAndUsers() {
+        productCategoryService.addUnasignedCategory();
+    }
+
     @GetMapping("/all")
     public ResponseEntity<Object> getAllProductCategory() {
         List<ProductCategory> categories = (List<ProductCategory>) productCategoryService.findAllProductCategory();
+
         return ResponseHandler.generateResponse("Successfully fetch category!", HttpStatus.OK, categories);
     }
 

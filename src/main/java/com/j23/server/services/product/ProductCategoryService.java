@@ -16,6 +16,14 @@ public class ProductCategoryService {
     @Autowired
     private ProductCategoryRepository productCategoryRepository;
 
+    public void addUnasignedCategory() {
+        ProductCategory productCategory = new ProductCategory();
+        productCategory.setId("akisjasas-asajek-ajsoaks-ejakjenafe");
+        productCategory.setCreatedOn(LocalDateTime.now());
+        productCategory.setCategoryName("Unassigned");
+        productCategoryRepository.save(productCategory);
+    }
+
     public ProductCategory addProductCategory(ProductCategory productCategory) {
 
         if (productCategoryRepository.existsByCategoryName(productCategory.getCategoryName())) {
