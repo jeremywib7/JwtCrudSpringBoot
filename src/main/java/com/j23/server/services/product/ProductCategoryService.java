@@ -2,6 +2,7 @@ package com.j23.server.services.product;
 
 import com.j23.server.models.product.ProductCategory;
 import com.j23.server.repos.product.ProductCategoryRepository;
+import com.j23.server.repos.product.ProductRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
@@ -15,6 +16,9 @@ public class ProductCategoryService {
 
     @Autowired
     private ProductCategoryRepository productCategoryRepository;
+
+    @Autowired
+    private ProductRepository productRepository;
 
     public void addUnasignedCategory() {
         ProductCategory productCategory = new ProductCategory();
@@ -38,6 +42,22 @@ public class ProductCategoryService {
         productCategory.setTotalProduct(0);
 
         return productCategoryRepository.save(productCategory);
+    }
+
+    public ProductCategory updateProductCategory(ProductCategory productCategory) {
+
+        LocalDateTime localDateTime = LocalDateTime.now();
+        productCategory.setUpdatedOn(LocalDateTime.from(localDateTime));
+
+        return productCategoryRepository.save(productCategory);
+    }
+
+    public void deleteProductCategoryById(String id) {
+        productCategoryRepository.deleteProductCategoryById(id);
+    }
+
+    public Integer getTotalProductOnCategory(String categoryId) {
+        return productRepository.countAllByCategoryId(categoryId);
     }
 
     public Iterable<ProductCategory> findAllProductCategory() {

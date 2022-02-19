@@ -61,10 +61,6 @@ public class ProductService {
         return productRepository.findAllByCategoryId(categoryId);
     }
 
-    public Integer getTotalProductOnCategory(String categoryId) {
-        return productRepository.countAllByCategoryId(categoryId);
-    }
-
     public Page<Product> findAllProductByFilter(String id, Pageable pageable, Long minCalories, Long maxCalories,
                                                 BigDecimal minPrice, BigDecimal maxPrice
     ) {

@@ -36,6 +36,12 @@ public class CategoryController {
     public ResponseEntity<Object> getAllProductCategory() {
         List<ProductCategory> categories = (List<ProductCategory>) productCategoryService.findAllProductCategory();
 
+        categories.forEach(productCategory -> {
+            Integer totalProduct = productCategoryService.getTotalProductOnCategory(productCategory.getId());
+            productCategory.setTotalProduct(totalProduct);
+            productCategoryService.updateProductCategory(productCategory);
+        });
+
         return ResponseHandler.generateResponse("Successfully fetch category!", HttpStatus.OK, categories);
     }
 
@@ -51,6 +57,22 @@ public class CategoryController {
 
         ProductCategory result = productCategoryService.addProductCategory(productCategory);
         return ResponseHandler.generateResponse("Successfully added category!", HttpStatus.OK, result);
+    }
+
+    @DeleteMapping({"/delete/{id}"})
+    public ResponseEntity<Object> deleteCategory(@PathVariable("id") String id) {
+
+        if (!productCategoryRepository.existsById(id)) {
+            throw new ResponseStatusException(HttpStatus.NOT_FOUND, "Category name not found");
+        }
+
+        try {
+            productCategoryService.deleteProductCategoryById(id);
+        } catch (Exception e) {
+            throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "Please change or remove product in this category " +
+                    "before deleting");
+        }
+        return ResponseHandler.generateResponse("Successfully delete category!", HttpStatus.OK, null);
     }
 
 }
