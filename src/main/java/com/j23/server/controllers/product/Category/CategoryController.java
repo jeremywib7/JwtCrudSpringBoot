@@ -39,7 +39,7 @@ public class CategoryController {
         categories.forEach(productCategory -> {
             Integer totalProduct = productCategoryService.getTotalProductOnCategory(productCategory.getId());
             productCategory.setTotalProduct(totalProduct);
-            productCategoryService.updateProductCategory(productCategory);
+            productCategoryRepository.save(productCategory);
         });
 
         return ResponseHandler.generateResponse("Successfully fetch category!", HttpStatus.OK, categories);
@@ -55,8 +55,8 @@ public class CategoryController {
     @PutMapping({"/update"})
     public ResponseEntity<Object> updateCategory(@RequestBody ProductCategory productCategory) {
 
-        ProductCategory result = productCategoryService.addProductCategory(productCategory);
-        return ResponseHandler.generateResponse("Successfully added category!", HttpStatus.OK, result);
+        ProductCategory result = productCategoryService.updateProductCategory(productCategory);
+        return ResponseHandler.generateResponse("Successfully updated category!", HttpStatus.OK, result);
     }
 
     @DeleteMapping({"/delete/{id}"})

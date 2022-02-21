@@ -46,8 +46,15 @@ public class ProductCategoryService {
 
     public ProductCategory updateProductCategory(ProductCategory productCategory) {
 
+        if (productCategoryRepository.existsByCategoryNameAndIdIsNotLike(productCategory.getCategoryName(),
+                productCategory.getId())) {
+            throw new ResponseStatusException(HttpStatus.CONFLICT, "Product category already exists");
+
+        }
+
         LocalDateTime localDateTime = LocalDateTime.now();
         productCategory.setUpdatedOn(LocalDateTime.from(localDateTime));
+        productCategory.setTotalProduct(productRepository.countAllByCategoryId(productCategory.getId()));
 
         return productCategoryRepository.save(productCategory);
     }
