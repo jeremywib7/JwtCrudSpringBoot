@@ -1,11 +1,9 @@
 package com.j23.server.controllers.product.Category;
 
 import com.j23.server.configuration.ResponseHandler;
-import com.j23.server.models.auth.Role;
 import com.j23.server.models.product.Product;
 import com.j23.server.models.product.ProductCategory;
 import com.j23.server.repos.product.ProductCategoryRepository;
-import com.j23.server.repos.product.ProductRepository;
 import com.j23.server.services.product.ProductCategoryService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
@@ -56,6 +54,16 @@ public class CategoryController {
     public ResponseEntity<Object> updateCategory(@RequestBody ProductCategory productCategory) {
 
         ProductCategory result = productCategoryService.updateProductCategory(productCategory);
+        return ResponseHandler.generateResponse("Successfully updated category!", HttpStatus.OK, result);
+    }
+
+    @PutMapping({"/remove/product"})
+    public ResponseEntity<Object> removeProductInCategory(@RequestParam("pId") String pId) {
+
+        Product result = productCategoryService.removeProductInCategory(pId);
+        result.getCategory().setTotalProduct(productCategoryService.getTotalProductOnCategory(
+                "akisjasas-asajek-ajsoaks-ejakjenafe"));
+
         return ResponseHandler.generateResponse("Successfully updated category!", HttpStatus.OK, result);
     }
 

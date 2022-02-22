@@ -10,6 +10,7 @@ import org.springframework.data.jpa.repository.Query;
 import org.springframework.stereotype.Repository;
 import org.springframework.transaction.annotation.Transactional;
 
+import javax.websocket.server.PathParam;
 import java.math.BigDecimal;
 import java.util.Optional;
 
@@ -17,6 +18,8 @@ import java.util.Optional;
 public interface ProductRepository extends JpaRepository<Product, Long> {
 
     Optional<Product> findById(String id);
+
+    Product findProductById(String id);
 
     Page<Product> findAllByTotalCaloriesBetweenAndUnitPriceBetween(Long minCalories,
                                                                    Long maxCalories, BigDecimal minPrice,
@@ -39,10 +42,6 @@ public interface ProductRepository extends JpaRepository<Product, Long> {
     boolean existsById(String id);
 
     Integer countAllByCategoryId(String id);
-
-    @Modifying
-    @Query("update ProductCategory p set p.totalProduct = ?1 where p.id = ?2")
-    void updateTotalProduct(String totalProduct, Integer categoryId);
 
     @Transactional
     void deleteProductById(String id);

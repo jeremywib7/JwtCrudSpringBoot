@@ -1,5 +1,6 @@
 package com.j23.server.services.product;
 
+import com.j23.server.models.product.Product;
 import com.j23.server.models.product.ProductCategory;
 import com.j23.server.repos.product.ProductCategoryRepository;
 import com.j23.server.repos.product.ProductRepository;
@@ -23,7 +24,6 @@ public class ProductCategoryService {
     public void addUnasignedCategory() {
         ProductCategory productCategory = new ProductCategory();
         productCategory.setId("akisjasas-asajek-ajsoaks-ejakjenafe");
-        productCategory.setCreatedOn(LocalDateTime.now());
         productCategory.setCategoryName("Unassigned");
         productCategoryRepository.save(productCategory);
     }
@@ -42,6 +42,18 @@ public class ProductCategoryService {
         productCategory.setTotalProduct(0);
 
         return productCategoryRepository.save(productCategory);
+    }
+
+    public Product removeProductInCategory(String productId) {
+
+        if (!productRepository.existsById(productId)) {
+            throw new ResponseStatusException(HttpStatus.NOT_FOUND, "Product category does not exists");
+        }
+
+        Product product = productRepository.findProductById(productId);
+        product.getCategory().setId("akisjasas-asajek-ajsoaks-ejakjenafe");
+
+        return productRepository.save(product);
     }
 
     public ProductCategory updateProductCategory(ProductCategory productCategory) {
