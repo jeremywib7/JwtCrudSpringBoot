@@ -1,6 +1,7 @@
 package com.j23.server.services.product;
 
 import com.j23.server.models.product.Product;
+import com.j23.server.models.product.UnassignedProduct;
 import com.j23.server.repos.product.ProductRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
@@ -9,6 +10,7 @@ import org.springframework.stereotype.Service;
 
 import java.math.BigDecimal;
 import java.time.LocalDateTime;
+import java.util.List;
 import java.util.Optional;
 
 @Service
@@ -52,6 +54,14 @@ public class ProductService {
 
     public Iterable<Product> findAllProductByNameAutoComplete(String name) {
         return productRepository.findAllByNameContaining(name);
+    }
+
+    public List<UnassignedProduct> updateProductCategory(List<UnassignedProduct> unassignedProductList) {
+        unassignedProductList.forEach(unassignedProduct -> {
+
+        });
+
+        return unassignedProductList;
     }
 
     public Iterable<Product> findAllProductNameOnlyByCategory(String categoryId) {

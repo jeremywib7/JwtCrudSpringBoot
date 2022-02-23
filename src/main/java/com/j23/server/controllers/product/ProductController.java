@@ -4,6 +4,7 @@ import com.fasterxml.jackson.annotation.JsonView;
 import com.j23.server.configuration.ResponseHandler;
 import com.j23.server.exception.ProductNotFoundException;
 import com.j23.server.models.product.Product;
+import com.j23.server.models.product.UnassignedProduct;
 import com.j23.server.models.product.Views;
 import com.j23.server.repos.product.ProductRepository;
 import com.j23.server.services.product.ProductService;
@@ -17,10 +18,7 @@ import org.springframework.web.server.ResponseStatusException;
 
 import javax.annotation.PostConstruct;
 import java.math.BigDecimal;
-import java.util.LinkedHashMap;
-import java.util.Map;
-import java.util.Optional;
-import java.util.UUID;
+import java.util.*;
 
 @RestController
 @CrossOrigin(allowCredentials = "true", origins = {"http://localhost:4200", "http://127.0.0.1:4200"})
@@ -69,11 +67,11 @@ public class ProductController {
         return ResponseHandler.generateResponse("Successfully update product!", HttpStatus.OK, updateProduct);
     }
 
-    @GetMapping({"/findByNameAutoComplete"})
-    @JsonView(Views.ProductNameViews.class)
-    public ResponseEntity<Object> getProductsNameAutoComplete(@RequestParam String name) {
-        Iterable<Product> product = productService.findAllProductByNameAutoComplete(name);
-        return ResponseHandler.generateResponse("Successfully fetch product!", HttpStatus.OK, product);
+    @PutMapping({"/unassigned/update"})
+    public ResponseEntity<Object> updateUnassignedProduct(@RequestBody List<UnassignedProduct> unassignedProduct) {
+        List<UnassignedProduct> unassignedProducts = productService.updateProductCategory(unassignedProduct);
+        return ResponseHandler.generateResponse("Successfully update unassigned product!", HttpStatus.OK,
+                unassignedProducts);
     }
 
     @GetMapping({"/findNameOnly/byCategory"})

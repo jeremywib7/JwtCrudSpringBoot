@@ -57,7 +57,7 @@ public class CategoryController {
         return ResponseHandler.generateResponse("Successfully updated category!", HttpStatus.OK, result);
     }
 
-    @PutMapping({"/remove/product"})
+    @GetMapping({"/remove/product"})
     public ResponseEntity<Object> removeProductInCategory(@RequestParam("pId") String pId) {
 
         Product result = productCategoryService.removeProductInCategory(pId);
