@@ -12,6 +12,8 @@ import java.time.LocalDateTime;
 @Repository
 public interface ProductCategoryRepository extends JpaRepository<ProductCategory, String> {
 
+    ProductCategory findProductCategoryById(String id);
+
     boolean existsById(String id);
 
     boolean existsByCategoryName(String categoryName);

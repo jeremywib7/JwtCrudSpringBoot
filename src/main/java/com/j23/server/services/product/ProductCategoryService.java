@@ -51,7 +51,8 @@ public class ProductCategoryService {
         }
 
         Product product = productRepository.findProductById(productId);
-        product.getCategory().setId("akisjasas-asajek-ajsoaks-ejakjenafe");
+        ProductCategory productCategory = productCategoryRepository.findProductCategoryById("akisjasas-asajek-ajsoaks-ejakjenafe");
+        product.setCategory(productCategory);
 
         return productRepository.save(product);
     }
