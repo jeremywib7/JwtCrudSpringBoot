@@ -7,6 +7,7 @@ import com.j23.server.models.product.Product;
 import com.j23.server.models.product.UnassignedProduct;
 import com.j23.server.models.product.Views;
 import com.j23.server.repos.product.ProductRepository;
+import com.j23.server.services.product.ProductCategoryService;
 import com.j23.server.services.product.ProductService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
@@ -27,6 +28,9 @@ public class ProductController {
 
     @Autowired
     private ProductService productService;
+
+    @Autowired
+    private ProductCategoryService productCategoryService;
 
     @Autowired
     private ProductRepository productRepository;
@@ -67,9 +71,19 @@ public class ProductController {
         return ResponseHandler.generateResponse("Successfully update product!", HttpStatus.OK, updateProduct);
     }
 
+    @GetMapping({"/remove"})
+    public ResponseEntity<Object> removeProductInCategory(@RequestParam("pId") String pId) {
+
+        Product result = productService.removeProductInCategory(pId);
+        result.getCategory().setTotalProduct(productCategoryService.getTotalProductOnCategory(
+                "akisjasas-asajek-ajsoaks-ejakjenafe"));
+
+        return ResponseHandler.generateResponse("Successfully removed product in category!", HttpStatus.OK, result);
+    }
+
     @PutMapping({"/unassigned/update"})
     public ResponseEntity<Object> updateUnassignedProduct(@RequestBody List<UnassignedProduct> unassignedProduct) {
-        List<UnassignedProduct> unassignedProducts = productService.updateProductCategory(unassignedProduct);
+        List<Product> unassignedProducts = productService.updateUnassignedProduct(unassignedProduct);
         return ResponseHandler.generateResponse("Successfully update unassigned product!", HttpStatus.OK,
                 unassignedProducts);
     }

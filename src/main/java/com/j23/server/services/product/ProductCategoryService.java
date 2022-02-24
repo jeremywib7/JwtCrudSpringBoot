@@ -44,19 +44,6 @@ public class ProductCategoryService {
         return productCategoryRepository.save(productCategory);
     }
 
-    public Product removeProductInCategory(String productId) {
-
-        if (!productRepository.existsById(productId)) {
-            throw new ResponseStatusException(HttpStatus.NOT_FOUND, "Product category does not exists");
-        }
-
-        Product product = productRepository.findProductById(productId);
-        ProductCategory productCategory = productCategoryRepository.findProductCategoryById("akisjasas-asajek-ajsoaks-ejakjenafe");
-        product.setCategory(productCategory);
-
-        return productRepository.save(product);
-    }
-
     public ProductCategory updateProductCategory(ProductCategory productCategory) {
 
         if (productCategoryRepository.existsByCategoryNameAndIdIsNotLike(productCategory.getCategoryName(),
@@ -72,12 +59,12 @@ public class ProductCategoryService {
         return productCategoryRepository.save(productCategory);
     }
 
-    public void deleteProductCategoryById(String id) {
-        productCategoryRepository.deleteProductCategoryById(id);
-    }
-
     public Integer getTotalProductOnCategory(String categoryId) {
         return productRepository.countAllByCategoryId(categoryId);
+    }
+
+    public void deleteProductCategoryById(String id) {
+        productCategoryRepository.deleteProductCategoryById(id);
     }
 
     public Iterable<ProductCategory> findAllProductCategory() {

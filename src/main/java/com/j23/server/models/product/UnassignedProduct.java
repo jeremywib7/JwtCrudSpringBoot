@@ -10,7 +10,6 @@ import lombok.ToString;
 @Getter
 @ToString
 public class UnassignedProduct {
-
-    private String productName;
-    private String categoryName;
+    private String productId;
+    private String categoryId;
 }

@@ -57,16 +57,6 @@ public class CategoryController {
         return ResponseHandler.generateResponse("Successfully updated category!", HttpStatus.OK, result);
     }
 
-    @GetMapping({"/remove/product"})
-    public ResponseEntity<Object> removeProductInCategory(@RequestParam("pId") String pId) {
-
-        Product result = productCategoryService.removeProductInCategory(pId);
-        result.getCategory().setTotalProduct(productCategoryService.getTotalProductOnCategory(
-                "akisjasas-asajek-ajsoaks-ejakjenafe"));
-
-        return ResponseHandler.generateResponse("Successfully updated category!", HttpStatus.OK, result);
-    }
-
     @DeleteMapping({"/delete/{id}"})
     public ResponseEntity<Object> deleteCategory(@PathVariable("id") String id) {
 
