@@ -10,6 +10,7 @@ import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
+import java.time.LocalDate;
 import java.util.UUID;
 
 @Service
@@ -75,10 +76,10 @@ public class UserService {
         User adminUser = new User();
         adminUser.setUserFirstName("Admin");
         adminUser.setUserLastName("Admin");
+        adminUser.setDateJoined(LocalDate.now());
+        adminUser.setActive(true);
         adminUser.setUsername("Admin");
         adminUser.setUserPassword(getEncodedPassword("admin@pass"));
-//        Role adminRoles = new Role();
-//        adminRoles.add(adminRole);
         adminUser.setRole(adminRole);
         userRepo.save(adminUser);
 

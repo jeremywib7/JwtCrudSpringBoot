@@ -17,6 +17,7 @@ public class User {
     private String username;
     private String userFirstName;
     private String userLastName;
+    private boolean active;
     private String userPassword;
     private String gender;
     private String email;
@@ -72,10 +73,20 @@ public class User {
         return userPassword;
     }
 
-    public void setUserPassword(String userPassword) { this.userPassword = userPassword; }
+    public void setUserPassword(String userPassword) {
+        this.userPassword = userPassword;
+    }
 
     public Role getRole() {
         return role;
+    }
+
+    public boolean isActive() {
+        return active;
+    }
+
+    public void setActive(boolean active) {
+        this.active = active;
     }
 
     public void setRole(Role role) {
