@@ -97,7 +97,7 @@ public class ImageController {
 
     @PostMapping("/user/upload")
     public ResponseEntity<?> uploadUserImage(
-            @RequestParam("username") String username,
+            @RequestParam("name") String name,
             @RequestParam("file") MultipartFile file
     ) {
 
@@ -110,7 +110,9 @@ public class ImageController {
         try {
             Path pathFolder = Paths.get(userFolder);
             Files.createDirectories(pathFolder);
-            Path pathFile = Paths.get(userFolder + username + "." + fileName.substring(fileName.lastIndexOf(".") + 1));
+//            + "." + fileName.substring(fileName.lastIndexOf(".") + 1)
+            Path pathFile = Paths.get(userFolder + name);
+            System.out.println(userFolder + name);
 
             Files.write(pathFile, file.getBytes());
         } catch (IOException e) {

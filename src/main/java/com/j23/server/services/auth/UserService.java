@@ -56,7 +56,7 @@ public class UserService {
 //        roles.add(role);
 //        user.setRole(roles);
         user.setUserCode(String.valueOf(UUID.randomUUID()));
-        user.setUserPassword(getEncodedPassword(user.getUserPassword()));
+        user.setUserPassword(getEncodedPassword("1234"));
         return userRepo.save(user);
     }
 
