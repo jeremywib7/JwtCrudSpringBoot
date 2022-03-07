@@ -21,7 +21,6 @@ import java.math.BigDecimal;
 import java.util.*;
 
 @RestController
-@CrossOrigin(allowCredentials = "true", origins = {"http://localhost:4200", "http://127.0.0.1:4200"})
 @RequestMapping("/product")
 public class ProductController {
 

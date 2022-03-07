@@ -18,13 +18,13 @@ import java.nio.file.Paths;
 public class ImageController {
 
     //    For Windows
-    String productFolder = "D:\\ImageData\\Product\\";
-    String userFolder = "D:\\ImageData\\User\\";
+//    String productFolder = "D:\\ImageData\\Product\\";
+//    String userFolder = "D:\\ImageData\\User\\";
 
 //    //    For Mac
-//    String home = System.getProperty("user.home");
-//    String productFolder = home + "/Desktop/Jeremy/Selfservice/Product/";
-//    String userFolder = home + "/Desktop/Jeremy/Selfservice/User/";
+    String home = System.getProperty("user.home");
+    String productFolder = home + "/Desktop/Jeremy/Selfservice/Product/";
+    String userFolder = home + "/Desktop/Jeremy/Selfservice/User/";
 
     @GetMapping("/product/download/{name}")
     public void downloadProductImage(
@@ -105,15 +105,10 @@ public class ImageController {
             throw new RuntimeException("File given is  not valid");
         }
 
-        String fileName = file.getOriginalFilename();
-
         try {
             Path pathFolder = Paths.get(userFolder);
             Files.createDirectories(pathFolder);
-//            + "." + fileName.substring(fileName.lastIndexOf(".") + 1)
             Path pathFile = Paths.get(userFolder + name);
-            System.out.println(userFolder + name);
-
             Files.write(pathFile, file.getBytes());
         } catch (IOException e) {
             throw new RuntimeException(e);
