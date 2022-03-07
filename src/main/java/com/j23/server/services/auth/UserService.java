@@ -1,8 +1,12 @@
 package com.j23.server.services.auth;
 
+import com.fasterxml.jackson.annotation.JsonView;
 import com.j23.server.exception.UserNotFoundException;
 import com.j23.server.models.auth.Role;
 import com.j23.server.models.auth.User;
+import com.j23.server.models.product.Product;
+import com.j23.server.models.product.ProductCategory;
+import com.j23.server.models.product.Views;
 import com.j23.server.repos.auth.RoleRepo;
 import com.j23.server.repos.auth.UserRepo;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -11,6 +15,9 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
 import java.time.LocalDate;
+import java.time.LocalDateTime;
+import java.util.ArrayList;
+import java.util.List;
 import java.util.UUID;
 
 @Service
@@ -48,13 +55,7 @@ public class UserService {
         userRepo.deleteById(username);
     }
 
-    Role role = new Role();
-
     public User registerNewUser(User user) {
-//        Role role = roleRepo.findById("User").get();
-//        Set<Role> roles = new HashSet<>();
-//        roles.add(role);
-//        user.setRole(roles);
         user.setUserCode(String.valueOf(UUID.randomUUID()));
         user.setUserPassword(getEncodedPassword("1234"));
         return userRepo.save(user);
@@ -83,15 +84,15 @@ public class UserService {
         adminUser.setRole(adminRole);
         userRepo.save(adminUser);
 
-//        User user = new User();
-//        user.setUserFirstName("jeremy");
-//        user.setUserLastName("wib");
-//        user.setUsername("jer123");
-//        user.setUserPassword(getEncodedPassword("jer@pass"));
-//        Set<Role> userRoles = new HashSet<>();
-//        userRoles.add(userRole);
-//        user.setRole(userRoles);
-//        userRepo.save(user);
+    }
+
+    public void deleteSelectedUsers(List<String> usersId) {
+        usersId.forEach(userId -> {
+            try {
+                userRepo.deleteById(userId);
+            } catch (Exception ignored) {
+            }
+        });
     }
 
     public String getEncodedPassword(String password) {
