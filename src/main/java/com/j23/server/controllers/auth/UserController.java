@@ -1,12 +1,10 @@
 package com.j23.server.controllers.auth;
 
-import com.fasterxml.jackson.annotation.JsonView;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.j23.server.configuration.ResponseHandler;
 import com.j23.server.models.auth.User;
-import com.j23.server.models.product.Views;
 import com.j23.server.repos.auth.UserRepo;
 import com.j23.server.services.auth.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
