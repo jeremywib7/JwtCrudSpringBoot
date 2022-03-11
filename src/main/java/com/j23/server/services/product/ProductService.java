@@ -45,7 +45,6 @@ public class ProductService {
         productRepository.deleteProductById(id);
     }
 
-
     public Page<Product> findAllProduct(Pageable pageable, Long minCalories, Long maxCalories,
                                         BigDecimal minPrice, BigDecimal maxPrice) {
         return productRepository.findAllByTotalCaloriesBetweenAndUnitPriceBetween(minCalories,
@@ -54,6 +53,10 @@ public class ProductService {
 
     public Page<Product> findAllProductByName(String name, Pageable pageable) {
         return productRepository.findAllByNameContaining(name, pageable);
+    }
+
+    public Page<Product> findAllProductForTable(String searchKeyword, Pageable pageable) {
+        return productRepository.findAllBySearchTable(searchKeyword, pageable);
     }
 
     public Optional<Product> findProductById(String id) {

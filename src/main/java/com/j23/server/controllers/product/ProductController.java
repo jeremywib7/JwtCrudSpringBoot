@@ -12,6 +12,7 @@ import com.j23.server.services.product.ProductService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Sort;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -49,6 +50,23 @@ public class ProductController {
         Page<Product> products = productService.findAllProduct(PageRequest.of(page, size), minCalories,
                 maxCalories, minPrice, maxPrice);
         return ResponseHandler.generateResponse("Successfully fetch product!", HttpStatus.OK, products);
+    }
+
+    @GetMapping("/all/table")
+    public ResponseEntity<Object> getAllProductsForTable(
+            @RequestParam(defaultValue = "") String searchKeyword,
+            @RequestParam(defaultValue = "name") String sortedFieldName,
+            @RequestParam(defaultValue = "1") int order,
+            @RequestParam(defaultValue = "0") int page,
+            @RequestParam(defaultValue = "10") int size) {
+
+        if (size < 5 || size > 50) {
+            size = 10;
+        }
+
+        Page<Product> products = productService.findAllProductForTable(searchKeyword, PageRequest.of(page, size,
+                Sort.by(order == 1 ? Sort.Direction.ASC : Sort.Direction.DESC, sortedFieldName)));
+        return ResponseHandler.generateResponse("Successfully fetch product in a table!", HttpStatus.OK, products);
     }
 
     @PostMapping({"/add"})

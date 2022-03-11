@@ -5,6 +5,7 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 
 import org.springframework.data.jpa.repository.JpaRepository;
+import org.springframework.data.jpa.repository.Query;
 import org.springframework.stereotype.Repository;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -25,7 +26,9 @@ public interface ProductRepository extends JpaRepository<Product, Long> {
 
     Page<Product> findAllByNameContaining(String name, Pageable pageable);
 
-    Iterable<Product> findAllByNameContaining(String name);
+    @Query("SELECT p FROM Product p WHERE CONCAT(p.name, ' ', p.active, ' ', p.description, ' ',p.totalCalories,' '," +
+            "p.unitPrice) LIKE %?1%")
+    Page<Product> findAllBySearchTable(String searchKeyword, Pageable pageable);
 
     Page<Product> findAllByCategoryIdAndTotalCaloriesBetweenAndUnitPriceBetween(String id, Long minCalories,
                                                                                 Long maxCalories, BigDecimal minPrice,
