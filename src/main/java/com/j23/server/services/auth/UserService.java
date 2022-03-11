@@ -39,7 +39,7 @@ public class UserService {
         this.userRepo = userRepo;
     }
 
-    public Iterable<User> findAllUser() {
+    public List<User> findAllUser() {
         return userRepo.findAll();
     }
 

@@ -34,12 +34,4 @@ public class ReportService {
         }
     }
 
-    public JasperPrint generateJasperPrint(String reportPath, Map<String, Object> map) throws IOException, JRException {
-        InputStream targetStream = new ClassPathResource(reportPath).getInputStream();
-        JasperReport jasperReport = (JasperReport) JRLoader.loadObject(targetStream);
-        JasperPrint jasperPrint = JasperFillManager.fillReport(jasperReport, map, getConnection());
-//        targetStream.reset();
-        return jasperPrint;
-
-    }
 }
