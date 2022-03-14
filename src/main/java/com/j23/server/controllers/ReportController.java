@@ -1,6 +1,5 @@
 package com.j23.server.controllers;
 
-import com.j23.server.services.ReportService;
 import com.j23.server.services.auth.UserService;
 import com.j23.server.services.product.ProductService;
 import net.sf.jasperreports.engine.*;
@@ -14,7 +13,6 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
-import javax.servlet.http.HttpServletResponse;
 import java.io.FileInputStream;
 import java.io.FileNotFoundException;
 import java.time.LocalDateTime;
@@ -31,7 +29,7 @@ public class ReportController {
     @Autowired
     ProductService productService;
 
-    @GetMapping("/user/list")
+    @GetMapping("/user/report")
     public ResponseEntity<byte[]> generatePdf(@RequestParam String title) throws FileNotFoundException, JRException {
 
         JRBeanCollectionDataSource beanCollectionDataSource = new JRBeanCollectionDataSource(userService.findAllUser());
