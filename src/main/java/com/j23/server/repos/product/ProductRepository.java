@@ -17,6 +17,8 @@ public interface ProductRepository extends JpaRepository<Product, Long> {
 
     Optional<Product> findById(String id);
 
+    Page<Product> findAll(Pageable pageable);
+
     Product findProductById(String id);
 
     Page<Product> findAllByTotalCaloriesBetweenAndUnitPriceBetween(Long minCalories,

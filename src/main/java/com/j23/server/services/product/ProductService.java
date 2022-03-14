@@ -6,8 +6,7 @@ import com.j23.server.models.product.UnassignedProduct;
 import com.j23.server.repos.product.ProductCategoryRepository;
 import com.j23.server.repos.product.ProductRepository;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.data.domain.Page;
-import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.*;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 import org.springframework.web.server.ResponseStatusException;
@@ -51,12 +50,15 @@ public class ProductService {
                 maxCalories, minPrice, maxPrice, pageable);
     }
 
-    public Page<Product> findAllProductByName(String name, Pageable pageable) {
-        return productRepository.findAllByNameContaining(name, pageable);
+    public Page<Product> findAllProductByName(String searchKeyword, Pageable pageable) {
+        return productRepository.findAllByNameContaining(searchKeyword, pageable);
     }
 
-    public Page<Product> findAllProductForTable(String searchKeyword, Pageable pageable) {
-        return productRepository.findAllBySearchTable(searchKeyword, pageable);
+    public Page<Product> findAllProductForTable(String searchKeyword, int page, int size, String sortedFieldName
+            , int order) {
+
+        return productRepository.findAllBySearchTable(searchKeyword, PageRequest.of(page, size,
+                Sort.by(order == 1 ? Sort.Direction.ASC : Sort.Direction.DESC, sortedFieldName)));
     }
 
     public Optional<Product> findProductById(String id) {

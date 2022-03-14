@@ -10,6 +10,7 @@ import com.j23.server.repos.product.ProductRepository;
 import com.j23.server.services.product.ProductCategoryService;
 import com.j23.server.services.product.ProductService;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.ExampleMatcher;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Sort;
@@ -64,8 +65,7 @@ public class ProductController {
             size = 10;
         }
 
-        Page<Product> products = productService.findAllProductForTable(searchKeyword, PageRequest.of(page, size,
-                Sort.by(order == 1 ? Sort.Direction.ASC : Sort.Direction.DESC, sortedFieldName)));
+        Page<Product> products = productService.findAllProductForTable(searchKeyword, page, size, sortedFieldName, order);
         return ResponseHandler.generateResponse("Successfully fetch product in a table!", HttpStatus.OK, products);
     }
 
