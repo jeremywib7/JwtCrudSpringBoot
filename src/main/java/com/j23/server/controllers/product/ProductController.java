@@ -3,17 +3,15 @@ package com.j23.server.controllers.product;
 import com.fasterxml.jackson.annotation.JsonView;
 import com.j23.server.configuration.ResponseHandler;
 import com.j23.server.exception.ProductNotFoundException;
-import com.j23.server.models.product.Product;
+import com.j23.server.models.product.ProductSteps.Product;
 import com.j23.server.models.product.UnassignedProduct;
 import com.j23.server.models.product.Views;
 import com.j23.server.repos.product.ProductRepository;
 import com.j23.server.services.product.ProductCategoryService;
 import com.j23.server.services.product.ProductService;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.data.domain.ExampleMatcher;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
-import org.springframework.data.domain.Sort;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -72,7 +70,7 @@ public class ProductController {
     @PostMapping({"/add"})
     public ResponseEntity<Object> addProduct(
             @RequestBody Product product) {
-        if (productRepository.existsByName(product.getName())) {
+        if (productRepository.existsByProductDetailName(product.getProductDetail().getName())) {
             throw new ResponseStatusException(HttpStatus.CONFLICT, "Product name already exists");
         }
 
@@ -91,7 +89,7 @@ public class ProductController {
     public ResponseEntity<Object> removeProductInCategory(@RequestParam("pId") String pId) {
 
         Product result = productService.removeProductInCategory(pId);
-        result.getCategory().setTotalProduct(productCategoryService.getTotalProductOnCategory(
+        result.getProductDetail().getCategory().setTotalProduct(productCategoryService.getTotalProductOnCategory(
                 "akisjasas-asajek-ajsoaks-ejakjenafe"));
 
         return ResponseHandler.generateResponse("Successfully removed product in category!", HttpStatus.OK, result);

@@ -1,12 +1,8 @@
 package com.j23.server.services.auth;
 
-import com.fasterxml.jackson.annotation.JsonView;
 import com.j23.server.exception.UserNotFoundException;
 import com.j23.server.models.auth.Role;
 import com.j23.server.models.auth.User;
-import com.j23.server.models.product.Product;
-import com.j23.server.models.product.ProductCategory;
-import com.j23.server.models.product.Views;
 import com.j23.server.repos.auth.RoleRepo;
 import com.j23.server.repos.auth.UserRepo;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -15,8 +11,6 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
 import java.time.LocalDate;
-import java.time.LocalDateTime;
-import java.util.ArrayList;
 import java.util.List;
 import java.util.UUID;
 

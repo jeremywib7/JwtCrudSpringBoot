@@ -1,6 +1,5 @@
 package com.j23.server.services.product;
 
-import com.j23.server.models.product.Product;
 import com.j23.server.models.product.ProductCategory;
 import com.j23.server.repos.product.ProductCategoryRepository;
 import com.j23.server.repos.product.ProductRepository;
@@ -54,13 +53,13 @@ public class ProductCategoryService {
 
         LocalDateTime localDateTime = LocalDateTime.now();
         productCategory.setUpdatedOn(LocalDateTime.from(localDateTime));
-        productCategory.setTotalProduct(productRepository.countAllByCategoryId(productCategory.getId()));
+        productCategory.setTotalProduct(productRepository.countAllByProductDetailCategoryId(productCategory.getId()));
 
         return productCategoryRepository.save(productCategory);
     }
 
     public Integer getTotalProductOnCategory(String categoryId) {
-        return productRepository.countAllByCategoryId(categoryId);
+        return productRepository.countAllByProductDetailCategoryId(categoryId);
     }
 
     public void deleteProductCategoryById(String id) {

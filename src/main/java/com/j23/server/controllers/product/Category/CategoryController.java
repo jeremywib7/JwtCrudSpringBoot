@@ -1,7 +1,6 @@
 package com.j23.server.controllers.product.Category;
 
 import com.j23.server.configuration.ResponseHandler;
-import com.j23.server.models.product.Product;
 import com.j23.server.models.product.ProductCategory;
 import com.j23.server.repos.product.ProductCategoryRepository;
 import com.j23.server.services.product.ProductCategoryService;

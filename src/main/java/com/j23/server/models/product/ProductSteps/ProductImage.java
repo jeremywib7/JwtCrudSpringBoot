@@ -1,4 +1,4 @@
-package com.j23.server.models.product;
+package com.j23.server.models.product.ProductSteps;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
 import lombok.Data;
@@ -13,7 +13,7 @@ import javax.persistence.*;
 @Setter
 @Getter
 @ToString
-public class ImageArray {
+public class ProductImage {
     @Id
     @Column(length = 100)
     private String imageName;

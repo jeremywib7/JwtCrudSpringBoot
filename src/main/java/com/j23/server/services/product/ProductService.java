@@ -1,6 +1,6 @@
 package com.j23.server.services.product;
 
-import com.j23.server.models.product.Product;
+import com.j23.server.models.product.ProductSteps.Product;
 import com.j23.server.models.product.ProductCategory;
 import com.j23.server.models.product.UnassignedProduct;
 import com.j23.server.repos.product.ProductCategoryRepository;
@@ -28,14 +28,14 @@ public class ProductService {
 
     public Product addProduct(Product product) {
         LocalDateTime localDateTime = LocalDateTime.now();
-        product.setCreatedOn(LocalDateTime.from(localDateTime));
+        product.getProductDetail().setCreatedOn(LocalDateTime.from(localDateTime));
 
         return productRepository.save(product);
     }
 
     public Product updateProduct(Product product) {
         LocalDateTime localDateTime = LocalDateTime.now();
-        product.setUpdatedOn(LocalDateTime.from(localDateTime));
+        product.getProductDetail().setUpdatedOn(LocalDateTime.from(localDateTime));
 
         return productRepository.save(product);
     }
@@ -46,12 +46,12 @@ public class ProductService {
 
     public Page<Product> findAllProduct(Pageable pageable, Long minCalories, Long maxCalories,
                                         BigDecimal minPrice, BigDecimal maxPrice) {
-        return productRepository.findAllByTotalCaloriesBetweenAndUnitPriceBetween(minCalories,
+        return productRepository.findAllByProductDetailTotalCaloriesBetweenAndProductPricingUnitPriceBetween(minCalories,
                 maxCalories, minPrice, maxPrice, pageable);
     }
 
     public Page<Product> findAllProductByName(String searchKeyword, Pageable pageable) {
-        return productRepository.findAllByNameContaining(searchKeyword, pageable);
+        return productRepository.findAllByProductDetailNameContaining(searchKeyword, pageable);
     }
 
     public Page<Product> findAllProductForTable(String searchKeyword, int page, int size, String sortedFieldName
@@ -73,7 +73,7 @@ public class ProductService {
 
         Product product = productRepository.findProductById(productId);
         ProductCategory productCategory = productCategoryRepository.findProductCategoryById("akisjasas-asajek-ajsoaks-ejakjenafe");
-        product.setCategory(productCategory);
+        product.getProductDetail().setCategory(productCategory);
 
         return productRepository.save(product);
     }
@@ -83,10 +83,10 @@ public class ProductService {
 
         unassignedProductList.forEach(unassignedProduct -> {
             Product product = productRepository.findProductById(unassignedProduct.getProductId());
-            product.setUpdatedOn(LocalDateTime.now());
+            product.getProductDetail().setUpdatedOn(LocalDateTime.now());
 
             ProductCategory productCategory = productCategoryRepository.findProductCategoryById(unassignedProduct.getCategoryId());
-            product.setCategory(productCategory);
+            product.getProductDetail().setCategory(productCategory);
             productCategory.setUpdatedOn(LocalDateTime.now());
             productRepository.save(product);
 
@@ -97,13 +97,13 @@ public class ProductService {
     }
 
     public Iterable<Product> findAllProductNameOnlyByCategory(String categoryId) {
-        return productRepository.findAllByCategoryId(categoryId);
+        return productRepository.findAllByProductDetailCategoryId(categoryId);
     }
 
     public Page<Product> findAllProductByFilter(String id, Pageable pageable, Long minCalories, Long maxCalories,
                                                 BigDecimal minPrice, BigDecimal maxPrice
     ) {
-        return productRepository.findAllByCategoryIdAndTotalCaloriesBetweenAndUnitPriceBetween(id, minCalories,
+        return productRepository.findAllByProductDetailCategoryIdAndProductDetailTotalCaloriesBetweenAndProductPricingUnitPriceBetween(id, minCalories,
                 maxCalories, minPrice, maxPrice, pageable);
     }
 
