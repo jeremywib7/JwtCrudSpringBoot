@@ -1,6 +1,6 @@
 package com.j23.server.repos.product;
 
-import com.j23.server.models.product.ProductSteps.Product;
+import com.j23.server.models.product.Product;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 
@@ -21,28 +21,28 @@ public interface ProductRepository extends JpaRepository<Product, Long> {
 
     Product findProductById(String id);
 
-    Page<Product> findAllByProductDetailTotalCaloriesBetweenAndProductPricingUnitPriceBetween(Long minCalories,
-                                                                                              Long maxCalories, BigDecimal minPrice,
-                                                                                              BigDecimal maxPrice,
-                                                                                              Pageable pageable);
+    Page<Product> findAllByTotalCaloriesBetweenAndUnitPriceBetween(Long minCalories,
+                                                                   Long maxCalories, BigDecimal minPrice,
+                                                                   BigDecimal maxPrice,
+                                                                   Pageable pageable);
 
-    Page<Product> findAllByProductDetailNameContaining(String name, Pageable pageable);
+    Page<Product> findAllByNameContaining(String name, Pageable pageable);
 
-    @Query("SELECT p FROM Product p WHERE CONCAT(p.productDetail.name, ' ', p.productDetail.active, ' ', " +
-            "p.productDetail.description, ' ',p.productDetail.totalCalories,' ', p.productPricing.unitPrice) LIKE %?1%")
+    @Query("SELECT p FROM Product p WHERE CONCAT(p.name, ' ', p.active, ' ', " +
+            "p.description, ' ',p.totalCalories,' ', p.unitPrice) LIKE %?1%")
     Page<Product> findAllBySearchTable(String searchKeyword, Pageable pageable);
 
-    Page<Product> findAllByProductDetailCategoryIdAndProductDetailTotalCaloriesBetweenAndProductPricingUnitPriceBetween(
+    Page<Product> findAllByCategoryIdAndTotalCaloriesBetweenAndUnitPriceBetween(
             String id, Long minCalories, Long maxCalories, BigDecimal minPrice, BigDecimal maxPrice,
             Pageable pageable);
 
-    Iterable<Product> findAllByProductDetailCategoryId(String categoryId);
+    Iterable<Product> findAllByCategoryId(String categoryId);
 
-    boolean existsByProductDetailName(String name);
+    boolean existsByName(String name);
 
     boolean existsById(String id);
 
-    Integer countAllByProductDetailCategoryId(String id);
+    Integer countAllByCategoryId(String id);
 
     @Transactional
     void deleteProductById(String id);

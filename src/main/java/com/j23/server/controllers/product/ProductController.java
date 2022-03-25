@@ -3,7 +3,7 @@ package com.j23.server.controllers.product;
 import com.fasterxml.jackson.annotation.JsonView;
 import com.j23.server.configuration.ResponseHandler;
 import com.j23.server.exception.ProductNotFoundException;
-import com.j23.server.models.product.ProductSteps.Product;
+import com.j23.server.models.product.Product;
 import com.j23.server.models.product.UnassignedProduct;
 import com.j23.server.models.product.Views;
 import com.j23.server.repos.product.ProductRepository;
@@ -26,9 +26,6 @@ public class ProductController {
 
     @Autowired
     private ProductService productService;
-
-    @Autowired
-    private ProductCategoryService productCategoryService;
 
     @Autowired
     private ProductRepository productRepository;
@@ -59,10 +56,6 @@ public class ProductController {
             @RequestParam(defaultValue = "0") int page,
             @RequestParam(defaultValue = "10") int size) {
 
-        if (size < 5 || size > 50) {
-            size = 10;
-        }
-
         Page<Product> products = productService.findAllProductForTable(searchKeyword, page, size, sortedFieldName, order);
         return ResponseHandler.generateResponse("Successfully fetch product in a table!", HttpStatus.OK, products);
     }
@@ -70,10 +63,6 @@ public class ProductController {
     @PostMapping({"/add"})
     public ResponseEntity<Object> addProduct(
             @RequestBody Product product) {
-        if (productRepository.existsByProductDetailName(product.getProductDetail().getName())) {
-            throw new ResponseStatusException(HttpStatus.CONFLICT, "Product name already exists");
-        }
-
         Product result = productService.addProduct(product);
 
         return ResponseHandler.generateResponse("Successfully added product!", HttpStatus.OK, result);
@@ -89,8 +78,6 @@ public class ProductController {
     public ResponseEntity<Object> removeProductInCategory(@RequestParam("pId") String pId) {
 
         Product result = productService.removeProductInCategory(pId);
-        result.getProductDetail().getCategory().setTotalProduct(productCategoryService.getTotalProductOnCategory(
-                "akisjasas-asajek-ajsoaks-ejakjenafe"));
 
         return ResponseHandler.generateResponse("Successfully removed product in category!", HttpStatus.OK, result);
     }

@@ -53,13 +53,13 @@ public class ProductCategoryService {
 
         LocalDateTime localDateTime = LocalDateTime.now();
         productCategory.setUpdatedOn(LocalDateTime.from(localDateTime));
-        productCategory.setTotalProduct(productRepository.countAllByProductDetailCategoryId(productCategory.getId()));
+        productCategory.setTotalProduct(productRepository.countAllByCategoryId(productCategory.getId()));
 
         return productCategoryRepository.save(productCategory);
     }
 
     public Integer getTotalProductOnCategory(String categoryId) {
-        return productRepository.countAllByProductDetailCategoryId(categoryId);
+        return productRepository.countAllByCategoryId(categoryId);
     }
 
     public void deleteProductCategoryById(String id) {

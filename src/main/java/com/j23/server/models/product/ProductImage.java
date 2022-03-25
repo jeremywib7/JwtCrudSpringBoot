@@ -1,4 +1,4 @@
-package com.j23.server.models.product.ProductSteps;
+package com.j23.server.models.product;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
 import lombok.Data;
