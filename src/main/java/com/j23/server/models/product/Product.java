@@ -45,7 +45,6 @@ public class Product implements Serializable {
     @Column(precision = 13, scale = 2, name = "discounted_price")
     private BigDecimal discountedPrice;
 
-
     @JsonFormat(pattern = "yyyy-MM-dd HH:mm:ss")
     @JsonDeserialize(using = LocalDateTimeDeserializer.class)
     @JsonSerialize(using = LocalDateTimeSerializer.class)

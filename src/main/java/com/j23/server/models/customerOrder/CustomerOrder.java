@@ -1,11 +1,13 @@
 package com.j23.server.models.customerOrder;
 
 import com.fasterxml.jackson.annotation.JsonFormat;
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
+import com.fasterxml.jackson.annotation.JsonIncludeProperties;
 import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
 import com.fasterxml.jackson.databind.annotation.JsonSerialize;
 import com.fasterxml.jackson.datatype.jsr310.deser.LocalDateTimeDeserializer;
 import com.fasterxml.jackson.datatype.jsr310.ser.LocalDateTimeSerializer;
-import com.j23.server.models.customer.Customer;
+import com.j23.server.models.auth.User;
 import lombok.Data;
 import lombok.Getter;
 import lombok.Setter;
@@ -32,10 +34,12 @@ public class CustomerOrder {
     @Column(name = "date_created")
     private LocalDateTime dateTime;
 
+    @JsonIncludeProperties(value = {"username"})
     @OneToOne(cascade = CascadeType.ALL)
-    @JoinColumn(name = "customer_id", referencedColumnName = "id")
-    private Customer customerDetail;
+    @JoinColumn(name = "customer_id")
+    private User customerDetail;
 
+    @JsonIgnoreProperties(value = {"id"})
     @OneToMany(cascade = CascadeType.ALL)
     @JoinColumn(name = "customer_order_id")
     private List<OrderedProduct> orderedProduct;
