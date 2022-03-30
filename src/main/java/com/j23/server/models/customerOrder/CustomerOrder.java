@@ -25,7 +25,7 @@ import java.util.List;
 public class CustomerOrder {
 
     @Id
-    @Column(name = "order_id", nullable = false, unique = true)
+    @Column(name = "order_id")
     private String id;
 
     @JsonFormat(pattern = "yyyy-MM-dd HH:mm:ss")

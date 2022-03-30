@@ -10,6 +10,7 @@ import org.springframework.stereotype.Repository;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.math.BigDecimal;
+import java.util.List;
 import java.util.Optional;
 
 @Repository
@@ -36,7 +37,7 @@ public interface ProductRepository extends JpaRepository<Product, Long> {
             String id, Long minCalories, Long maxCalories, BigDecimal minPrice, BigDecimal maxPrice,
             Pageable pageable);
 
-    Iterable<Product> findAllByCategoryId(String categoryId);
+    List<Product> findAllByCategoryId(String categoryId);
 
     boolean existsByName(String name);
 

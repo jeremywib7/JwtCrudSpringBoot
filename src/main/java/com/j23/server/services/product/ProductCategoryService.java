@@ -1,5 +1,6 @@
 package com.j23.server.services.product;
 
+import com.j23.server.models.product.Product;
 import com.j23.server.models.product.ProductCategory;
 import com.j23.server.repos.product.ProductCategoryRepository;
 import com.j23.server.repos.product.ProductRepository;
@@ -9,6 +10,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.web.server.ResponseStatusException;
 
 import java.time.LocalDateTime;
+import java.util.List;
 import java.util.UUID;
 
 @Service
@@ -20,7 +22,7 @@ public class ProductCategoryService {
     @Autowired
     private ProductRepository productRepository;
 
-    public void addUnasignedCategory() {
+    public void addUnassignedCategory() {
         ProductCategory productCategory = new ProductCategory();
         productCategory.setId("akisjasas-asajek-ajsoaks-ejakjenafe");
         productCategory.setCategoryName("Unassigned");
@@ -62,11 +64,25 @@ public class ProductCategoryService {
         return productRepository.countAllByCategoryId(categoryId);
     }
 
+    public List<Product> getAllProductOnCategory(String categoryId) {
+        return productRepository.findAllByCategoryId(categoryId);
+    }
+
     public void deleteProductCategoryById(String id) {
         productCategoryRepository.deleteProductCategoryById(id);
     }
 
-    public Iterable<ProductCategory> findAllProductCategory() {
-        return productCategoryRepository.findAll();
+    public List<ProductCategory> findAllProductCategory() {
+        List<ProductCategory> productCategoryList = productCategoryRepository.findAll();
+
+        productCategoryList.forEach(productCategory -> {
+            productCategory.setTotalProduct(getTotalProductOnCategory(productCategory.getId()));
+            productCategory.setProducts(getAllProductOnCategory(productCategory.getId()));
+
+            productCategoryRepository.save(productCategory);
+        });
+
+        return productCategoryList;
     }
+
 }

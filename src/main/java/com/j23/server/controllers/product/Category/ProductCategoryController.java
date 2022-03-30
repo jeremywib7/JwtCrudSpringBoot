@@ -16,7 +16,7 @@ import java.util.List;
 @RestController
 @CrossOrigin(allowCredentials = "true", origins = {"http://localhost:4200", "http://127.0.0.1:4200"})
 @RequestMapping("/category")
-public class CategoryController {
+public class ProductCategoryController {
 
     @Autowired
     private ProductCategoryService productCategoryService;
@@ -26,19 +26,12 @@ public class CategoryController {
 
     @PostConstruct
     public void initRolesAndUsers() {
-        productCategoryService.addUnasignedCategory();
+        productCategoryService.addUnassignedCategory();
     }
 
     @GetMapping("/all")
     public ResponseEntity<Object> getAllProductCategory() {
-        List<ProductCategory> categories = (List<ProductCategory>) productCategoryService.findAllProductCategory();
-
-        categories.forEach(productCategory -> {
-            Integer totalProduct = productCategoryService.getTotalProductOnCategory(productCategory.getId());
-            productCategory.setTotalProduct(totalProduct);
-            productCategoryRepository.save(productCategory);
-        });
-
+        List<ProductCategory> categories = productCategoryService.findAllProductCategory();
         return ResponseHandler.generateResponse("Successfully fetch category!", HttpStatus.OK, categories);
     }
 

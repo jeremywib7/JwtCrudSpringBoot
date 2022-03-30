@@ -1,7 +1,6 @@
 package com.j23.server.configuration;
 
 import com.j23.server.handler.WaitingListWebSocketHandler;
-import lombok.extern.slf4j.Slf4j;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.web.socket.WebSocketHandler;
@@ -14,8 +13,6 @@ import org.springframework.web.socket.config.annotation.WebSocketHandlerRegistry
 public class WebSocketConfiguration implements WebSocketConfigurer {
 
     private final static String WAITING_LIST_ENDPOINT = "/waitingList";
-    private final static String CHAT_LIST_ENDPOINT = "/chat";
-
 
     @Override
     public void registerWebSocketHandlers(WebSocketHandlerRegistry registry) {
