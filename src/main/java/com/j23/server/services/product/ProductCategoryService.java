@@ -26,6 +26,8 @@ public class ProductCategoryService {
         ProductCategory productCategory = new ProductCategory();
         productCategory.setId("akisjasas-asajek-ajsoaks-ejakjenafe");
         productCategory.setCategoryName("Unassigned");
+        productCategory.setCreatedOn(LocalDateTime.now());
+        productCategory.setUpdatedOn(LocalDateTime.now());
         productCategoryRepository.save(productCategory);
     }
 
