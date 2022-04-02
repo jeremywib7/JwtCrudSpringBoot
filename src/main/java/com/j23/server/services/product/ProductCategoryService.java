@@ -1,5 +1,6 @@
 package com.j23.server.services.product;
 
+import com.j23.server.exception.UserNotFoundException;
 import com.j23.server.models.product.Product;
 import com.j23.server.models.product.ProductCategory;
 import com.j23.server.repos.product.ProductCategoryRepository;
@@ -55,11 +56,24 @@ public class ProductCategoryService {
 
         }
 
-        LocalDateTime localDateTime = LocalDateTime.now();
-        productCategory.setUpdatedOn(LocalDateTime.from(localDateTime));
+        productCategory.setUpdatedOn(LocalDateTime.from(LocalDateTime.now()));
         productCategory.setTotalProduct(productRepository.countAllByCategoryId(productCategory.getId()));
+        productCategory.setProducts(getAllProductOnCategory(productCategory.getId()));
+        productCategoryRepository.save(productCategory);
 
-        return productCategoryRepository.save(productCategory);
+        return productCategory;
+    }
+
+    public void deleteProductCategory(String id) {
+        productCategoryRepository.findById(id).orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND,
+                "Category name not found"));
+
+        try {
+            productCategoryRepository.deleteProductCategoryById(id);
+        } catch (Exception e) {
+            throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "Please change or remove product in this category " +
+                    "before deleting");
+        }
     }
 
     public Integer getTotalProductOnCategory(String categoryId) {
@@ -68,10 +82,6 @@ public class ProductCategoryService {
 
     public List<Product> getAllProductOnCategory(String categoryId) {
         return productRepository.findAllByCategoryId(categoryId);
-    }
-
-    public void deleteProductCategoryById(String id) {
-        productCategoryRepository.deleteProductCategoryById(id);
     }
 
     public List<ProductCategory> findAllProductCategory() {

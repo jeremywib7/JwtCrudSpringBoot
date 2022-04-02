@@ -51,17 +51,7 @@ public class ProductCategoryController {
 
     @DeleteMapping({"/delete/{id}"})
     public ResponseEntity<Object> deleteCategory(@PathVariable("id") String id) {
-
-        if (!productCategoryRepository.existsById(id)) {
-            throw new ResponseStatusException(HttpStatus.NOT_FOUND, "Category name not found");
-        }
-
-        try {
-            productCategoryService.deleteProductCategoryById(id);
-        } catch (Exception e) {
-            throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "Please change or remove product in this category " +
-                    "before deleting");
-        }
+        productCategoryService.deleteProductCategory(id);
         return ResponseHandler.generateResponse("Successfully delete category!", HttpStatus.OK, null);
     }
 

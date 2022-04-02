@@ -15,8 +15,6 @@ public interface ProductCategoryRepository extends JpaRepository<ProductCategory
 
     ProductCategory findProductCategoryById(String id);
 
-    boolean existsById(String id);
-
     boolean existsByCategoryName(String categoryName);
 
     //    for product category update modal
