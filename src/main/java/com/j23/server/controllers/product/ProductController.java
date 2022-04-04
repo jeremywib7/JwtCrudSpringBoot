@@ -121,7 +121,7 @@ public class ProductController {
             throw new ResponseStatusException(HttpStatus.NOT_FOUND, "Product not found");
         }
 
-        Optional<Product> product = productService.findProductById(id);
+        Product product = productService.findProductById(id);
         return ResponseHandler.generateResponse("Successfully fetch product!", HttpStatus.OK, product);
     }
 

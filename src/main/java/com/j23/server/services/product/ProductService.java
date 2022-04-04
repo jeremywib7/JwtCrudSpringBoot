@@ -75,8 +75,8 @@ public class ProductService {
                 Sort.by(order == 1 ? Sort.Direction.ASC : Sort.Direction.DESC, sortedFieldName)));
     }
 
-    public Optional<Product> findProductById(String id) {
-        return productRepository.findById(id);
+    public Product findProductById(String id) {
+        return productRepository.findProductById(id);
     }
 
     public Product removeProductInCategory(String productId) {

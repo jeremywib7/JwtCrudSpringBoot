@@ -49,9 +49,9 @@ public class ProductCategoryController {
         return ResponseHandler.generateResponse("Successfully updated category!", HttpStatus.OK, result);
     }
 
-    @DeleteMapping({"/delete/{id}"})
-    public ResponseEntity<Object> deleteCategory(@PathVariable("id") String id) {
-        productCategoryService.deleteProductCategory(id);
+    @GetMapping({"/delete"})
+    public ResponseEntity<Object> deleteCategory(@RequestParam(required = false) List<String> id, @RequestParam String productCategoryId) {
+        productCategoryService.deleteProductCategory(id, productCategoryId);
         return ResponseHandler.generateResponse("Successfully delete category!", HttpStatus.OK, null);
     }
 

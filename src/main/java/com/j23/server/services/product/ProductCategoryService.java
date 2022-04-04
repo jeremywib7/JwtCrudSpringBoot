@@ -53,7 +53,6 @@ public class ProductCategoryService {
         if (productCategoryRepository.existsByCategoryNameAndIdIsNotLike(productCategory.getCategoryName(),
                 productCategory.getId())) {
             throw new ResponseStatusException(HttpStatus.CONFLICT, "Product category already exists");
-
         }
 
         productCategory.setUpdatedOn(LocalDateTime.from(LocalDateTime.now()));
@@ -64,16 +63,21 @@ public class ProductCategoryService {
         return productCategory;
     }
 
-    public void deleteProductCategory(String id) {
-        productCategoryRepository.findById(id).orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND,
-                "Category name not found"));
+    public void deleteProductCategory(List<String> productIdList, String productCategoryId) {
+        ProductCategory productCategory = productCategoryRepository.findProductCategoryById("akisjasas-asajek-ajsoaks-ejakjenafe");
 
-        try {
-            productCategoryRepository.deleteProductCategoryById(id);
-        } catch (Exception e) {
-            throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "Please change or remove product in this category " +
-                    "before deleting");
+        // set product id category to unassigned before deleting category
+        if (productIdList != null) {
+            productIdList.forEach(value -> {
+                Product product = productRepository.findProductById(value);
+                product.setCategory(productCategory);
+                productRepository.save(product);
+            });
         }
+
+        // delete product category
+        productCategoryRepository.deleteProductCategoryById(productCategoryId);
+
     }
 
     public Integer getTotalProductOnCategory(String categoryId) {
