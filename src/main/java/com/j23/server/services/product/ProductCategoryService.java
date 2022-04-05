@@ -1,8 +1,8 @@
 package com.j23.server.services.product;
 
-import com.j23.server.exception.UserNotFoundException;
 import com.j23.server.models.product.Product;
 import com.j23.server.models.product.ProductCategory;
+import com.j23.server.models.product.UnassignedProduct;
 import com.j23.server.repos.product.ProductCategoryRepository;
 import com.j23.server.repos.product.ProductRepository;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -58,9 +58,24 @@ public class ProductCategoryService {
         productCategory.setUpdatedOn(LocalDateTime.from(LocalDateTime.now()));
         productCategory.setTotalProduct(productRepository.countAllByCategoryId(productCategory.getId()));
         productCategory.setProducts(getAllProductOnCategory(productCategory.getId()));
+
         productCategoryRepository.save(productCategory);
 
         return productCategory;
+    }
+
+    public List<ProductCategory> updateUnassignedProductCategory(List<UnassignedProduct> unassignedProducts) {
+        unassignedProducts.forEach(unassignedProduct -> {
+            ProductCategory productCategory = productCategoryRepository.findProductCategoryById(unassignedProduct.getCategoryId());
+            productCategory.setUpdatedOn(LocalDateTime.now());
+
+            Product product = productRepository.findProductById(unassignedProduct.getProductId());
+            product.setCategory(productCategory);
+
+            productRepository.save(product);
+        });
+
+        return findAllProductCategory();
     }
 
     public void deleteProductCategory(List<String> productIdList, String productCategoryId) {

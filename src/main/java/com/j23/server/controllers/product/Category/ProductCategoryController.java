@@ -1,7 +1,9 @@
 package com.j23.server.controllers.product.Category;
 
 import com.j23.server.configuration.ResponseHandler;
+import com.j23.server.models.product.Product;
 import com.j23.server.models.product.ProductCategory;
+import com.j23.server.models.product.UnassignedProduct;
 import com.j23.server.repos.product.ProductCategoryRepository;
 import com.j23.server.services.product.ProductCategoryService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -42,11 +44,17 @@ public class ProductCategoryController {
         return ResponseHandler.generateResponse("Successfully added category!", HttpStatus.OK, result);
     }
 
-    @PutMapping({"/update"})
+    @PutMapping({"/update/name"})
     public ResponseEntity<Object> updateCategory(@RequestBody ProductCategory productCategory) {
 
         ProductCategory result = productCategoryService.updateProductCategory(productCategory);
-        return ResponseHandler.generateResponse("Successfully updated category!", HttpStatus.OK, result);
+        return ResponseHandler.generateResponse("Successfully updated category name!", HttpStatus.OK, result);
+    }
+
+    @PutMapping({"/update/productList"})
+    public ResponseEntity<Object> updateUnassignedProductList(@RequestBody List<UnassignedProduct> unassignedProduct) {
+        List<ProductCategory> productList = productCategoryService.updateUnassignedProductCategory(unassignedProduct);
+        return ResponseHandler.generateResponse("Successfully updated unassigned product!", HttpStatus.OK, productList);
     }
 
     @GetMapping({"/delete"})
