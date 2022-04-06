@@ -11,6 +11,8 @@ import java.io.*;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
+import java.util.List;
+import java.util.UUID;
 
 @RestController
 @CrossOrigin(allowCredentials = "true", origins = {"http://localhost:4200", "http://127.0.0.1:4200"})
@@ -21,7 +23,7 @@ public class ImageController {
 //    String productFolder = "D:\\ImageData\\Product\\";
 //    String userFolder = "D:\\ImageData\\User\\";
 
-//    //    For Mac
+    //    //    For Mac
     String home = System.getProperty("user.home");
     String productFolder = home + "/Desktop/Jeremy/Selfservice/Product/";
     String userFolder = home + "/Desktop/Jeremy/Selfservice/User/";
@@ -71,25 +73,29 @@ public class ImageController {
 
     @PostMapping("/product/upload")
     public ResponseEntity<?> uploadProductImage(
-            @RequestParam("name") String name,
-            @RequestParam("file") MultipartFile file
-    ) {
+            @RequestParam String name,
+            @RequestParam("files") List<MultipartFile> files) throws IOException {
 
-        if (file.isEmpty()) {
+        if (files.isEmpty()) {
             throw new RuntimeException("File given is  not valid");
         }
 
-        String fileName = file.getOriginalFilename();
+        // create folder if not exists
+        Path pathFolder = Paths.get(productFolder);
+        Files.createDirectories(pathFolder);
 
-        try {
-            Path pathFolder = Paths.get(productFolder);
-            Files.createDirectories(pathFolder);
-            Path pathFile = Paths.get(productFolder + name + "." + fileName.substring(fileName.lastIndexOf(".") + 1));
-
-            Files.write(pathFile, file.getBytes());
-        } catch (IOException e) {
-            throw new RuntimeException(e);
+        // add in folder
+        for (int i = 0; i < files.size(); i++) {
+            String fileName = files.get(i).getOriginalFilename();
+            Path pathFile = Paths.get(productFolder + name + "_" + i + "." + fileName.substring(fileName.lastIndexOf(".") + 1));
+            try {
+                Files.write(pathFile, files.get(i).getBytes());
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
+            System.out.println("Current index is: " + i);
         }
+
 
         return new ResponseEntity<>(HttpStatus.OK);
     }
