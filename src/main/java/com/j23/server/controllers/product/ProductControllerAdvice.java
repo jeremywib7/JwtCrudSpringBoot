@@ -1,7 +1,7 @@
 package com.j23.server.controllers.product;
 
 
-import com.j23.server.exception.ProductNotFoundException;
+import com.j23.server.controllers.exception.ProductNotFoundException;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.ControllerAdvice;

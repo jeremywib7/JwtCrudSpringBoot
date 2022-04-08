@@ -1,5 +1,6 @@
 package com.j23.server.services.image;
 
+import org.apache.commons.io.FileUtils;
 import org.apache.tomcat.util.http.fileupload.IOUtils;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
@@ -17,9 +18,9 @@ import java.util.List;
 @Service
 public class ImageService {
 
-    String home = System.getProperty("user.home");
-    String productFolder = home + "/Desktop/Jeremy/Selfservice/Product/";
-    String userFolder = home + "/Desktop/Jeremy/Selfservice/User/";
+    public static String home = System.getProperty("user.home");
+    public static String productFolder = home + "/Desktop/Jeremy/Selfservice/Product/";
+    public static String userFolder = home + "/Desktop/Jeremy/Selfservice/User/";
 
     public void uploadProductImage(String name, List<MultipartFile> files) throws IOException {
         if (files.isEmpty()) {
@@ -67,8 +68,10 @@ public class ImageService {
     public void deleteProductImage(String imageFolder) {
         try {
             Path pathFolder = Paths.get(productFolder + imageFolder);
+            System.out.println("THE PATH : " + pathFolder);
             if (Files.exists(pathFolder)) {
-                Files.delete(pathFolder);
+                FileUtils.deleteDirectory(new File(String.valueOf(pathFolder)));
+//                Files.delete(pathFolder);
             }
         } catch (Exception e) {
             throw new RuntimeException(e);

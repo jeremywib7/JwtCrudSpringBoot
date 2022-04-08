@@ -2,12 +2,10 @@ package com.j23.server.controllers.product;
 
 import com.fasterxml.jackson.annotation.JsonView;
 import com.j23.server.configuration.ResponseHandler;
-import com.j23.server.exception.ProductNotFoundException;
 import com.j23.server.models.product.Product;
 import com.j23.server.models.product.UnassignedProduct;
 import com.j23.server.models.product.Views;
 import com.j23.server.repos.product.ProductRepository;
-import com.j23.server.services.product.ProductCategoryService;
 import com.j23.server.services.product.ProductService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
@@ -129,6 +127,15 @@ public class ProductController {
     public ResponseEntity<Object> deleteProductByName(@PathVariable("id") String id) {
 
         productService.deleteProductById(id);
+        return ResponseHandler.generateResponse("Successfully delete product!", HttpStatus.OK,
+                null);
+
+    }
+
+    @DeleteMapping("/delete/selected")
+    public ResponseEntity<Object> deleteSelectedProducts(@RequestParam List<String> id) {
+
+        productService.deleteSelectedProducts(id);
         return ResponseHandler.generateResponse("Successfully delete product!", HttpStatus.OK,
                 null);
 

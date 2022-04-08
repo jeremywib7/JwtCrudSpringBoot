@@ -1,4 +1,4 @@
-package com.j23.server.exception;
+package com.j23.server.controllers.exception;
 
 import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.ResponseStatus;

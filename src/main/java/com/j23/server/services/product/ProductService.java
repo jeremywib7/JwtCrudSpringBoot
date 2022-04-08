@@ -1,11 +1,11 @@
 package com.j23.server.services.product;
 
-import com.j23.server.exception.ProductNotFoundException;
 import com.j23.server.models.product.Product;
 import com.j23.server.models.product.ProductCategory;
 import com.j23.server.models.product.UnassignedProduct;
 import com.j23.server.repos.product.ProductCategoryRepository;
 import com.j23.server.repos.product.ProductRepository;
+import com.j23.server.services.image.ImageService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.*;
 import org.springframework.http.HttpStatus;
@@ -14,16 +14,16 @@ import org.springframework.web.server.ResponseStatusException;
 
 import java.math.BigDecimal;
 import java.time.LocalDateTime;
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Optional;
-import java.util.UUID;
+import java.util.*;
 
 @Service
 public class ProductService {
 
     @Autowired
     private ProductRepository productRepository;
+
+    @Autowired
+    private ImageService imageService;
 
     @Autowired
     private ProductCategoryService productCategoryService;
@@ -52,11 +52,13 @@ public class ProductService {
 
     public void deleteProductById(String id) {
 
-        if (!productRepository.existsById(id)) {
-            throw new ProductNotFoundException(id);
-        }
+        Product product = productRepository.findProductById(id);
 
         productRepository.deleteProductById(id);
+        imageService.deleteProductImage(product.getName());
+    }
+
+    public void deleteSelectedProducts(List<String> id) {
     }
 
     public Page<Product> findAllProduct(Pageable pageable, Long minCalories, Long maxCalories,

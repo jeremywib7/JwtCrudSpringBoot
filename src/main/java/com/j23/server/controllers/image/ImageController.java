@@ -30,6 +30,14 @@ public class ImageController {
     @Autowired
     private ImageService imageService;
 
+    @PostMapping("/product/upload")
+    public ResponseEntity<?> uploadProductImage(
+            @RequestParam String name,
+            @RequestParam("files") List<MultipartFile> files) throws IOException {
+        imageService.uploadProductImage(name, files);
+        return new ResponseEntity<>(HttpStatus.OK);
+    }
+
     @GetMapping("/product/download")
     public void downloadProductImage(
             @RequestParam("imageName") String imageName,
@@ -59,15 +67,6 @@ public class ImageController {
         }
 
     }
-
-    @PostMapping("/product/upload")
-    public ResponseEntity<?> uploadProductImage(
-            @RequestParam String name,
-            @RequestParam("files") List<MultipartFile> files) throws IOException {
-        imageService.uploadProductImage(name, files);
-        return new ResponseEntity<>(HttpStatus.OK);
-    }
-
 
     @PostMapping("/user/upload")
     public ResponseEntity<?> uploadUserImage(
