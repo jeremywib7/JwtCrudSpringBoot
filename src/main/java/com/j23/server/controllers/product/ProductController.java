@@ -128,10 +128,6 @@ public class ProductController {
     @DeleteMapping("/delete/{id}")
     public ResponseEntity<Object> deleteProductByName(@PathVariable("id") String id) {
 
-        if (!productRepository.existsById(id)) {
-            throw new ProductNotFoundException(id);
-        }
-
         productService.deleteProductById(id);
         return ResponseHandler.generateResponse("Successfully delete product!", HttpStatus.OK,
                 null);

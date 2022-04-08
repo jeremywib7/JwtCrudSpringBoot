@@ -1,6 +1,8 @@
-package com.j23.server.controllers;
+package com.j23.server.controllers.image;
 
+import com.j23.server.services.image.ImageService;
 import org.apache.tomcat.util.http.fileupload.IOUtils;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -12,10 +14,8 @@ import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.util.List;
-import java.util.UUID;
 
 @RestController
-@CrossOrigin(allowCredentials = "true", origins = {"http://localhost:4200", "http://127.0.0.1:4200"})
 @RequestMapping("/images")
 public class ImageController {
 
@@ -25,29 +25,18 @@ public class ImageController {
 
     //    //    For Mac
     String home = System.getProperty("user.home");
-    String productFolder = home + "/Desktop/Jeremy/Selfservice/Product/";
     String userFolder = home + "/Desktop/Jeremy/Selfservice/User/";
 
-    @GetMapping("/product/download/{name}")
+    @Autowired
+    private ImageService imageService;
+
+    @GetMapping("/product/download")
     public void downloadProductImage(
-            @PathVariable("name") String name,
+            @RequestParam("imageName") String imageName,
+            @RequestParam("productName") String productName,
             HttpServletResponse response) {
+        imageService.downloadProductImage(imageName, productName, response);
 
-        File fileToDownload = new File(productFolder + name);
-
-
-        if (!fileToDownload.exists()) {
-            fileToDownload = new File(productFolder + "defaultproduct.png");
-        }
-
-        try (InputStream inputStream = new FileInputStream(fileToDownload)) {
-            response.setContentType("application/force-download");
-            response.setHeader("Content-Disposition", "attachment: filename=" + name);
-            IOUtils.copy(inputStream, response.getOutputStream());
-            response.flushBuffer();
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
     }
 
     @GetMapping("/user/download/{username}")
@@ -75,28 +64,7 @@ public class ImageController {
     public ResponseEntity<?> uploadProductImage(
             @RequestParam String name,
             @RequestParam("files") List<MultipartFile> files) throws IOException {
-
-        if (files.isEmpty()) {
-            throw new RuntimeException("File given is  not valid");
-        }
-
-        // create folder if not exists
-        Path pathFolder = Paths.get(productFolder);
-        Files.createDirectories(pathFolder);
-
-        // add in folder
-        for (int i = 0; i < files.size(); i++) {
-            String fileName = files.get(i).getOriginalFilename();
-            Path pathFile = Paths.get(productFolder + name + "_" + i + "." + fileName.substring(fileName.lastIndexOf(".") + 1));
-            try {
-                Files.write(pathFile, files.get(i).getBytes());
-            } catch (IOException e) {
-                e.printStackTrace();
-            }
-            System.out.println("Current index is: " + i);
-        }
-
-
+        imageService.uploadProductImage(name, files);
         return new ResponseEntity<>(HttpStatus.OK);
     }
 
@@ -123,20 +91,10 @@ public class ImageController {
         return new ResponseEntity<>(HttpStatus.OK);
     }
 
-    @DeleteMapping("/user/delete/{imageUrl}")
-    public void deleteFile(@PathVariable("imageUrl") String imageUrl) {
-
-        String folder = "D:\\ImageData\\Product\\";
-
-        try {
-            Path pathFile = Paths.get(folder + imageUrl);
-            if (Files.exists(pathFile)) {
-                Files.delete(pathFile);
-            }
-        } catch (Exception e) {
-            throw new RuntimeException(e);
-        }
-
+    @DeleteMapping("/product/delete/")
+    public ResponseEntity<Object> deleteProduct(@RequestParam String name) {
+        imageService.deleteProductImage(name);
+        return new ResponseEntity<>(HttpStatus.OK);
     }
 
 }

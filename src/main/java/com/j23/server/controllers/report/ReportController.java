@@ -1,4 +1,4 @@
-package com.j23.server.controllers;
+package com.j23.server.controllers.report;
 
 import com.j23.server.services.auth.UserService;
 import com.j23.server.services.product.ProductService;
