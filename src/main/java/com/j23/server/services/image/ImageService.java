@@ -81,7 +81,7 @@ public class ImageService {
         Resource resource = new UrlResource(filePath.toUri());
         HttpHeaders httpHeaders = new HttpHeaders();
         httpHeaders.add("File-Name", imageName);
-        httpHeaders.add(HttpHeaders.CONTENT_DISPOSITION, "attachment;File-Name=" + imageName);
+        httpHeaders.add(HttpHeaders.CONTENT_DISPOSITION, "attachment;File-Name=" + resource.getFilename());
 
         return ResponseEntity.ok().contentType(MediaType.parseMediaType(Files.probeContentType(filePath)))
                 .headers(httpHeaders).body(resource);

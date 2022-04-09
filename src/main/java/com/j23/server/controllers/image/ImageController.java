@@ -3,6 +3,7 @@ package com.j23.server.controllers.image;
 import com.j23.server.services.image.ImageService;
 import org.apache.tomcat.util.http.fileupload.IOUtils;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.core.io.Resource;
 import org.springframework.http.HttpEntity;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -45,7 +46,13 @@ public class ImageController {
             @RequestParam("productName") String productName,
             HttpServletResponse response) {
         imageService.downloadProductImage(imageName, productName, response);
+    }
 
+    @GetMapping("/product/download/file")
+    public ResponseEntity<Resource> downloadProductImageAsFile(
+            @RequestParam("imageName") String imageName,
+            @RequestParam("productName") String productName) throws IOException {
+        return imageService.downloadProductImageAsFile(imageName, productName);
     }
 
     @GetMapping("/user/download/{username}")
