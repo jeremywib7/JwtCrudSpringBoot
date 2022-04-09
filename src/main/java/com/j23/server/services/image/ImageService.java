@@ -1,19 +1,24 @@
 package com.j23.server.services.image;
 
 import org.apache.commons.io.FileUtils;
-import org.apache.tomcat.util.http.fileupload.IOUtils;
+import org.apache.commons.io.IOUtils;
+import org.springframework.core.io.Resource;
+import org.springframework.core.io.UrlResource;
+import org.springframework.http.HttpHeaders;
+import org.springframework.http.MediaType;
+import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
 
 import javax.servlet.http.HttpServletResponse;
-import java.io.File;
-import java.io.FileInputStream;
-import java.io.IOException;
-import java.io.InputStream;
+import java.io.*;
+import java.net.MalformedURLException;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.util.List;
+
+import static org.apache.commons.io.filefilter.DirectoryFileFilter.DIRECTORY;
 
 @Service
 public class ImageService {
@@ -48,11 +53,13 @@ public class ImageService {
     }
 
     public void downloadProductImage(String imageName, String productName, HttpServletResponse response) {
+
         File fileToDownload = new File(productFolder + productName + "/" + imageName);
 
         if (!fileToDownload.exists()) {
             fileToDownload = new File(productFolder + "defaultproduct.png");
         }
+
 
         try (InputStream inputStream = new FileInputStream(fileToDownload)) {
             response.setContentType("application/force-download");
@@ -62,6 +69,22 @@ public class ImageService {
         } catch (IOException e) {
             e.printStackTrace();
         }
+    }
+
+    public ResponseEntity<Resource> downloadProductImageAsFile(String imageName, String productName) throws IOException {
+        Path filePath = Paths.get(productFolder + productName).toAbsolutePath().normalize().resolve(imageName);
+
+        if (!Files.exists(filePath)) {
+            throw new FileNotFoundException(imageName + " was not found in the server");
+        }
+
+        Resource resource = new UrlResource(filePath.toUri());
+        HttpHeaders httpHeaders = new HttpHeaders();
+        httpHeaders.add("File-Name", imageName);
+        httpHeaders.add(HttpHeaders.CONTENT_DISPOSITION, "attachment;File-Name=" + imageName);
+
+        return ResponseEntity.ok().contentType(MediaType.parseMediaType(Files.probeContentType(filePath)))
+                .headers(httpHeaders).body(resource);
     }
 
     // delete a folder with product name
