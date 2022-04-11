@@ -26,26 +26,30 @@ public class ImageService {
     public static String userFolder = home + "/Desktop/Jeremy/Selfservice/User/";
 
     public void uploadProductImage(String productId, List<MultipartFile> files) throws IOException {
-        if (files.isEmpty()) {
-            throw new RuntimeException("File given is  not valid");
-        }
+        if (!files.isEmpty()) {
+            // folder format (productFolder + productName)
+            Path pathFolder = Paths.get(productFolder + productId);
 
-        // create folder if not exists
-        // folder format (productFolder + productName)
-        Path pathFolder = Paths.get(productFolder + productId);
-        Files.createDirectories(pathFolder);
+            // clean all folder in directory
+            if (Files.exists(pathFolder)) {
+                FileUtils.cleanDirectory(new File(String.valueOf(pathFolder)));
+            }
 
-        // add in folder
-        for (int i = 0; i < files.size(); i++) {
-            String fileName = files.get(i).getOriginalFilename();
+            // create folder if not exists
+            Files.createDirectories(pathFolder);
 
-            // format (Folder/productName/image_0.jpeg)
-            assert fileName != null;
-            Path pathFile = Paths.get(pathFolder + "/" + i + "." + fileName.substring(fileName.lastIndexOf(".") + 1));
-            try {
-                Files.write(pathFile, files.get(i).getBytes());
-            } catch (IOException e) {
-                e.printStackTrace();
+            // add in folder
+            for (int i = 0; i < files.size(); i++) {
+                String fileName = files.get(i).getOriginalFilename();
+
+                // format (Folder/productName/index.jpeg)
+                assert fileName != null;
+                Path pathFile = Paths.get(pathFolder + "/" + i + "." + fileName.substring(fileName.lastIndexOf(".") + 1));
+                try {
+                    Files.write(pathFile, files.get(i).getBytes());
+                } catch (IOException e) {
+                    e.printStackTrace();
+                }
             }
         }
     }
@@ -72,7 +76,7 @@ public class ImageService {
         Path filePath = Paths.get(productFolder + folderId).toAbsolutePath().normalize().resolve(imageName);
 
         if (!Files.exists(filePath)) {
-            throw new FileNotFoundException(imageName + " was not found in the server");
+            filePath = Paths.get(productFolder + "defaultproduct.png");
         }
 
         Resource resource = new UrlResource(filePath.toUri());
@@ -85,7 +89,7 @@ public class ImageService {
     }
 
     // delete a folder with product name
-    public void deleteProductImage(String folderId) {
+    public void deletePath(String folderId) {
         try {
             Path pathFolder = Paths.get(productFolder + folderId);
             System.out.println("THE PATH : " + pathFolder);

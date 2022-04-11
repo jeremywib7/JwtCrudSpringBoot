@@ -35,8 +35,10 @@ public class ImageController {
     @PostMapping("/product/upload")
     public ResponseEntity<?> uploadProductImage(
             @RequestParam String productId,
-            @RequestParam("files") List<MultipartFile> files) throws IOException {
-        imageService.uploadProductImage(productId, files);
+            @RequestParam(value = "files", required = false) List<MultipartFile> files) throws IOException {
+        if (files != null) {
+            imageService.uploadProductImage(productId, files);
+        }
         return new ResponseEntity<>(HttpStatus.OK);
     }
 
@@ -99,8 +101,8 @@ public class ImageController {
     }
 
     @DeleteMapping("/product/delete/")
-    public ResponseEntity<Object> deleteProduct(@RequestParam String name) {
-        imageService.deleteProductImage(name);
+    public ResponseEntity<Object> deleteProduct(@RequestParam String id) {
+        imageService.deletePath(id);
         return new ResponseEntity<>(HttpStatus.OK);
     }
 

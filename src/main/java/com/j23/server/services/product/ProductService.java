@@ -51,14 +51,21 @@ public class ProductService {
     }
 
     public void deleteProductById(String id) {
-
-        Product product = productRepository.findProductById(id);
-
+        // delete in database
         productRepository.deleteProductById(id);
-        imageService.deleteProductImage(product.getName());
+
+        // delete folder image
+        imageService.deletePath(id);
     }
 
     public void deleteSelectedProducts(List<String> id) {
+        id.forEach(value -> {
+            // delete in database
+            productRepository.deleteProductById(value);
+
+            // delete folder image
+            imageService.deletePath(value);
+        });
     }
 
     public Page<Product> findAllProduct(Pageable pageable, Long minCalories, Long maxCalories,
