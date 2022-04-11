@@ -18,8 +18,6 @@ import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.util.List;
 
-import static org.apache.commons.io.filefilter.DirectoryFileFilter.DIRECTORY;
-
 @Service
 public class ImageService {
 
@@ -27,14 +25,14 @@ public class ImageService {
     public static String productFolder = home + "/Desktop/Jeremy/Selfservice/Product/";
     public static String userFolder = home + "/Desktop/Jeremy/Selfservice/User/";
 
-    public void uploadProductImage(String name, List<MultipartFile> files) throws IOException {
+    public void uploadProductImage(String productId, List<MultipartFile> files) throws IOException {
         if (files.isEmpty()) {
             throw new RuntimeException("File given is  not valid");
         }
 
         // create folder if not exists
         // folder format (productFolder + productName)
-        Path pathFolder = Paths.get(productFolder + name);
+        Path pathFolder = Paths.get(productFolder + productId);
         Files.createDirectories(pathFolder);
 
         // add in folder
@@ -52,14 +50,13 @@ public class ImageService {
         }
     }
 
-    public void downloadProductImage(String imageName, String productName, HttpServletResponse response) {
+    public void downloadProductImage(String imageName, String productId, HttpServletResponse response) {
 
-        File fileToDownload = new File(productFolder + productName + "/" + imageName);
+        File fileToDownload = new File(productFolder + productId + "/" + imageName);
 
         if (!fileToDownload.exists()) {
             fileToDownload = new File(productFolder + "defaultproduct.png");
         }
-
 
         try (InputStream inputStream = new FileInputStream(fileToDownload)) {
             response.setContentType("application/force-download");
@@ -71,8 +68,8 @@ public class ImageService {
         }
     }
 
-    public ResponseEntity<Resource> downloadProductImageAsFile(String imageName, String productName) throws IOException {
-        Path filePath = Paths.get(productFolder + productName).toAbsolutePath().normalize().resolve(imageName);
+    public ResponseEntity<Resource> downloadProductImageAsFile(String imageName, String folderId) throws IOException {
+        Path filePath = Paths.get(productFolder + folderId).toAbsolutePath().normalize().resolve(imageName);
 
         if (!Files.exists(filePath)) {
             throw new FileNotFoundException(imageName + " was not found in the server");
@@ -88,9 +85,9 @@ public class ImageService {
     }
 
     // delete a folder with product name
-    public void deleteProductImage(String imageFolder) {
+    public void deleteProductImage(String folderId) {
         try {
-            Path pathFolder = Paths.get(productFolder + imageFolder);
+            Path pathFolder = Paths.get(productFolder + folderId);
             System.out.println("THE PATH : " + pathFolder);
             if (Files.exists(pathFolder)) {
                 FileUtils.deleteDirectory(new File(String.valueOf(pathFolder)));

@@ -34,25 +34,25 @@ public class ImageController {
 
     @PostMapping("/product/upload")
     public ResponseEntity<?> uploadProductImage(
-            @RequestParam String name,
+            @RequestParam String productId,
             @RequestParam("files") List<MultipartFile> files) throws IOException {
-        imageService.uploadProductImage(name, files);
+        imageService.uploadProductImage(productId, files);
         return new ResponseEntity<>(HttpStatus.OK);
     }
 
     @GetMapping("/product/download")
     public void downloadProductImage(
             @RequestParam("imageName") String imageName,
-            @RequestParam("productName") String productName,
+            @RequestParam("productId") String productId,
             HttpServletResponse response) {
-        imageService.downloadProductImage(imageName, productName, response);
+        imageService.downloadProductImage(imageName, productId, response);
     }
 
     @GetMapping("/product/download/file")
     public ResponseEntity<Resource> downloadProductImageAsFile(
             @RequestParam("imageName") String imageName,
-            @RequestParam("productName") String productName) throws IOException {
-        return imageService.downloadProductImageAsFile(imageName, productName);
+            @RequestParam("productId") String productId) throws IOException {
+        return imageService.downloadProductImageAsFile(imageName, productId);
     }
 
     @GetMapping("/user/download/{username}")
