@@ -31,19 +31,18 @@ public class JwtController {
     private JwtUtil jwtUtil;
 
     @PostMapping({"/authenticate"})
-    public JwtResponse createJwtToken(@RequestBody JwtRequest jwtRequest, HttpServletResponse response) throws Exception {
+    public JwtResponse createJwtToken(@RequestBody JwtRequest jwtRequest) {
 //        test cookie
-        Cookie cookie = new Cookie("cookie", "one_cookie_for_you");
+//        Cookie cookie = new Cookie("cookie", "one_cookie_for_you");
 
-        cookie.setMaxAge(7 * 24 * 60 * 60); // expires in 7 days
-        cookie.setSecure(false);
-        cookie.setHttpOnly(true);
-        cookie.setPath("/");
+//        cookie.setMaxAge(7 * 24 * 60 * 60); // expires in 7 days
+//        cookie.setSecure(false);
+//        cookie.setHttpOnly(true);
+//        cookie.setPath("/");
 //        response.setHeader("Access-Control-Allow-Credentials", "true");
-        cookie.setDomain("localhost");
+//        cookie.setDomain("localhost");
 
-        response.addCookie(cookie);
-
+//        response.addCookie(cookie);
         return jwtService.createJwtToken(jwtRequest);
     }
 

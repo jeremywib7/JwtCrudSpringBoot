@@ -14,7 +14,8 @@ public class CrossOriginConfiguration implements WebMvcConfigurer {
     @Override
     public void addCorsMappings(CorsRegistry registry) {
         registry.addMapping("/**")
-                .allowedOrigins("http://localhost:4200", "http://127.0.0.1:4200")
+                .allowedOrigins("http://localhost:4200", "http://127.0.0.1:4200", "http://localhost:4201",
+                        "http://127.0.0.1:4201")
                 .allowedMethods("GET", "PUT", "POST", "DELETE")
 //                .allowedHeaders("Origin", "Access-Control-Allow-Origin", "Content-Type",
 //                        "Accept", "Jwt-Token", "Authorization", "Origin, Accept", "X-Requested-With",
