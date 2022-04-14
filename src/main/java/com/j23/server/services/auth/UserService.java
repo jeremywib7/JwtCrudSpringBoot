@@ -6,10 +6,12 @@ import com.j23.server.models.auth.User;
 import com.j23.server.repos.auth.RoleRepo;
 import com.j23.server.repos.auth.UserRepo;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.rest.webmvc.ResourceNotFoundException;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
+import java.io.IOException;
 import java.time.LocalDate;
 import java.util.List;
 import java.util.UUID;
@@ -42,7 +44,8 @@ public class UserService {
     }
 
     public User findUserByUsername(String username) {
-        return userRepo.findById(username).orElseThrow(() -> new UserNotFoundException("username " + username + " was not found"));
+        return userRepo.findUserByUsername(username).orElseThrow(() ->
+                new UserNotFoundException("username " + username + " was not found"));
     }
 
     public void deleteUserByUsername(String username) {
@@ -50,7 +53,7 @@ public class UserService {
     }
 
     public User registerNewUser(User user) {
-        user.setUserCode(String.valueOf(UUID.randomUUID()));
+        user.setId(String.valueOf(UUID.randomUUID()));
         user.setUserPassword(getEncodedPassword("1234"));
         return userRepo.save(user);
     }
@@ -67,8 +70,20 @@ public class UserService {
         userRole.setRoleDescription("User role");
         roleRepo.save(userRole);
 
+        Role customerRole = new Role();
+        customerRole.setRoleName("Customer");
+        customerRole.setRoleDescription("Customer role");
+        roleRepo.save(customerRole);
+//
+        Role cashierRole = new Role();
+        cashierRole.setRoleName("Cashier");
+        cashierRole.setRoleDescription("Cashier role");
+        roleRepo.save(cashierRole);
+
+
 //        create user with role
         User adminUser = new User();
+        adminUser.setId("Iam Cool");
         adminUser.setUserFirstName("Admin");
         adminUser.setUserLastName("Admin");
         adminUser.setDateJoined(LocalDate.now());
@@ -77,6 +92,17 @@ public class UserService {
         adminUser.setUserPassword(getEncodedPassword("admin@pass"));
         adminUser.setRole(adminRole);
         userRepo.save(adminUser);
+
+        User customerUser = new User();
+        customerUser.setId("1234aa");
+        customerUser.setUserFirstName("John");
+        customerUser.setUserLastName("Doe");
+        customerUser.setDateJoined(LocalDate.now());
+        customerUser.setActive(true);
+        customerUser.setUsername("John");
+        customerUser.setUserPassword(getEncodedPassword("customer@pass"));
+        customerUser.setRole(customerRole);
+        userRepo.save(customerUser);
 
     }
 

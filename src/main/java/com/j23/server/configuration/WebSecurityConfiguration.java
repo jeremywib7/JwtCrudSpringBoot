@@ -44,6 +44,7 @@ public class WebSecurityConfiguration extends WebSecurityConfigurerAdapter {
                 .disable()
                 .authorizeRequests().antMatchers(
                         "/authenticate",
+                        "/authenticate/customer",
                         "/checkJWT",
                         "/reports/user/report",
                         "/waitingList",

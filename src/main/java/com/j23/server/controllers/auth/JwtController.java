@@ -1,14 +1,16 @@
 package com.j23.server.controllers.auth;
 
 import com.j23.server.configuration.ResponseHandler;
-import com.j23.server.models.auth.JwtRequest;
-import com.j23.server.models.auth.JwtResponse;
+import com.j23.server.controllers.exception.UserNotFoundException;
+import com.j23.server.models.auth.*;
+import com.j23.server.repos.auth.CustomerRepo;
 import com.j23.server.services.auth.JwtService;
 import com.j23.server.util.JwtUtil;
 import io.jsonwebtoken.ExpiredJwtException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.web.bind.annotation.*;
 
 import javax.servlet.http.Cookie;
@@ -21,29 +23,17 @@ import com.auth0.jwt.JWT;
 import com.auth0.jwt.interfaces.DecodedJWT;
 
 @RestController
-@CrossOrigin(origins = {"http://localhost:4200", "http://127.0.0.1:4200"})
 public class JwtController {
-    //
+
     @Autowired
     private JwtService jwtService;
 
     @Autowired
-    private JwtUtil jwtUtil;
+    private CustomerRepo customerRepo;
 
     @PostMapping({"/authenticate"})
     public JwtResponse createJwtToken(@RequestBody JwtRequest jwtRequest) {
-//        test cookie
-//        Cookie cookie = new Cookie("cookie", "one_cookie_for_you");
-
-//        cookie.setMaxAge(7 * 24 * 60 * 60); // expires in 7 days
-//        cookie.setSecure(false);
-//        cookie.setHttpOnly(true);
-//        cookie.setPath("/");
-//        response.setHeader("Access-Control-Allow-Credentials", "true");
-//        cookie.setDomain("localhost");
-
-//        response.addCookie(cookie);
-        return jwtService.createJwtToken(jwtRequest);
+        return jwtService.createJwtTokenForUser(jwtRequest);
     }
 
     @GetMapping("/checkJWT")
