@@ -1,7 +1,7 @@
 package com.j23.server.services.auth;
 
 import com.j23.server.models.auth.*;
-import com.j23.server.repos.auth.CustomerRepo;
+import com.j23.server.repos.customer.CustomerRepo;
 import com.j23.server.repos.auth.UserRepo;
 import com.j23.server.util.JwtUtil;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -51,22 +51,6 @@ public class JwtService implements UserDetailsService {
 
         return new JwtResponse(user, newGeneratedToken, refreshToken);
     }
-
-    //     for external
-    public CustomerJwtResponse createJwtTokenForCustomer(JwtRequest jwtRequest) {
-        String userName = jwtRequest.getUserName();
-        String userPass = jwtRequest.getUserPassword();
-
-        authenticate(userName, userPass);
-
-        final UserDetails userDetails = loadUserByUsername(userName);
-
-        String newGeneratedToken = jwtUtil.generateJwtToken(userDetails);
-        String refreshToken = jwtUtil.generateRefreshToken(userDetails);
-
-        Customer customer = customerRepo.findByUsername(userName);
-
-        return new CustomerJwtResponse(customer, newGeneratedToken, refreshToken);    }
 
 
     @Override

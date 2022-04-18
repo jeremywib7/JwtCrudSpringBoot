@@ -1,20 +1,14 @@
 package com.j23.server.controllers.auth;
 
 import com.j23.server.configuration.ResponseHandler;
-import com.j23.server.controllers.exception.UserNotFoundException;
 import com.j23.server.models.auth.*;
-import com.j23.server.repos.auth.CustomerRepo;
+import com.j23.server.repos.customer.CustomerRepo;
 import com.j23.server.services.auth.JwtService;
-import com.j23.server.util.JwtUtil;
-import io.jsonwebtoken.ExpiredJwtException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.web.bind.annotation.*;
 
-import javax.servlet.http.Cookie;
-import javax.servlet.http.HttpServletResponse;
 import java.util.Date;
 import java.util.LinkedHashMap;
 import java.util.Map;

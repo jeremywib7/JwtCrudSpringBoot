@@ -1,4 +1,4 @@
-package com.j23.server.repos.auth;
+package com.j23.server.repos.customer;
 
 import com.j23.server.models.auth.Customer;
 import com.j23.server.models.auth.User;

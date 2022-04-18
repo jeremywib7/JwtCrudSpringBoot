@@ -28,6 +28,7 @@ public class User {
 
     private String userFirstName;
     private String userLastName;
+    private String imageUrl;
     private boolean active;
     private String userPassword;
     private String gender;

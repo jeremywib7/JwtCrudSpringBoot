@@ -1,10 +1,8 @@
 package com.j23.server.controllers.customerOrder;
 
-import com.fasterxml.jackson.annotation.JsonView;
 import com.j23.server.configuration.ResponseHandler;
 import com.j23.server.models.customerOrder.CustomerOrder;
-import com.j23.server.models.product.Views;
-import com.j23.server.services.customerOrder.CustomerOrderService;
+import com.j23.server.services.customer.CustomerOrderService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;

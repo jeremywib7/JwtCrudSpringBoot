@@ -1,4 +1,4 @@
-package com.j23.server.repos.customerOrder;
+package com.j23.server.repos.customer;
 
 import com.j23.server.models.customerOrder.CustomerOrder;
 import org.springframework.data.jpa.repository.JpaRepository;
