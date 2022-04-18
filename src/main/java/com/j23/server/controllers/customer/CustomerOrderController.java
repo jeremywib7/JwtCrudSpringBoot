@@ -1,7 +1,7 @@
-package com.j23.server.controllers.customerOrder;
+package com.j23.server.controllers.customer;
 
 import com.j23.server.configuration.ResponseHandler;
-import com.j23.server.models.customerOrder.CustomerOrder;
+import com.j23.server.models.customer.CustomerOrder;
 import com.j23.server.services.customer.CustomerOrderService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;

@@ -44,14 +44,16 @@ public class WebSecurityConfiguration extends WebSecurityConfigurerAdapter {
                 .disable()
                 .authorizeRequests().antMatchers(
                         "/authenticate",
-                        "/authenticate/customer",
                         "/checkJWT",
                         "/reports/user/report",
                         "/waitingList",
 
                         // for product display
                         "/product/customer/all/table",
-                        "/images/customer/product/download/file"
+                        "/images/customer/product/download/file",
+
+                        // for customer
+                        "/customer/register"
                 ).permitAll()
                 .antMatchers(HttpHeaders.ALLOW).permitAll()
                 .anyRequest().authenticated()

@@ -3,7 +3,6 @@ package com.j23.server.configuration;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 
-import java.util.HashMap;
 import java.util.LinkedHashMap;
 import java.util.Map;
 
@@ -15,6 +14,6 @@ public class ResponseHandler {
         map.put("message", message);
         map.put("data", responseObj);
 
-        return new ResponseEntity<Object>(map,status);
+        return new ResponseEntity<>(map, status);
     }
 }

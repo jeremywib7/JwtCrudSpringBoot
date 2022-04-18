@@ -1,4 +1,4 @@
-package com.j23.server.models.customerOrder;
+package com.j23.server.models.customer;
 
 import com.fasterxml.jackson.annotation.JsonFormat;
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;

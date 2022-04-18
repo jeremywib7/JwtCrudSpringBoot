@@ -1,4 +1,4 @@
-package com.j23.server.models.customerOrder;
+package com.j23.server.models.customer;
 
 import lombok.Data;
 import lombok.Getter;

@@ -1,6 +1,6 @@
 package com.j23.server.services.customer;
 
-import com.j23.server.models.customerOrder.CustomerOrder;
+import com.j23.server.models.customer.CustomerOrder;
 import com.j23.server.repos.customer.CustomerOrderRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
