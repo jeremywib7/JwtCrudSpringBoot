@@ -1,7 +1,7 @@
 package com.j23.server.services.auth;
 
 import com.j23.server.models.auth.*;
-import com.j23.server.repos.customer.CustomerRepo;
+import com.j23.server.repos.customer.CustomerProfileRepo;
 import com.j23.server.repos.auth.UserRepo;
 import com.j23.server.util.JwtUtil;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -27,7 +27,7 @@ public class JwtService implements UserDetailsService {
     private UserRepo userRepo;
 
     @Autowired
-    private CustomerRepo customerRepo;
+    private CustomerProfileRepo customerProfileRepo;
 
     @Autowired
     private JwtUtil jwtUtil;

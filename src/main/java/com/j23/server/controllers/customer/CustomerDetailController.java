@@ -1,8 +1,9 @@
 package com.j23.server.controllers.customer;
 
 import com.j23.server.configuration.ResponseHandler;
-import com.j23.server.models.customer.Customer;
-import com.j23.server.services.customer.CustomerService;
+import com.j23.server.models.customer.CustomerProfile;
+import com.j23.server.services.customer.CustomerCartService;
+import com.j23.server.services.customer.CustomerProfileService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -13,14 +14,18 @@ import org.springframework.web.bind.annotation.RestController;
 
 @RestController
 @RequestMapping("/customer")
-public class CustomerController {
+public class CustomerDetailController {
 
     @Autowired
-    private CustomerService customerService;
+    private CustomerProfileService customerProfileService;
+
+    @Autowired
+    private CustomerCartService customerCartService;
 
     @PostMapping({"/register"})
-    private ResponseEntity<Object> registerCustomer(@RequestBody Customer customer) {
-        Customer result = customerService.registerCustomer(customer);
+    private ResponseEntity<Object> registerCustomer(@RequestBody CustomerProfile customerProfile) {
+        CustomerProfile result = customerProfileService.registerCustomer(customerProfile);
+        customerCartService.createCart(customerProfile.getId());
 
         return ResponseHandler.generateResponse("Register success!", HttpStatus.OK, result);
     }

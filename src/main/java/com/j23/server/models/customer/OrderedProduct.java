@@ -4,10 +4,7 @@ import com.fasterxml.jackson.annotation.JsonIncludeProperties;
 import com.fasterxml.jackson.annotation.JsonView;
 import com.j23.server.models.product.Product;
 import com.j23.server.models.product.Views;
-import lombok.Data;
-import lombok.Getter;
-import lombok.Setter;
-import lombok.ToString;
+import lombok.*;
 
 import javax.persistence.*;
 import javax.validation.constraints.Max;
@@ -21,8 +18,7 @@ import javax.validation.constraints.Min;
 public class OrderedProduct {
 
     @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Integer id;
+    private String id;
 
     @JsonIncludeProperties(value = {"name","unitPrice","discount","discountedPrice"})
     @OneToOne(targetEntity = Product.class, cascade = CascadeType.ALL)
@@ -33,4 +29,5 @@ public class OrderedProduct {
     @Max(100000)
     @Column(name = "quantity")
     private Integer quantity;
+
 }

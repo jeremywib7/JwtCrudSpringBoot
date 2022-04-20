@@ -2,7 +2,7 @@ package com.j23.server.controllers.auth;
 
 import com.j23.server.configuration.ResponseHandler;
 import com.j23.server.models.auth.*;
-import com.j23.server.repos.customer.CustomerRepo;
+import com.j23.server.repos.customer.CustomerProfileRepo;
 import com.j23.server.services.auth.JwtService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
@@ -23,7 +23,7 @@ public class JwtController {
     private JwtService jwtService;
 
     @Autowired
-    private CustomerRepo customerRepo;
+    private CustomerProfileRepo customerProfileRepo;
 
     @PostMapping({"/authenticate"})
     public JwtResponse createJwtToken(@RequestBody JwtRequest jwtRequest) {

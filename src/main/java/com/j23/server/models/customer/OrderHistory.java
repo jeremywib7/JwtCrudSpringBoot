@@ -7,6 +7,7 @@ import lombok.ToString;
 
 import javax.persistence.Entity;
 import javax.persistence.Id;
+import javax.persistence.ManyToOne;
 
 @Entity
 @Data
@@ -17,4 +18,9 @@ public class OrderHistory {
 
     @Id
     private String id;
+
+    @ManyToOne
+    private CustomerProfile customerProfileDetail;
+
+
 }
