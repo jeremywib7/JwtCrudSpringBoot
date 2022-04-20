@@ -23,5 +23,6 @@ public class CustomerService {
 
         customer.setCreatedOn(LocalDateTime.now());
         return customerRepo.save(customer);
+
     }
 }
