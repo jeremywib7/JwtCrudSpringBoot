@@ -10,6 +10,7 @@ import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 import org.springframework.web.server.ResponseStatusException;
 
+import javax.annotation.PostConstruct;
 import java.time.LocalDateTime;
 import java.util.List;
 import java.util.UUID;
@@ -22,6 +23,15 @@ public class ProductCategoryService {
 
     @Autowired
     private ProductRepository productRepository;
+
+    public void createTestProduct() {
+        ProductCategory breakfast = new ProductCategory();
+        breakfast.setCategoryName("Breakfast");
+        breakfast.setCreatedOn(LocalDateTime.now());
+        breakfast.setUpdatedOn(LocalDateTime.now());
+        productCategoryRepository.save(breakfast);
+
+    }
 
     public void addUnassignedCategory() {
         ProductCategory productCategory = new ProductCategory();
