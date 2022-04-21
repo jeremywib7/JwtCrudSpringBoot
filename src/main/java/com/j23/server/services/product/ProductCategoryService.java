@@ -24,15 +24,6 @@ public class ProductCategoryService {
     @Autowired
     private ProductRepository productRepository;
 
-    public void createTestProduct() {
-        ProductCategory breakfast = new ProductCategory();
-        breakfast.setCategoryName("Breakfast");
-        breakfast.setCreatedOn(LocalDateTime.now());
-        breakfast.setUpdatedOn(LocalDateTime.now());
-        productCategoryRepository.save(breakfast);
-
-    }
-
     public void addUnassignedCategory() {
         ProductCategory productCategory = new ProductCategory();
         productCategory.setId("akisjasas-asajek-ajsoaks-ejakjenafe");

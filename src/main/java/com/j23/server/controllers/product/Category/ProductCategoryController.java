@@ -23,10 +23,10 @@ public class ProductCategoryController {
     @Autowired
     private ProductCategoryService productCategoryService;
 
+
     @PostConstruct
     public void initRolesAndUsers() {
         productCategoryService.addUnassignedCategory();
-        productCategoryService.createTestProduct();
     }
 
     @GetMapping("/all")
