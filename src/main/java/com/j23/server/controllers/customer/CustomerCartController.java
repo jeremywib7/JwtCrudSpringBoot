@@ -15,47 +15,43 @@ import java.util.List;
 @RequestMapping("/cart")
 public class CustomerCartController {
 
-    @Autowired
-    private CustomerCartService customerCartService;
+  @Autowired
+  private CustomerCartService customerCartService;
 
-    @GetMapping("/all")
-    public ResponseEntity<Object> findAllCustomerOrder() {
-        List<CustomerCart> customerCartList = customerCartService.findAllCustomerOrder();
-        return ResponseHandler.generateResponse("Successfully fetch all customer order!", HttpStatus.OK,
-                customerCartList);
-    }
 
-    @PostMapping("/add/product")
-    public ResponseEntity<Object> addProductToCart(
-            @RequestParam String customerId,
-            @RequestParam String productId,
-            @RequestParam Integer productQuantity
-    ) {
-        CustomerCart response = customerCartService.addProductToCart(customerId, productId, productQuantity);
-        return ResponseHandler.generateResponse("Successfully add product to cart!", HttpStatus.OK,
-                response);
-    }
 
-    @PostMapping("/update/product/quantity")
-    public ResponseEntity<Object> updateProductQtyInCart(
-            @RequestParam String customerId,
-            @RequestParam String productId,
-            @RequestParam Integer productQuantity
-    ) {
-        CustomerCart response = customerCartService.updateProductQuantityInCart(customerId, productId, productQuantity);
-        return ResponseHandler.generateResponse("Successfully update product quantity!", HttpStatus.OK,
-                response);
-    }
+  @GetMapping("/all")
+  public ResponseEntity<Object> findAllCustomerOrder() {
+    List<CustomerCart> customerCartList = customerCartService.findAllCustomerOrder();
+    return ResponseHandler.generateResponse("Successfully fetch all customer order!", HttpStatus.OK,
+      customerCartList);
+  }
 
-    @PostMapping("/delete/product")
-    public ResponseEntity<Object> deleteProductInCart(
-            @RequestParam String customerId,
-            @RequestParam String productId,
-            @RequestParam Integer productQuantity
-    ) {
-        CustomerCart response = customerCartService.addProductToCart(customerId, productId, productQuantity);
-        return ResponseHandler.generateResponse("Successfully update product quantity!", HttpStatus.OK,
-                response);
-    }
+//  @GetMapping
+//  public ResponseEntity<Object> findCustomerCart(@RequestParam id) {
+//    CustomerCart customerCart =
+//  }
+
+  @PostMapping("/update")
+  public ResponseEntity<Object> updateCart(
+    @RequestParam String customerId,
+    @RequestParam String productId,
+    @RequestParam Integer productQuantity
+  ) {
+    CustomerCart response = customerCartService.updateCart(customerId, productId, productQuantity);
+    return ResponseHandler.generateResponse("Successfully update cart!", HttpStatus.OK,
+      response);
+  }
+
+//    @PostMapping("/update/product/quantity")
+//    public ResponseEntity<Object> updateProductQtyInCart(
+//            @RequestParam String customerId,
+//            @RequestParam String productId,
+//            @RequestParam Integer productQuantity
+//    ) {
+//        CustomerCart response = customerCartService.updateProductQuantityInCart(customerId, productId, productQuantity);
+//        return ResponseHandler.generateResponse("Successfully update product quantity!", HttpStatus.OK,
+//                response);
+//    }
 
 }

@@ -1,79 +1,104 @@
 package com.j23.server.services.customer;
 
 import com.google.common.collect.Iterables;
-import com.j23.server.controllers.exception.ProductNotFoundException;
 import com.j23.server.models.customer.CustomerCart;
+import com.j23.server.models.customer.CustomerProfile;
 import com.j23.server.models.customer.OrderedProduct;
 import com.j23.server.models.product.Product;
 import com.j23.server.repos.customer.CustomerCartRepository;
+import com.j23.server.repos.customer.CustomerProfileRepo;
+import com.j23.server.repos.customer.OrderedProductRepo;
 import com.j23.server.repos.product.ProductRepository;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.stereotype.Service;
+import org.springframework.web.server.ResponseStatusException;
 
 import java.time.LocalDateTime;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.UUID;
 
 @Service
 public class CustomerCartService {
 
-    @Autowired
-    private CustomerCartRepository customerCartRepository;
+  @Autowired
+  private CustomerCartRepository customerCartRepository;
 
-    @Autowired
-    private ProductRepository productRepository;
+  @Autowired
+  private ProductRepository productRepository;
 
-    public List<CustomerCart> findAllCustomerOrder() {
-        return customerCartRepository.findAll();
-    }
+  @Autowired
+  private CustomerProfileRepo customerProfileRepo;
 
-    public void createCart(String customerId) {
-        CustomerCart customerCart = new CustomerCart();
-        customerCart.setId(customerId);
+  @Autowired
+  private OrderedProductRepo orderedProductRepo;
 
-        LocalDateTime localDateTime = LocalDateTime.now();
-        customerCart.setDateCreated(LocalDateTime.from(localDateTime));
+  public List<CustomerCart> findAllCustomerOrder() {
+    return customerCartRepository.findAll();
+  }
 
-        customerCartRepository.save(customerCart);
-    }
+  public CustomerCart createCart(CustomerProfile customerProfile) {
+    LocalDateTime localDateTime = LocalDateTime.now();
 
-    public CustomerCart addProductToCart(String customerId, String productId, Integer productQuantity) {
-        CustomerCart customerCart = customerCartRepository.findById(customerId).orElseThrow(() ->
-                new ProductNotFoundException("Product not found"));
+    CustomerCart customerCart = new CustomerCart();
+    customerCart.setId(customerProfile.getId());
+    customerCart.setCustomerDetail(customerProfile);
+    customerCart.setOrderedProduct(new ArrayList<>());
+    customerCart.setDateCreated(LocalDateTime.from(localDateTime));
 
-        // get product
-        Product product = productRepository.findProductById(productId);
+    return customerCartRepository.save(customerCart);
+  }
 
-        // set into ordered product
-        OrderedProduct orderedProduct = new OrderedProduct();
-        orderedProduct.setId(String.valueOf(UUID.randomUUID()));
-        orderedProduct.setProduct(product);
-        orderedProduct.setQuantity(productQuantity);
+//  public CustomerCart findCustomerCart(String id) {
+//
+//  }
 
-        // add into current cart
-        customerCart.getOrderedProduct().add(orderedProduct);
+  public CustomerCart updateCart(String customerId, String productId, Integer productQuantity) {
 
-        // update time
-        customerCart.setUpdatedOn(LocalDateTime.now());
+    // check if customer cart exists or throw exception if not found
+    CustomerProfile customerProfile = customerProfileRepo.findById(customerId).orElseThrow(() ->
+      new ResponseStatusException(HttpStatus.NOT_FOUND, "Customer is not found !"));
+    CustomerCart customerCart = customerCartRepository.findById(customerId).orElse(createCart(customerProfile));
 
-        return customerCartRepository.save(customerCart);
-    }
+    // get product detail or throw exception if product not found
+    Product product = productRepository.findById(productId).orElseThrow(() ->
+      new ResponseStatusException(HttpStatus.NOT_FOUND, "Product is not found !"));
 
-    public CustomerCart updateProductQuantityInCart(String customerId, String productId, Integer productQuantity) {
-        CustomerCart customerCart = customerCartRepository.findById(customerId).orElseThrow(() ->
-                new UsernameNotFoundException("User not found"));
+    // find all ordered product for current customer
 
-        // get index for update the index
-        int index =
-                Iterables.indexOf(customerCart.getOrderedProduct(), u -> u.getProduct().getId().equals(productId));
+    // set into ordered product
+    OrderedProduct orderedProduct = new OrderedProduct();
+    // set id format (CustomerName_ProductId)
+    orderedProduct.setId(String.valueOf(UUID.randomUUID())); // dont set for random UUID
+    orderedProduct.setProduct(product);
+    orderedProduct.setQuantity(productQuantity);
 
-//        customerCart.getOrderedProduct().indexOf(index);
+    // add into current cart
+    customerCart.getOrderedProduct().add(orderedProduct);
 
-        // update time
-        LocalDateTime localDateTime = LocalDateTime.now();
-        customerCart.setUpdatedOn(LocalDateTime.from(localDateTime));
+    // int index = Iterables.indexOf(customerCart.getOrderedProduct(), u -> u.getProduct().getId().equals(productId));
 
-        return customerCart;
-    }
+    // update time
+    customerCart.setUpdatedOn(LocalDateTime.now());
+
+    return customerCartRepository.save(customerCart);
+  }
+
+//  public CustomerCart updateProductQuantityInCart(String customerId, String productId, Integer productQuantity) {
+//    CustomerCart customerCart = customerCartRepository.findById(customerId).orElseThrow(() ->
+//      new UsernameNotFoundException("User not found"));
+//
+//    // get index for update the index
+//    int index = Iterables.indexOf(customerCart.getOrderedProduct(), u -> u.getProduct().getId().equals(productId));
+//
+////        customerCart.getOrderedProduct().indexOf(index);
+//
+//    // update time
+//    LocalDateTime localDateTime = LocalDateTime.now();
+//    customerCart.setUpdatedOn(LocalDateTime.from(localDateTime));
+//
+//    return customerCart;
+//  }
 }

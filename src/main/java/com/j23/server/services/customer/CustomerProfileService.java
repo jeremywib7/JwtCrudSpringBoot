@@ -12,17 +12,22 @@ import java.time.LocalDateTime;
 @Service
 public class CustomerProfileService {
 
-    @Autowired
-    private CustomerProfileRepo customerProfileRepo;
+  @Autowired
+  private CustomerProfileRepo customerProfileRepo;
 
-    public CustomerProfile registerCustomer(CustomerProfile customerProfile) {
+  @Autowired
+  private CustomerCartService customerCartService;
 
-        if (customerProfileRepo.existsByUsername(customerProfile.getUsername())) {
-            throw new ResponseStatusException(HttpStatus.CONFLICT, "Username already exists !");
-        }
+  public CustomerProfile registerCustomer(CustomerProfile customerProfile) {
 
-        customerProfile.setCreatedOn(LocalDateTime.now());
-        return customerProfileRepo.save(customerProfile);
-
+    if (customerProfileRepo.existsByUsername(customerProfile.getUsername())) {
+      throw new ResponseStatusException(HttpStatus.CONFLICT, "Username already exists !");
     }
+
+    customerProfile.setCreatedOn(LocalDateTime.now());
+    customerCartService.createCart(customerProfile);
+
+    return customerProfileRepo.save(customerProfile);
+
+  }
 }

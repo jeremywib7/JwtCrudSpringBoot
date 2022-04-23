@@ -45,7 +45,7 @@ public class CustomerCart {
     @JoinColumn(name = "customer_id")
     private CustomerProfile customerDetail;
 
-    @JsonIgnoreProperties(value = {"id"})
+//    @JsonIgnoreProperties(value = {"id"})
     @OneToMany(cascade = CascadeType.ALL)
     @JoinColumn(name = "customer_order_id")
     private List<OrderedProduct> orderedProduct;

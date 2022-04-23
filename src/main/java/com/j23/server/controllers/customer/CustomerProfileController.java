@@ -14,19 +14,16 @@ import org.springframework.web.bind.annotation.RestController;
 
 @RestController
 @RequestMapping("/customer")
-public class CustomerDetailController {
+public class CustomerProfileController {
 
-    @Autowired
-    private CustomerProfileService customerProfileService;
+  @Autowired
+  private CustomerProfileService customerProfileService;
 
-    @Autowired
-    private CustomerCartService customerCartService;
+  @PostMapping({"/register"})
+  private ResponseEntity<Object> registerCustomer(@RequestBody CustomerProfile customerProfile) {
+    CustomerProfile result = customerProfileService.registerCustomer(customerProfile);
 
-    @PostMapping({"/register"})
-    private ResponseEntity<Object> registerCustomer(@RequestBody CustomerProfile customerProfile) {
-        CustomerProfile result = customerProfileService.registerCustomer(customerProfile);
-        customerCartService.createCart(customerProfile.getId());
+    return ResponseHandler.generateResponse("Register success!", HttpStatus.OK, result);
+  }
 
-        return ResponseHandler.generateResponse("Register success!", HttpStatus.OK, result);
-    }
 }
