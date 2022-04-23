@@ -13,7 +13,6 @@ import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 import org.springframework.web.server.ResponseStatusException;
 
-import javax.annotation.PostConstruct;
 import java.math.BigDecimal;
 import java.time.LocalDateTime;
 import java.util.*;
@@ -38,14 +37,14 @@ public class ProductService {
     // create 2 sample category
 
     ProductCategory breakfast = new ProductCategory();
-    breakfast.setId(String.valueOf(UUID.randomUUID()));
+    breakfast.setId("breakfast");
     breakfast.setCategoryName("Breakfast");
     breakfast.setCreatedOn(LocalDateTime.now());
     breakfast.setUpdatedOn(LocalDateTime.now());
     productCategoryRepository.save(breakfast);
 
     ProductCategory dinner = new ProductCategory();
-    dinner.setId(String.valueOf(UUID.randomUUID()));
+    dinner.setId("dinner");
     dinner.setCategoryName("Dinner");
     dinner.setCreatedOn(LocalDateTime.now());
     dinner.setUpdatedOn(LocalDateTime.now());
@@ -59,7 +58,7 @@ public class ProductService {
     listImages.add(defaultImage);
 
     Product satayAyam = new Product();
-    satayAyam.setId(String.valueOf(UUID.randomUUID()));
+    satayAyam.setId("satayayam");
     satayAyam.setName("Satay Ayam");
     satayAyam.setTotalCalories(201L);
     satayAyam.setDescription("A sate ayam made with love");
@@ -74,7 +73,7 @@ public class ProductService {
     productRepository.save(satayAyam);
 
     Product iceCream = new Product();
-    iceCream.setId(String.valueOf(UUID.randomUUID()));
+    iceCream.setId("icecream");
     iceCream.setName("Ice Cream");
     iceCream.setTotalCalories(101L);
     iceCream.setDescription("A ice cream made with love");
@@ -152,6 +151,10 @@ public class ProductService {
 
   public Product findProductById(String id) {
     return productRepository.findProductById(id);
+  }
+
+  public Optional<Product> findProductByName(String id) {
+    return productRepository.findByName(id);
   }
 
   public Product removeProductInCategory(String productId) {

@@ -29,10 +29,10 @@ public class ProductController {
     @Autowired
     private ProductRepository productRepository;
 
-  @PostConstruct
-  public void onInit() {
-    productService.createTestProduct();
-  }
+    @PostConstruct
+    public void onInit() {
+        productService.createTestProduct();
+    }
 
     @GetMapping("/all")
     public ResponseEntity<Object> getAllProductsWithFilter(
@@ -131,17 +131,6 @@ public class ProductController {
         map.put("uuid", String.valueOf(UUID.randomUUID()));
 
         return ResponseHandler.generateResponse("Successfully get UUID!", HttpStatus.OK, map);
-    }
-
-    @GetMapping({"/findById"})
-    public ResponseEntity<Object> getProductById(@RequestParam String id) {
-
-        if (!productRepository.existsById(id)) {
-            throw new ResponseStatusException(HttpStatus.NOT_FOUND, "Product not found");
-        }
-
-        Product product = productService.findProductById(id);
-        return ResponseHandler.generateResponse("Successfully fetch product!", HttpStatus.OK, product);
     }
 
     @DeleteMapping("/delete/{id}")

@@ -53,7 +53,9 @@ public class WebSecurityConfiguration extends WebSecurityConfigurerAdapter {
                         "/images/customer/product/download/file",
 
                         // for customer
-                        "/customer/register"
+                        "/customer/*",
+                        "/cart/*",
+                        "/productview/*"
                 ).permitAll()
                 .antMatchers(HttpHeaders.ALLOW).permitAll()
                 .anyRequest().authenticated()
