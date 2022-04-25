@@ -9,39 +9,31 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.*;
 
-import java.util.List;
-
 @Controller
 @RequestMapping("/cart")
 public class CustomerCartController {
 
-  @Autowired
-  private CustomerCartService customerCartService;
+    @Autowired
+    private CustomerCartService customerCartService;
 
 
+    @GetMapping("/view")
+    public ResponseEntity<Object> viewCart(@RequestParam String customerId) {
+        CustomerCart customerCart = customerCartService.viewCart(customerId);
+        return ResponseHandler.generateResponse("Successfully fetch cart!", HttpStatus.OK,
+                customerCart);
+    }
 
-  @GetMapping("/all")
-  public ResponseEntity<Object> findAllCustomerOrder() {
-    List<CustomerCart> customerCartList = customerCartService.findAllCustomerOrder();
-    return ResponseHandler.generateResponse("Successfully fetch all customer order!", HttpStatus.OK,
-      customerCartList);
-  }
-
-//  @GetMapping
-//  public ResponseEntity<Object> findCustomerCart(@RequestParam id) {
-//    CustomerCart customerCart =
-//  }
-
-  @PostMapping("/update")
-  public ResponseEntity<Object> updateCart(
-    @RequestParam String customerId,
-    @RequestParam String productId,
-    @RequestParam Integer productQuantity
-  ) {
-    CustomerCart response = customerCartService.updateCart(customerId, productId, productQuantity);
-    return ResponseHandler.generateResponse("Successfully update cart!", HttpStatus.OK,
-      response);
-  }
+    @PostMapping("/update")
+    public ResponseEntity<Object> updateCart(
+            @RequestParam String customerId,
+            @RequestParam String productId,
+            @RequestParam Integer productQuantity
+    ) {
+        CustomerCart response = customerCartService.updateCart(customerId, productId, productQuantity);
+        return ResponseHandler.generateResponse("Successfully update cart!", HttpStatus.OK,
+                response);
+    }
 
 //    @PostMapping("/update/product/quantity")
 //    public ResponseEntity<Object> updateProductQtyInCart(

@@ -15,6 +15,7 @@ import lombok.ToString;
 
 import javax.persistence.*;
 import java.time.LocalDateTime;
+import java.util.ArrayList;
 import java.util.List;
 
 @Entity
@@ -28,13 +29,13 @@ public class CustomerCart {
     @Column(name = "cart_id")
     private String id; // id is settled from customer id
 
-    @JsonFormat(pattern="MM/dd/yyyy HH:mm:ss")
+    @JsonFormat(pattern = "MM/dd/yyyy HH:mm:ss")
     @JsonDeserialize(using = LocalDateTimeDeserializer.class)
     @JsonSerialize(using = LocalDateTimeSerializer.class)
     @Column(name = "date_created")
     private LocalDateTime dateCreated;
 
-    @JsonFormat(pattern="MM/dd/yyyy HH:mm:ss")
+    @JsonFormat(pattern = "MM/dd/yyyy HH:mm:ss")
     @JsonDeserialize(using = LocalDateTimeDeserializer.class)
     @JsonSerialize(using = LocalDateTimeSerializer.class)
     @Column(name = "updated_on")
@@ -43,11 +44,9 @@ public class CustomerCart {
     @JsonIncludeProperties(value = {"id", "username"})
     @OneToOne(cascade = CascadeType.ALL)
     @JoinColumn(name = "customer_id")
-    private CustomerProfile customerDetail;
+    private CustomerProfile customerProfile;
 
-//    @JsonIgnoreProperties(value = {"id"})
-    @OneToMany(cascade = CascadeType.ALL)
-    @JoinColumn(name = "customer_order_id")
+    @Transient
     private List<OrderedProduct> orderedProduct;
 
 }

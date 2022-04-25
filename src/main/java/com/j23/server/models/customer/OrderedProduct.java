@@ -1,9 +1,8 @@
 package com.j23.server.models.customer;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonIncludeProperties;
-import com.fasterxml.jackson.annotation.JsonView;
 import com.j23.server.models.product.Product;
-import com.j23.server.models.product.Views;
 import lombok.*;
 
 import javax.persistence.*;
@@ -20,14 +19,17 @@ public class OrderedProduct {
     @Id
     private String id;
 
-    @JsonIncludeProperties(value = {"name","unitPrice","discount","discountedPrice"})
+    @JsonIncludeProperties(value = {"name", "unitPrice", "discount", "discountedPrice"})
     @OneToOne(targetEntity = Product.class, cascade = CascadeType.ALL)
-    @JoinColumn(name = "product_id", referencedColumnName = "id")
     private Product product;
 
     @Min(1)
     @Max(100000)
     @Column(name = "quantity")
     private Integer quantity;
+
+    @JsonIgnore
+    @OneToOne(targetEntity = CustomerCart.class, cascade = CascadeType.ALL)
+    private CustomerCart customerCart;
 
 }
