@@ -8,6 +8,7 @@ import com.fasterxml.jackson.databind.annotation.JsonSerialize;
 import com.fasterxml.jackson.datatype.jsr310.deser.LocalDateTimeDeserializer;
 import com.fasterxml.jackson.datatype.jsr310.ser.LocalDateTimeSerializer;
 import com.j23.server.models.auth.User;
+import com.j23.server.models.product.ProductImage;
 import lombok.Data;
 import lombok.Getter;
 import lombok.Setter;
@@ -46,7 +47,8 @@ public class CustomerCart {
     @JoinColumn(name = "customer_id")
     private CustomerProfile customerProfile;
 
-    @Transient
+    @OneToMany(targetEntity = ProductImage.class, cascade = CascadeType.ALL)
+    @JoinColumn(name = "cart_id")
     private List<OrderedProduct> orderedProduct;
 
 }
