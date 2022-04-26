@@ -72,6 +72,21 @@ public class ProductService {
     satayAyam.setImages(listImages);
     productRepository.save(satayAyam);
 
+    Product banana = new Product();
+    banana.setId("banana");
+    banana.setName("A Banana");
+    banana.setTotalCalories(101L);
+    banana.setDescription("A banana made with love");
+    banana.setDiscount(false);
+    banana.setUnitPrice(BigDecimal.valueOf(25000));
+    banana.setDiscountedPrice(BigDecimal.valueOf(25000));
+    banana.setCreatedOn(LocalDateTime.from(LocalDateTime.now()));
+    banana.setUpdatedOn(null);
+    banana.setCategory(breakfast);
+    banana.setActive(true);
+    banana.setImages(listImages);
+    productRepository.save(banana);
+
     Product iceCream = new Product();
     iceCream.setId("icecream");
     iceCream.setName("Ice Cream");

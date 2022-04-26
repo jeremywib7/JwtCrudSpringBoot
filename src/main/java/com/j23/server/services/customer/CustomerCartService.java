@@ -33,6 +33,16 @@ public class CustomerCartService {
     @Autowired
     private OrderedProductRepo orderedProductRepo;
 
+    public CustomerProfile getCustomerProfile(String customerId) {
+        return customerProfileRepo.findById(customerId).orElseThrow(() ->
+                new ResponseStatusException(HttpStatus.NOT_FOUND, "Customer does not exists !"));
+    }
+
+    public CustomerCart getCustomerCart(CustomerProfile customerProfile) {
+        return customerCartRepository.findByCustomerProfile(customerProfile)
+                .orElseGet(() -> createCart(customerProfile));
+    }
+
     public CustomerCart createCart(CustomerProfile customerProfile) {
         LocalDateTime localDateTime = LocalDateTime.now();
 
@@ -46,14 +56,12 @@ public class CustomerCartService {
     }
 
     public CustomerCart viewCart(String customerId) {
-        CustomerProfile customerProfile = customerProfileRepo.findById(customerId).orElseThrow(() ->
-                new ResponseStatusException(HttpStatus.NOT_FOUND, "Customer does not exists !"));
+        CustomerProfile customerProfile = getCustomerProfile(customerId);
 
-        CustomerCart customerCart =  customerCartRepository.findByCustomerProfile(customerProfile)
-                .orElseGet(() -> createCart(customerProfile));
+        CustomerCart customerCart = getCustomerCart(customerProfile);
 
-//        List<OrderedProduct> orderedProductList = orderedProductRepo.findByCustomerCart(customerCart);
-//        customerCart.setOrderedProduct(orderedProductList);
+        List<OrderedProduct> orderedProductList = orderedProductRepo.findByCustomerCart(customerCart);
+        customerCart.setOrderedProduct(orderedProductList);
 
         return customerCart;
     }
@@ -61,10 +69,11 @@ public class CustomerCartService {
     public CustomerCart updateCart(String customerId, String productId, Integer productQuantity) {
 
         // check if customer cart exists or throw exception if not found
-        CustomerProfile customerProfile = customerProfileRepo.findById(customerId).orElseThrow(() ->
-                new ResponseStatusException(HttpStatus.NOT_FOUND, "Customer does not exists !"));
-        CustomerCart customerCart = customerCartRepository.findByCustomerProfile(customerProfile)
-                .orElseGet(() -> createCart(customerProfile));
+
+        CustomerProfile customerProfile = getCustomerProfile(customerId);
+
+        CustomerCart customerCart = getCustomerCart(customerProfile);
+        customerCart.setUpdatedOn(LocalDateTime.now());
 
         // get product detail or throw exception if product not found
         Product product = productRepository.findById(productId).orElseThrow(() ->
@@ -74,22 +83,27 @@ public class CustomerCartService {
         orderedProduct.setId(customerId + "_" + productId);
         orderedProduct.setProduct(product);
         orderedProduct.setQuantity(productQuantity);
-//        orderedProduct.setCustomerCart(customerCart);
+        orderedProduct.setCustomerCart(customerCart);
         orderedProductRepo.save(orderedProduct);
 
-//        List<OrderedProduct> orderedProductList = orderedProductRepo.findByCustomerCart(customerCart);
-//        customerCart.setOrderedProduct(orderedProductList);
-        customerCart.setUpdatedOn(LocalDateTime.now());
+        List<OrderedProduct> orderedProductList = orderedProductRepo.findByCustomerCart(customerCart);
+        customerCart.setOrderedProduct(orderedProductList);
 
         return customerCart;
     }
 
     public CustomerCart removeProductFromCart(String customerId, String productId) {
-      orderedProductRepo.deleteById(customerId+"_"+productId);
+        // delete from database
+        orderedProductRepo.deleteById(customerId + "_" + productId);
 
-      CustomerProfile customerProfile = customerProfileRepo.findById(customerId).orElseThrow(() ->
-        new ResponseStatusException(HttpStatus.NOT_FOUND, "Customer does not exists !"));
+        CustomerProfile customerProfile = getCustomerProfile(customerId);
 
-      return customerCartRepository.findByCustomerProfile(customerProfile).orElse(null);
+        CustomerCart customerCart = getCustomerCart(customerProfile);
+        customerCart.setUpdatedOn(LocalDateTime.now());
+
+        List<OrderedProduct> orderedProductList = orderedProductRepo.findByCustomerCart(customerCart);
+        customerCart.setOrderedProduct(orderedProductList);
+
+        return customerCartRepository.findByCustomerProfile(customerProfile).orElse(null);
     }
 }
