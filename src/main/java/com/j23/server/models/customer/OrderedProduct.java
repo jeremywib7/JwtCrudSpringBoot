@@ -19,7 +19,7 @@ public class OrderedProduct {
     @Id
     private String id;
 
-    @JsonIncludeProperties(value = {"name", "unitPrice", "discount", "discountedPrice"})
+    @JsonIncludeProperties(value = {"id", "name", "unitPrice", "discount", "discountedPrice"})
     @OneToOne(targetEntity = Product.class, cascade = CascadeType.ALL)
     private Product product;
 
@@ -31,5 +31,9 @@ public class OrderedProduct {
     @JsonIgnore
     @OneToOne(targetEntity = CustomerCart.class, cascade = CascadeType.ALL)
     private CustomerCart customerCart;
+
+//    @JsonIgnore
+//    @OneToOne(targetEntity = CustomerCart.class, cascade = CascadeType.ALL)
+//    private CustomerCart customerCart;
 
 }
