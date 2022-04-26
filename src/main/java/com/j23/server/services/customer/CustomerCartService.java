@@ -52,8 +52,8 @@ public class CustomerCartService {
         CustomerCart customerCart =  customerCartRepository.findByCustomerProfile(customerProfile)
                 .orElseGet(() -> createCart(customerProfile));
 
-        List<OrderedProduct> orderedProductList = orderedProductRepo.findByCustomerCart(customerCart);
-        customerCart.setOrderedProduct(orderedProductList);
+//        List<OrderedProduct> orderedProductList = orderedProductRepo.findByCustomerCart(customerCart);
+//        customerCart.setOrderedProduct(orderedProductList);
 
         return customerCart;
     }
@@ -74,11 +74,11 @@ public class CustomerCartService {
         orderedProduct.setId(customerId + "_" + productId);
         orderedProduct.setProduct(product);
         orderedProduct.setQuantity(productQuantity);
-        orderedProduct.setCustomerCart(customerCart);
+//        orderedProduct.setCustomerCart(customerCart);
         orderedProductRepo.save(orderedProduct);
 
-        List<OrderedProduct> orderedProductList = orderedProductRepo.findByCustomerCart(customerCart);
-        customerCart.setOrderedProduct(orderedProductList);
+//        List<OrderedProduct> orderedProductList = orderedProductRepo.findByCustomerCart(customerCart);
+//        customerCart.setOrderedProduct(orderedProductList);
         customerCart.setUpdatedOn(LocalDateTime.now());
 
         return customerCart;

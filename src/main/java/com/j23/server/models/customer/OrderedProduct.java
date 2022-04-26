@@ -28,9 +28,9 @@ public class OrderedProduct {
     @Column(name = "quantity")
     private Integer quantity;
 
-    @JsonIgnore
-    @OneToOne(targetEntity = CustomerCart.class, cascade = CascadeType.ALL)
-    private CustomerCart customerCart;
+//    @JsonIgnore
+//    @OneToOne(targetEntity = CustomerCart.class, cascade = CascadeType.ALL)
+//    private CustomerCart customerCart;
 
 //    @JsonIgnore
 //    @OneToOne(targetEntity = CustomerCart.class, cascade = CascadeType.ALL)
