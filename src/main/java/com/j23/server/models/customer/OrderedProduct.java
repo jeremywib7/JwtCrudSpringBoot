@@ -16,20 +16,20 @@ import javax.validation.constraints.Min;
 @ToString
 public class OrderedProduct {
 
-    @Id
-    private String id;
+  @Id
+  private String id;
 
-    @JsonIncludeProperties(value = {"name", "unitPrice", "discount", "discountedPrice"})
-    @OneToOne(targetEntity = Product.class, cascade = CascadeType.ALL)
-    private Product product;
+  @JsonIncludeProperties(value = {"id", "name", "unitPrice", "discount", "discountedPrice"})
+  @OneToOne(targetEntity = Product.class)
+  private Product product;
 
-    @Min(1)
-    @Max(100000)
-    @Column(name = "quantity")
-    private Integer quantity;
+  @Min(0)
+  @Max(100000)
+  @Column(name = "quantity")
+  private Integer quantity;
 
-    @JsonIgnore
-    @OneToOne(targetEntity = CustomerCart.class, cascade = CascadeType.ALL)
-    private CustomerCart customerCart;
+  @JsonIgnore
+  @OneToOne(targetEntity = CustomerCart.class)
+  private CustomerCart customerCart;
 
 }

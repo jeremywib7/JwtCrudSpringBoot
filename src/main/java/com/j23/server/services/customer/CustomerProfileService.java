@@ -23,11 +23,13 @@ public class CustomerProfileService {
     if (customerProfileRepo.existsByUsername(customerProfile.getUsername())) {
       throw new ResponseStatusException(HttpStatus.CONFLICT, "Username already exists !");
     }
-
     customerProfile.setCreatedOn(LocalDateTime.now());
+    CustomerProfile customerProfile1 = customerProfileRepo.save(customerProfile);
+
+    // create cart
     customerCartService.createCart(customerProfile);
 
-    return customerProfileRepo.save(customerProfile);
+    return customerProfile1;
 
   }
 }

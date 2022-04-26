@@ -35,6 +35,16 @@ public class CustomerCartController {
                 response);
     }
 
+  @DeleteMapping("/delete")
+  public ResponseEntity<Object> removeProductFromCart(
+    @RequestParam String customerId,
+    @RequestParam String productId
+  ) {
+    CustomerCart response = customerCartService.removeProductFromCart(customerId, productId);
+    return ResponseHandler.generateResponse("Successfully delete product from cart!", HttpStatus.OK,
+      response);
+  }
+
 //    @PostMapping("/update/product/quantity")
 //    public ResponseEntity<Object> updateProductQtyInCart(
 //            @RequestParam String customerId,

@@ -27,7 +27,7 @@ public class CustomerCart {
 
     @Id
     @Column(name = "cart_id")
-    private String id; // id is settled from customer id
+    private String id;
 
     @JsonFormat(pattern = "MM/dd/yyyy HH:mm:ss")
     @JsonDeserialize(using = LocalDateTimeDeserializer.class)

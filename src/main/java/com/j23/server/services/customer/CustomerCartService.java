@@ -83,4 +83,13 @@ public class CustomerCartService {
 
         return customerCart;
     }
+
+    public CustomerCart removeProductFromCart(String customerId, String productId) {
+      orderedProductRepo.deleteById(customerId+"_"+productId);
+
+      CustomerProfile customerProfile = customerProfileRepo.findById(customerId).orElseThrow(() ->
+        new ResponseStatusException(HttpStatus.NOT_FOUND, "Customer does not exists !"));
+
+      return customerCartRepository.findByCustomerProfile(customerProfile).orElse(null);
+    }
 }

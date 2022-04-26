@@ -21,4 +21,6 @@ public interface OrderedProductRepo extends JpaRepository<OrderedProduct, String
     @Query("update OrderedProduct op set op.quantity = ?1 where op.id = ?2")
     int updateQuantity(Integer status, Long id);
 
+//  DELETE FROM `ordered_product` WHERE `ordered_product`.`id` = 'NFx9TpdZrmMtDyUoI88dudnAjWb2_satayayam'
+
 }
