@@ -54,6 +54,7 @@ public class ProductService {
     // create 3 sample product
     // add default image
     ProductImage defaultImage = new ProductImage();
+    defaultImage.setImageName("defaultimage.png");
     List<ProductImage> listImages = new ArrayList<>();
     listImages.add(defaultImage);
 

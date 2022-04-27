@@ -2,6 +2,7 @@ package com.j23.server.controllers.customer;
 
 import com.j23.server.configuration.ResponseHandler;
 import com.j23.server.models.customer.CustomerCart;
+import com.j23.server.models.customer.OrderedProduct;
 import com.j23.server.services.customer.CustomerCartService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
@@ -13,27 +14,38 @@ import org.springframework.web.bind.annotation.*;
 @RequestMapping("/cart")
 public class CustomerCartController {
 
-    @Autowired
-    private CustomerCartService customerCartService;
+  @Autowired
+  private CustomerCartService customerCartService;
 
 
-    @GetMapping("/view")
-    public ResponseEntity<Object> viewCart(@RequestParam String customerId) {
-        CustomerCart customerCart = customerCartService.viewCart(customerId);
-        return ResponseHandler.generateResponse("Successfully fetch cart!", HttpStatus.OK,
-                customerCart);
-    }
+  @GetMapping("/view")
+  public ResponseEntity<Object> viewCart(@RequestParam String customerId) {
+    CustomerCart customerCart = customerCartService.viewCart(customerId);
+    return ResponseHandler.generateResponse("Successfully fetch cart!", HttpStatus.OK,
+      customerCart);
+  }
 
-    @PostMapping("/update")
-    public ResponseEntity<Object> updateCart(
-            @RequestParam String customerId,
-            @RequestParam String productId,
-            @RequestParam Integer productQuantity
-    ) {
-        CustomerCart response = customerCartService.updateCart(customerId, productId, productQuantity);
-        return ResponseHandler.generateResponse("Successfully update cart!", HttpStatus.OK,
-                response);
-    }
+  @PostMapping("/add")
+  public ResponseEntity<Object> addProductToCart(
+    @RequestParam String customerId,
+    @RequestParam String productId,
+    @RequestParam Integer productQuantity
+  ) {
+    OrderedProduct response = customerCartService.addProductToCart(customerId, productId, productQuantity);
+    return ResponseHandler.generateResponse("Successfully add product to cart!", HttpStatus.OK,
+      response);
+  }
+
+  @PostMapping("/update")
+  public ResponseEntity<Object> updateProductInCart(
+    @RequestParam String customerId,
+    @RequestParam String productId,
+    @RequestParam Integer productQuantity
+  ) {
+    CustomerCart response = customerCartService.updateProductQuantityInCart(customerId, productId, productQuantity);
+    return ResponseHandler.generateResponse("Successfully update product in cart!", HttpStatus.OK,
+      response);
+  }
 
   @DeleteMapping("/delete")
   public ResponseEntity<Object> removeProductFromCart(

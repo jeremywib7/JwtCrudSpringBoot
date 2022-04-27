@@ -39,15 +39,15 @@ public class CustomerCart {
     @JsonFormat(pattern = "MM/dd/yyyy HH:mm:ss")
     @JsonDeserialize(using = LocalDateTimeDeserializer.class)
     @JsonSerialize(using = LocalDateTimeSerializer.class)
-    @Column(name = "updated_on")
+    @Column(name = "date_updated")
     private LocalDateTime updatedOn;
 
     @JsonIncludeProperties(value = {"id", "username"})
-    @OneToOne(cascade = CascadeType.ALL)
+    @OneToOne()
     @JoinColumn(name = "customer_id")
     private CustomerProfile customerProfile;
 
-    @OneToMany(targetEntity = ProductImage.class, cascade = CascadeType.ALL)
+    @OneToMany(targetEntity = OrderedProduct.class)
     @JoinColumn(name = "cart_id")
     private List<OrderedProduct> orderedProduct;
 

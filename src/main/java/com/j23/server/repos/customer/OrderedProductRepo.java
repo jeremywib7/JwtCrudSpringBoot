@@ -15,7 +15,8 @@ import java.util.Optional;
 @Repository
 public interface OrderedProductRepo extends JpaRepository<OrderedProduct, String> {
 
-    List<OrderedProduct> findByCustomerCartOrderByCreatedOnDesc(CustomerCart customerCart);
+//    List<OrderedProduct> findByCustomerCartOrderByCreatedOnDesc(CustomerCart customerCart);
+
 
     @Modifying
     @Query("update OrderedProduct op set op.quantity = ?1 where op.id = ?2")

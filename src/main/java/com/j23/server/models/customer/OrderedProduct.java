@@ -34,13 +34,15 @@ public class OrderedProduct {
   @Column(name = "quantity")
   private Integer quantity;
 
-  @JsonIgnore
-  @OneToOne(targetEntity = CustomerCart.class)
-  private CustomerCart customerCart;
-
   @JsonFormat(pattern="MM/dd/yyyy HH:mm:ss")
   @JsonDeserialize(using = LocalDateTimeDeserializer.class)
   @JsonSerialize(using = LocalDateTimeSerializer.class)
   @Column(name = "date_created")
   private LocalDateTime createdOn;
+
+  @JsonFormat(pattern="MM/dd/yyyy HH:mm:ss")
+  @JsonDeserialize(using = LocalDateTimeDeserializer.class)
+  @JsonSerialize(using = LocalDateTimeSerializer.class)
+  @Column(name = "date_updated")
+  private LocalDateTime updatedOn;
 }
