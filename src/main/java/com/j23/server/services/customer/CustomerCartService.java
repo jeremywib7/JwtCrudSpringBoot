@@ -60,7 +60,7 @@ public class CustomerCartService {
 
         CustomerCart customerCart = getCustomerCart(customerProfile);
 
-        List<OrderedProduct> orderedProductList = orderedProductRepo.findByCustomerCart(customerCart);
+        List<OrderedProduct> orderedProductList = orderedProductRepo.findByCustomerCartOrderByCreatedOnDesc(customerCart);
         customerCart.setOrderedProduct(orderedProductList);
 
         return customerCart;
@@ -84,9 +84,10 @@ public class CustomerCartService {
         orderedProduct.setProduct(product);
         orderedProduct.setQuantity(productQuantity);
         orderedProduct.setCustomerCart(customerCart);
+        orderedProduct.setCreatedOn(LocalDateTime.now());
         orderedProductRepo.save(orderedProduct);
 
-        List<OrderedProduct> orderedProductList = orderedProductRepo.findByCustomerCart(customerCart);
+        List<OrderedProduct> orderedProductList = orderedProductRepo.findByCustomerCartOrderByCreatedOnDesc(customerCart);
         customerCart.setOrderedProduct(orderedProductList);
 
         return customerCart;
@@ -101,7 +102,7 @@ public class CustomerCartService {
         CustomerCart customerCart = getCustomerCart(customerProfile);
         customerCart.setUpdatedOn(LocalDateTime.now());
 
-        List<OrderedProduct> orderedProductList = orderedProductRepo.findByCustomerCart(customerCart);
+        List<OrderedProduct> orderedProductList = orderedProductRepo.findByCustomerCartOrderByCreatedOnDesc(customerCart);
         customerCart.setOrderedProduct(orderedProductList);
 
         return customerCartRepository.findByCustomerProfile(customerProfile).orElse(null);
