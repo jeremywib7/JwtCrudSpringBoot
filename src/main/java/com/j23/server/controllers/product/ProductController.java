@@ -26,10 +26,7 @@ public class ProductController {
     @Autowired
     private ProductService productService;
 
-    @Autowired
-    private ProductRepository productRepository;
-
-    @PostConstruct
+  @PostConstruct
     public void onInit() {
         productService.createTestProduct();
     }

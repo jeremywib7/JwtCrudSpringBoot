@@ -70,8 +70,8 @@ public class CustomerCartService {
     CustomerCart customerCart = getCustomerCart(customerId);
 
     // get product detail or throw exception if product not found
-    Product product = productRepository.findById(productId).orElseThrow(() ->
-      new ResponseStatusException(HttpStatus.NOT_FOUND, "Product does not exists !"));
+    Product product = new Product();
+    product.setId(productId);
 
     OrderedProduct orderedProduct = new OrderedProduct();
     orderedProduct.setId(String.valueOf(UUID.randomUUID()));

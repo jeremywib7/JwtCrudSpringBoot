@@ -21,60 +21,62 @@ import org.springframework.security.web.authentication.UsernamePasswordAuthentic
 @EnableGlobalMethodSecurity(prePostEnabled = true)
 public class WebSecurityConfiguration extends WebSecurityConfigurerAdapter {
 
-    @Autowired
-    private JwtAuthenticationEntryPoint jwtAuthenticationEntryPoint;
+  @Autowired
+  private JwtAuthenticationEntryPoint jwtAuthenticationEntryPoint;
 
-    @Autowired
-    private JwtRequestFilter jwtRequestFilter;
+  @Autowired
+  private JwtRequestFilter jwtRequestFilter;
 
-    @Autowired
-    private UserDetailsService jwtService;
+  @Autowired
+  private UserDetailsService jwtService;
 
 
-    @Bean
-    @Override
-    public AuthenticationManager authenticationManagerBean() throws Exception {
-        return super.authenticationManagerBean();
-    }
+  @Bean
+  @Override
+  public AuthenticationManager authenticationManagerBean() throws Exception {
+    return super.authenticationManagerBean();
+  }
 
-    @Override
-    protected void configure(HttpSecurity httpSecurity) throws Exception {
-        httpSecurity.cors();
-        httpSecurity.csrf()
-                .disable()
-                .authorizeRequests().antMatchers(
-                        "/authenticate",
-                        "/checkJWT",
-                        "/reports/user/report",
-                        "/waitingList",
+  @Override
+  protected void configure(HttpSecurity httpSecurity) throws Exception {
+    httpSecurity.cors();
+    httpSecurity.csrf()
+      .disable()
+      .authorizeRequests().antMatchers(
+        "/authenticate",
+        "/checkJWT",
+        "/reports/user/report",
+        "/waitingList",
 
-                        // for product display
-                        "/product/customer/all/table",
-                        "/images/customer/product/download/file",
+        // for product display
+        "/product/customer/all/table",
+        "/images/customer/product/download/file",
 
-                        // for customer
-                        "/customer/**",
-                        "/cart/**",
-                        "/productview/**"
-                ).permitAll()
-                .antMatchers(HttpHeaders.ALLOW).permitAll()
-                .anyRequest().authenticated()
-                .and()
-                .exceptionHandling().authenticationEntryPoint(jwtAuthenticationEntryPoint)
-                .and()
-                .sessionManagement().sessionCreationPolicy(SessionCreationPolicy.STATELESS)
-        ;
-        httpSecurity.addFilterBefore(jwtRequestFilter, UsernamePasswordAuthenticationFilter.class);
-    }
+        // for customer
+        "/customer/**",
+        "/cart/**",
+        "/order",
+        "/order/**",
+        "/productview/**"
+      ).permitAll()
+      .antMatchers(HttpHeaders.ALLOW).permitAll()
+      .anyRequest().authenticated()
+      .and()
+      .exceptionHandling().authenticationEntryPoint(jwtAuthenticationEntryPoint)
+      .and()
+      .sessionManagement().sessionCreationPolicy(SessionCreationPolicy.STATELESS)
+    ;
+    httpSecurity.addFilterBefore(jwtRequestFilter, UsernamePasswordAuthenticationFilter.class);
+  }
 
-    @Bean
-    public PasswordEncoder passwordEncoder() {
-        return new BCryptPasswordEncoder();
-    }
+  @Bean
+  public PasswordEncoder passwordEncoder() {
+    return new BCryptPasswordEncoder();
+  }
 
-    @Autowired
-    public void configureGlobal(AuthenticationManagerBuilder authenticationManagerBuilder) throws Exception {
-        authenticationManagerBuilder.userDetailsService(jwtService).passwordEncoder(passwordEncoder());
-    }
+  @Autowired
+  public void configureGlobal(AuthenticationManagerBuilder authenticationManagerBuilder) throws Exception {
+    authenticationManagerBuilder.userDetailsService(jwtService).passwordEncoder(passwordEncoder());
+  }
 }
 
