@@ -1,13 +1,12 @@
 package com.j23.server.services.customer.customerOrder;
 
-import com.j23.server.models.customer.CustomerCart;
+import com.j23.server.models.customer.customerCart.CustomerCart;
 import com.j23.server.models.customer.CustomerProfile;
-import com.j23.server.models.customer.OrderedProduct;
 import com.j23.server.models.customer.customerOrder.CustomerOrder;
-import com.j23.server.models.customer.customerOrder.OrderProductList;
+import com.j23.server.models.customer.customerOrder.HistoryProductOrder;
 import com.j23.server.repos.customer.customerOrder.CustomerOrderRepository;
-import com.j23.server.repos.customer.customerOrder.OrderProductListRepo;
-import com.j23.server.services.customer.CustomerCartService;
+import com.j23.server.repos.customer.customerOrder.HistoryProductOrderRepo;
+import com.j23.server.services.customer.customerCart.CustomerCartService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -25,8 +24,7 @@ public class CustomerOrderService {
     private CustomerCartService customerCartService;
 
     @Autowired
-    private OrderProductListRepo orderProductListRepo;
-
+    private HistoryProductOrderRepo historyProductOrderRepo;
 
     public CustomerOrder addOrder(String customerId) {
         // get customer cart info
@@ -41,24 +39,24 @@ public class CustomerOrderService {
         customerProfile.setId(customerId);
         customerOrder.setCustomerProfile(customerProfile);
 
-        List<OrderProductList> orderProductLists = new ArrayList<>();
+        List<HistoryProductOrder> historyProductOrders = new ArrayList<>();
 
         // set in order product list
-        customerCart.getOrderedProduct().forEach(orderedProduct -> {
-            OrderProductList orderProductList = new OrderProductList();
-            orderProductList.setId(String.valueOf(UUID.randomUUID()));
-            orderProductList.setProduct(orderedProduct.getProduct());
-            orderProductList.setName(orderedProduct.getProduct().getName());
-            orderProductList.setQuantity(orderedProduct.getQuantity());
-            orderProductList.setDiscount(orderedProduct.getProduct().isDiscount());
-            orderProductList.setUnitPrice(orderedProduct.getProduct().getUnitPrice());
-            orderProductList.setDiscountedPrice(orderedProduct.getProduct().getDiscountedPrice());
+        customerCart.getCartOrderedProduct().forEach(orderedProduct -> {
+            HistoryProductOrder historyProductOrder = new HistoryProductOrder();
+            historyProductOrder.setId(String.valueOf(UUID.randomUUID()));
+            historyProductOrder.setProduct(orderedProduct.getProduct());
+            historyProductOrder.setName(orderedProduct.getProduct().getName());
+            historyProductOrder.setQuantity(orderedProduct.getQuantity());
+            historyProductOrder.setDiscount(orderedProduct.getProduct().isDiscount());
+            historyProductOrder.setUnitPrice(orderedProduct.getProduct().getUnitPrice());
+            historyProductOrder.setDiscountedPrice(orderedProduct.getProduct().getDiscountedPrice());
 
-            orderProductLists.add(orderProductList);
-            orderProductListRepo.save(orderProductList);
+            historyProductOrders.add(historyProductOrder);
+            historyProductOrderRepo.save(historyProductOrder);
         });
 
-        customerOrder.setOrderProductLists(orderProductLists);
+        customerOrder.setHistoryProductOrders(historyProductOrders);
 
         return customerOrderRepository.save(customerOrder);
 

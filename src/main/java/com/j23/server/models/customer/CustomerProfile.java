@@ -9,10 +9,13 @@ import lombok.Data;
 import lombok.Getter;
 import lombok.Setter;
 import lombok.ToString;
+import org.hibernate.annotations.SQLDelete;
+import org.hibernate.annotations.Where;
 
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.Id;
+import javax.persistence.Table;
 import java.time.LocalDateTime;
 
 @Entity
@@ -20,6 +23,9 @@ import java.time.LocalDateTime;
 @Setter
 @Getter
 @ToString
+@Table(name = "customer_profile")
+@SQLDelete(sql = "UPDATE customer_profile SET deleted = true WHERE id=?")
+@Where(clause = "deleted=false")
 public class CustomerProfile {
 
   @Id
@@ -55,5 +61,8 @@ public class CustomerProfile {
   private LocalDateTime updatedOn;
 
   //
+
+  //  @JsonIgnore
+  private boolean deleted = Boolean.FALSE;
 
 }

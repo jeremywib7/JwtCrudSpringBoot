@@ -1,7 +1,6 @@
-package com.j23.server.models.customer;
+package com.j23.server.models.customer.customerCart;
 
 import com.fasterxml.jackson.annotation.JsonFormat;
-import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonIncludeProperties;
 import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
 import com.fasterxml.jackson.databind.annotation.JsonSerialize;
@@ -20,12 +19,12 @@ import java.time.LocalDateTime;
 @Setter
 @Getter
 @ToString
-public class OrderedProduct {
+public class CartOrderedProduct {
 
   @Id
   private String id;
 
-  @JsonIncludeProperties(value = {"id", "name", "unitPrice", "discount", "discountedPrice"})
+  @JsonIncludeProperties(value = {"id", "name", "unitPrice", "discount", "discountedPrice", "active", "deleted"})
   @OneToOne(targetEntity = Product.class)
   private Product product;
 

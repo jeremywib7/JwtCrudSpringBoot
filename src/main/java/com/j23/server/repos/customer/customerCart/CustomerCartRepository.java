@@ -1,9 +1,7 @@
-package com.j23.server.repos.customer;
+package com.j23.server.repos.customer.customerCart;
 
-import com.j23.server.models.customer.CustomerCart;
+import com.j23.server.models.customer.customerCart.CustomerCart;
 import com.j23.server.models.customer.CustomerProfile;
-import com.j23.server.models.customer.OrderedProduct;
-import com.j23.server.models.product.Product;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.stereotype.Repository;
 

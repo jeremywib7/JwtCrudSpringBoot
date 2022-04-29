@@ -14,14 +14,14 @@ import java.math.BigDecimal;
 @Setter
 @Getter
 @ToString
-public class OrderProductList {
+public class HistoryProductOrder {
 
   @Id
   private String id;
 
   // to show if product changed
   // so product can be tracked
-  @OneToOne
+  @OneToOne()
   @JoinColumn(name = "product_id")
   private Product product;
   //

@@ -1,14 +1,12 @@
-package com.j23.server.models.customer;
+package com.j23.server.models.customer.customerCart;
 
 import com.fasterxml.jackson.annotation.JsonFormat;
-import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import com.fasterxml.jackson.annotation.JsonIncludeProperties;
 import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
 import com.fasterxml.jackson.databind.annotation.JsonSerialize;
 import com.fasterxml.jackson.datatype.jsr310.deser.LocalDateTimeDeserializer;
 import com.fasterxml.jackson.datatype.jsr310.ser.LocalDateTimeSerializer;
-import com.j23.server.models.auth.User;
-import com.j23.server.models.product.ProductImage;
+import com.j23.server.models.customer.CustomerProfile;
 import lombok.Data;
 import lombok.Getter;
 import lombok.Setter;
@@ -16,7 +14,6 @@ import lombok.ToString;
 
 import javax.persistence.*;
 import java.time.LocalDateTime;
-import java.util.ArrayList;
 import java.util.List;
 
 @Entity
@@ -47,8 +44,8 @@ public class CustomerCart {
     @JoinColumn(name = "customer_id")
     private CustomerProfile customerProfile;
 
-    @OneToMany(targetEntity = OrderedProduct.class)
+    @OneToMany(targetEntity = CartOrderedProduct.class)
     @JoinColumn(name = "cart_id")
-    private List<OrderedProduct> orderedProduct;
+    private List<CartOrderedProduct> cartOrderedProduct;
 
 }

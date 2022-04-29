@@ -1,9 +1,9 @@
-package com.j23.server.controllers.customer;
+package com.j23.server.controllers.customer.customerCart;
 
 import com.j23.server.configuration.ResponseHandler;
-import com.j23.server.models.customer.CustomerCart;
-import com.j23.server.models.customer.OrderedProduct;
-import com.j23.server.services.customer.CustomerCartService;
+import com.j23.server.models.customer.customerCart.CustomerCart;
+import com.j23.server.models.customer.customerCart.CartOrderedProduct;
+import com.j23.server.services.customer.customerCart.CustomerCartService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -31,7 +31,7 @@ public class CustomerCartController {
     @RequestParam String productId,
     @RequestParam Integer productQuantity
   ) {
-    OrderedProduct response = customerCartService.addProductToCart(customerId, productId, productQuantity);
+    CartOrderedProduct response = customerCartService.addProductToCart(customerId, productId, productQuantity);
     return ResponseHandler.generateResponse("Successfully add product to cart!", HttpStatus.OK,
       response);
   }

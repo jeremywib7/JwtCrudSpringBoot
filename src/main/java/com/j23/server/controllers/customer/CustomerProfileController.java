@@ -2,7 +2,6 @@ package com.j23.server.controllers.customer;
 
 import com.j23.server.configuration.ResponseHandler;
 import com.j23.server.models.customer.CustomerProfile;
-import com.j23.server.services.customer.CustomerCartService;
 import com.j23.server.services.customer.CustomerProfileService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;

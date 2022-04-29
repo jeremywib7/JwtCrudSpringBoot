@@ -9,6 +9,8 @@ import lombok.Data;
 import lombok.Getter;
 import lombok.Setter;
 import lombok.ToString;
+import org.hibernate.annotations.SQLDelete;
+import org.hibernate.annotations.Where;
 
 import javax.persistence.*;
 import java.io.Serializable;
@@ -18,53 +20,59 @@ import java.util.List;
 
 @Entity
 @Data
-@Table(name = "product")
 @Setter
 @Getter
 @ToString
+@Table(name = "product")
+@SQLDelete(sql = "UPDATE product SET deleted = true WHERE id=?")
+@Where(clause = "deleted=false")
 public class Product implements Serializable {
 
-    @Id
-    @Column(nullable = false)
-    private String id;
+  @Id
+  @Column(nullable = false)
+  private String id;
 
-    @Column(length = 25)
-    @JsonView(Views.ProductNameViews.class)
-    private String name;
+  @Column(length = 25)
+  @JsonView(Views.ProductNameViews.class)
+  private String name;
 
-    private Long totalCalories;
+  private Long totalCalories;
 
-    @Column(length = 100)
-    private String description;
+  @Column(length = 100)
+  private String description;
 
-    private boolean discount;
+  private boolean discount;
 
-    @Column(precision = 13, scale = 2, name = "unit_price")
-    private BigDecimal unitPrice;
+  @Column(precision = 13, scale = 2, name = "unit_price")
+  private BigDecimal unitPrice;
 
-    @Column(precision = 13, scale = 2, name = "discounted_price")
-    private BigDecimal discountedPrice;
+  @Column(precision = 13, scale = 2, name = "discounted_price")
+  private BigDecimal discountedPrice;
 
-    @JsonFormat(pattern = "yyyy-MM-dd HH:mm:ss")
-    @JsonDeserialize(using = LocalDateTimeDeserializer.class)
-    @JsonSerialize(using = LocalDateTimeSerializer.class)
-    @Column(name = "date_created")
-    private LocalDateTime createdOn;
+  @JsonFormat(pattern = "yyyy-MM-dd HH:mm:ss")
+  @JsonDeserialize(using = LocalDateTimeDeserializer.class)
+  @JsonSerialize(using = LocalDateTimeSerializer.class)
+  @Column(name = "date_created")
+  private LocalDateTime createdOn;
 
-    @JsonFormat(pattern = "yyyy-MM-dd HH:mm:ss")
-    @JsonDeserialize(using = LocalDateTimeDeserializer.class)
-    @JsonSerialize(using = LocalDateTimeSerializer.class)
-    @Column(name = "last_updated")
-    private LocalDateTime updatedOn;
+  @JsonFormat(pattern = "yyyy-MM-dd HH:mm:ss")
+  @JsonDeserialize(using = LocalDateTimeDeserializer.class)
+  @JsonSerialize(using = LocalDateTimeSerializer.class)
+  @Column(name = "last_updated")
+  private LocalDateTime updatedOn;
 
-    @ManyToOne()
-    @JoinColumn(name = "category_id")
-    private ProductCategory category;
+  @ManyToOne()
+  @JoinColumn(name = "category_id")
+  private ProductCategory category;
 
-    private boolean active;
+  private boolean active;
 
-    @OneToMany(targetEntity = ProductImage.class, cascade = CascadeType.ALL)
-    @JoinColumn(name = "product_id")
-    private List<ProductImage> images;
+//  @JsonIgnore
+  private boolean deleted = Boolean.FALSE;
+
+  @OneToMany(targetEntity = ProductImage.class, cascade = CascadeType.ALL)
+  @JoinColumn(name = "product_id")
+  private List<ProductImage> images;
+
 
 }

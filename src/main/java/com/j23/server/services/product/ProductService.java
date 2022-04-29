@@ -1,9 +1,13 @@
 package com.j23.server.services.product;
 
+import com.j23.server.models.customer.customerCart.CartOrderedProduct;
+import com.j23.server.models.customer.customerOrder.HistoryProductOrder;
 import com.j23.server.models.product.Product;
 import com.j23.server.models.product.ProductCategory;
 import com.j23.server.models.product.ProductImage;
 import com.j23.server.models.product.UnassignedProduct;
+import com.j23.server.repos.customer.customerCart.CartOrderedProductRepo;
+import com.j23.server.repos.customer.customerOrder.HistoryProductOrderRepo;
 import com.j23.server.repos.product.ProductCategoryRepository;
 import com.j23.server.repos.product.ProductRepository;
 import com.j23.server.services.image.ImageService;
@@ -31,6 +35,12 @@ public class ProductService {
 
   @Autowired
   private ProductCategoryRepository productCategoryRepository;
+
+  @Autowired
+  private HistoryProductOrderRepo historyProductOrderRepo;
+
+  @Autowired
+  private CartOrderedProductRepo cartOrderedProductRepo;
 
   public void createTestProduct() {
 
@@ -125,12 +135,33 @@ public class ProductService {
     return productRepository.save(product);
   }
 
-  public void deleteProductById(String id) {
-    // delete in database
-    productRepository.deleteProductById(id);
+  public void deleteProductById(String productId) {
+    // get all product in history order transaction
+//    List<HistoryProductOrder> historyProductOrders = historyProductOrderRepo.findAllByProductId(productId);
+
+    // for loop order product list
+    // set to null
+//    historyProductOrders.forEach(orderProductList -> {
+//      orderProductList.setProduct(null);
+//      historyProductOrderRepo.save(orderProductList);
+//    });
+
+
+    // get all product in cart
+//    List<CartOrderedProduct> cartOrderedProducts = cartOrderedProductRepo.findAllByProductId(productId);
+
+    // for loop product in cart
+    // set to null
+//    cartOrderedProducts.forEach(products -> {
+//      products.setProduct(null);
+//      cartOrderedProductRepo.save(products);
+//    });
+
+    // delete product in database
+    productRepository.deleteProductById(productId);
 
     // delete folder image
-    imageService.deletePath(id);
+    imageService.deletePath(productId);
   }
 
   public void deleteSelectedProducts(List<String> id) {

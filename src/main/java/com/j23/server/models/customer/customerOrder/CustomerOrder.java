@@ -28,7 +28,7 @@ public class CustomerOrder {
 
   @OneToMany
   @JoinColumn(name = "customer_order_id")
-  private List<OrderProductList> orderProductLists;
+  private List<HistoryProductOrder> historyProductOrders;
 
   private BigDecimal totalPrice;
 

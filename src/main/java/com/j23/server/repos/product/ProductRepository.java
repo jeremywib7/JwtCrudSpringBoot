@@ -16,36 +16,36 @@ import java.util.Optional;
 @Repository
 public interface ProductRepository extends JpaRepository<Product, String> {
 
-    Page<Product> findAll(Pageable pageable);
+  Page<Product> findAll(Pageable pageable);
 
-    Product findProductById(String id);
+  Product findProductById(String id);
 
-    Optional<Product> findByName(String name);
+  Optional<Product> findByName(String name);
 
-    Page<Product> findAllByTotalCaloriesBetweenAndUnitPriceBetween(Long minCalories,
-                                                                   Long maxCalories, BigDecimal minPrice,
-                                                                   BigDecimal maxPrice,
-                                                                   Pageable pageable);
+  Page<Product> findAllByTotalCaloriesBetweenAndUnitPriceBetween(Long minCalories,
+                                                                 Long maxCalories, BigDecimal minPrice,
+                                                                 BigDecimal maxPrice,
+                                                                 Pageable pageable);
 
-    Page<Product> findAllByNameContaining(String name, Pageable pageable);
+  Page<Product> findAllByNameContaining(String name, Pageable pageable);
 
-    @Query("SELECT p FROM Product p WHERE CONCAT(p.name, ' ', p.active, ' ', " +
-            "p.description, ' ',p.totalCalories,' ', p.unitPrice) LIKE %?1%")
-    Page<Product> findAllBySearchTable(String searchKeyword, Pageable pageable);
+  @Query("SELECT p FROM Product p WHERE CONCAT(p.name, ' ', p.active, ' ', " +
+    "p.description, ' ',p.totalCalories,' ', p.unitPrice) LIKE %?1%")
+  Page<Product> findAllBySearchTable(String searchKeyword, Pageable pageable);
 
-    Page<Product> findAllByCategoryIdAndTotalCaloriesBetweenAndUnitPriceBetween(
-            String id, Long minCalories, Long maxCalories, BigDecimal minPrice, BigDecimal maxPrice,
-            Pageable pageable);
+  Page<Product> findAllByCategoryIdAndTotalCaloriesBetweenAndUnitPriceBetween(
+    String id, Long minCalories, Long maxCalories, BigDecimal minPrice, BigDecimal maxPrice,
+    Pageable pageable);
 
-    List<Product> findAllByCategoryId(String categoryId);
+  List<Product> findAllByCategoryId(String categoryId);
 
-    boolean existsByName(String name);
+  boolean existsByName(String name);
 
-    boolean existsById(String id);
+  boolean existsById(String id);
 
-    Integer countAllByCategoryId(String id);
+  Integer countAllByCategoryId(String id);
 
-    @Transactional
-    void deleteProductById(String id);
+  @Transactional
+  void deleteProductById(String id);
 
 }
