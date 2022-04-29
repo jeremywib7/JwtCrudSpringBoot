@@ -8,7 +8,6 @@ import com.j23.server.repos.customer.CustomerCartRepository;
 import com.j23.server.repos.customer.CustomerProfileRepo;
 import com.j23.server.repos.customer.OrderedProductRepo;
 import com.j23.server.repos.product.ProductRepository;
-import org.apache.tomcat.jni.Local;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
@@ -79,7 +78,7 @@ public class CustomerCartService {
     orderedProduct.setQuantity(productQuantity);
     orderedProduct.setCreatedOn(LocalDateTime.now());
     orderedProduct.setUpdatedOn(LocalDateTime.now());
-    orderedProductRepo.save(orderedProduct);
+    orderedProduct = orderedProductRepo.save(orderedProduct);
 
     customerCart.setUpdatedOn(LocalDateTime.now());
     customerCart.getOrderedProduct().add(orderedProduct);

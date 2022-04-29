@@ -1,10 +1,13 @@
 package com.j23.server.services.customer.customerOrder;
 
+import com.j23.server.models.customer.CustomerCart;
 import com.j23.server.models.customer.CustomerProfile;
 import com.j23.server.models.customer.OrderedProduct;
 import com.j23.server.models.customer.customerOrder.CustomerOrder;
 import com.j23.server.models.customer.customerOrder.OrderProductList;
 import com.j23.server.repos.customer.customerOrder.CustomerOrderRepository;
+import com.j23.server.repos.customer.customerOrder.OrderProductListRepo;
+import com.j23.server.services.customer.CustomerCartService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -15,28 +18,50 @@ import java.util.UUID;
 @Service
 public class CustomerOrderService {
 
-  @Autowired
-  private CustomerOrderRepository customerOrderRepository;
+    @Autowired
+    private CustomerOrderRepository customerOrderRepository;
 
-  public CustomerOrder addOrder(String customerId, List<OrderedProduct> orderedProductList) {
+    @Autowired
+    private CustomerCartService customerCartService;
 
-    CustomerOrder customerOrder = new CustomerOrder();
-    customerOrder.setId(String.valueOf(UUID.randomUUID()));
+    @Autowired
+    private OrderProductListRepo orderProductListRepo;
 
-    CustomerProfile customerProfile = new CustomerProfile();
-    customerProfile.setId(customerId);
-    customerOrder.setCustomerProfile(customerProfile);
 
-    List<OrderProductList> completeOrderProductList = new ArrayList<>();
+    public CustomerOrder addOrder(String customerId) {
+        // get customer cart info
+        CustomerCart customerCart = customerCartService.getCustomerCart(customerId);
 
-    orderedProductList.forEach(value -> {
-      OrderProductList orderProductList = new OrderProductList();
-    });
+        // create customer order
+        CustomerOrder customerOrder = new CustomerOrder();
+        customerOrder.setId(String.valueOf(UUID.randomUUID()));
 
-    customerOrder.setOrderProductLists(completeOrderProductList);
+        // set customer profile
+        CustomerProfile customerProfile = new CustomerProfile();
+        customerProfile.setId(customerId);
+        customerOrder.setCustomerProfile(customerProfile);
 
-    return customerOrderRepository.save(customerOrder);
+        List<OrderProductList> orderProductLists = new ArrayList<>();
 
-  }
+        // set in order product list
+        customerCart.getOrderedProduct().forEach(orderedProduct -> {
+            OrderProductList orderProductList = new OrderProductList();
+            orderProductList.setId(String.valueOf(UUID.randomUUID()));
+            orderProductList.setProduct(orderedProduct.getProduct());
+            orderProductList.setName(orderedProduct.getProduct().getName());
+            orderProductList.setQuantity(orderedProduct.getQuantity());
+            orderProductList.setDiscount(orderedProduct.getProduct().isDiscount());
+            orderProductList.setUnitPrice(orderedProduct.getProduct().getUnitPrice());
+            orderProductList.setDiscountedPrice(orderedProduct.getProduct().getDiscountedPrice());
+
+            orderProductLists.add(orderProductList);
+            orderProductListRepo.save(orderProductList);
+        });
+
+        customerOrder.setOrderProductLists(orderProductLists);
+
+        return customerOrderRepository.save(customerOrder);
+
+    }
 
 }

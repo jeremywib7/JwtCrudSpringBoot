@@ -15,16 +15,16 @@ import java.util.List;
 @RequestMapping("/order")
 public class CustomerOrderController {
 
-  @Autowired
-  private CustomerOrderService customerOrderService;
+    @Autowired
+    private CustomerOrderService customerOrderService;
 
-  @PostMapping("/add")
-  private ResponseEntity<Object> addOrder(
-    @RequestParam String customerId,
-    @RequestBody List<OrderedProduct> orderedProductList) {
-    CustomerOrder customerOrder = customerOrderService.addOrder(customerId, orderedProductList);
+    @PostMapping("/add")
+    private ResponseEntity<Object> addOrder(
+            @RequestParam String customerId) {
+        CustomerOrder customerOrder = customerOrderService.addOrder(customerId);
 
-    return ResponseHandler.generateResponse("Successfully fetch product!", HttpStatus.OK, customerOrder);
-  }
+        return ResponseHandler.generateResponse("Successfully fetch product!", HttpStatus.OK, customerOrder);
+    }
 
 }
+

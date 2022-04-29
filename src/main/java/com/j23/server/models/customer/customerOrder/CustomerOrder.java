@@ -27,7 +27,7 @@ public class CustomerOrder {
   private CustomerProfile customerProfile;
 
   @OneToMany
-  @JoinColumn(name = "order_product")
+  @JoinColumn(name = "customer_order_id")
   private List<OrderProductList> orderProductLists;
 
   private BigDecimal totalPrice;
