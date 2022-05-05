@@ -9,77 +9,114 @@ import com.j23.server.repos.customer.customerOrder.CustomerOrderRepository;
 import com.j23.server.repos.customer.customerOrder.HistoryProductOrderRepo;
 import com.j23.server.services.customer.customerCart.CustomerCartService;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
+import org.springframework.web.server.ResponseStatusException;
 
 import java.math.BigDecimal;
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.List;
-import java.util.UUID;
+import java.time.LocalDate;
+import java.time.LocalDateTime;
+import java.time.LocalTime;
+import java.util.*;
 
 @Service
 public class CustomerOrderService {
 
-  @Autowired
-  private CustomerOrderRepository customerOrderRepository;
+    @Autowired
+    private CustomerOrderRepository customerOrderRepository;
 
-  @Autowired
-  private CustomerCartRepository customerCartRepository;
+    @Autowired
+    private CustomerCartRepository customerCartRepository;
 
-  @Autowired
-  private CustomerCartService customerCartService;
+    @Autowired
+    private CustomerCartService customerCartService;
 
-  @Autowired
-  private HistoryProductOrderRepo historyProductOrderRepo;
+    @Autowired
+    private HistoryProductOrderRepo historyProductOrderRepo;
 
-  public CustomerOrder addOrder(String customerId) {
+    public CustomerOrder addOrder(String customerId) {
 
-    // get customer cart info
-    CustomerCart customerCart = customerCartService.getCustomerCart(customerId);
-    customerCart.setPlacedInOrder(true);
-    customerCartRepository.save(customerCart);
+        // get customer cart info
+        CustomerCart customerCart = customerCartService.getCustomerCart(customerId);
+        customerCart.setPlacedInOrder(true);
+        customerCartRepository.save(customerCart);
 
-    // create customer order
-    CustomerOrder customerOrder = new CustomerOrder();
+        // create customer order
+        CustomerOrder customerOrder = new CustomerOrder();
+        CustomerProfile customerProfile = new CustomerProfile();
+        List<HistoryProductOrder> historyProductOrders = new ArrayList<>();
+        BigDecimal totalPrice = BigDecimal.valueOf(0);
 
-    // set customer profile
-    CustomerProfile customerProfile = new CustomerProfile();
-    List<HistoryProductOrder> historyProductOrders = new ArrayList<>();
-    BigDecimal totalPrice = BigDecimal.valueOf(0);
+        // store list of product price
+        List<BigDecimal> prices = new ArrayList<>(List.of());
 
-    // store list of product price
-    List<BigDecimal> prices = new ArrayList<>(List.of());
+        // set in order product list
+        customerCart.getCartOrderedProduct().forEach(orderedProduct -> {
+            HistoryProductOrder historyProductOrder = new HistoryProductOrder();
+            historyProductOrder.setId(String.valueOf(UUID.randomUUID()));
+            historyProductOrder.setProduct(orderedProduct.getProduct());
+            historyProductOrder.setName(orderedProduct.getProduct().getName());
+            historyProductOrder.setQuantity(orderedProduct.getQuantity());
+            historyProductOrder.setDiscount(orderedProduct.getProduct().isDiscount());
+            historyProductOrder.setUnitPrice(orderedProduct.getProduct().getUnitPrice());
+            historyProductOrder.setDiscountedPrice(orderedProduct.getProduct().getDiscountedPrice());
 
-    // set in order product list
-    customerCart.getCartOrderedProduct().forEach(orderedProduct -> {
-      HistoryProductOrder historyProductOrder = new HistoryProductOrder();
-      historyProductOrder.setId(String.valueOf(UUID.randomUUID()));
-      historyProductOrder.setProduct(orderedProduct.getProduct());
-      historyProductOrder.setName(orderedProduct.getProduct().getName());
-      historyProductOrder.setQuantity(orderedProduct.getQuantity());
-      historyProductOrder.setDiscount(orderedProduct.getProduct().isDiscount());
-      historyProductOrder.setUnitPrice(orderedProduct.getProduct().getUnitPrice());
-      historyProductOrder.setDiscountedPrice(orderedProduct.getProduct().getDiscountedPrice());
+            historyProductOrders.add(historyProductOrder);
+            historyProductOrderRepo.save(historyProductOrder);
 
-      historyProductOrders.add(historyProductOrder);
-      historyProductOrderRepo.save(historyProductOrder);
+            // add total price
+            prices.add(orderedProduct.getProduct().getDiscountedPrice().multiply(new BigDecimal(orderedProduct.getQuantity())));
+        });
 
-      // add total price
-      prices.add(orderedProduct.getProduct().getDiscountedPrice().multiply(new BigDecimal(orderedProduct.getQuantity())));
-    });
+        customerProfile.setId(customerId);
+        customerOrder.setCustomerProfile(customerProfile);
+        customerOrder.setTotalPrice(totalPrice);
+        customerOrder.setHistoryProductOrders(historyProductOrders);
 
-    customerOrder.setId(String.valueOf(UUID.randomUUID()));
-    customerProfile.setId(customerId);
-    customerOrder.setCustomerProfile(customerProfile);
-    customerOrder.setTotalPrice(totalPrice);
-    customerOrder.setHistoryProductOrders(historyProductOrders);
+        // sum list of discounted prices to set as totalPrice in database
+        BigDecimal totalPriceFinal = prices.stream().reduce(BigDecimal.ZERO, BigDecimal::add);
+        customerOrder.setTotalPrice(totalPriceFinal);
 
-    // sum list of discounted prices to set as totalPrice in database
-    BigDecimal totalPriceFinal = prices.stream().reduce(BigDecimal.ZERO, BigDecimal::add);
-    customerOrder.setTotalPrice(totalPriceFinal);
+        return customerOrderRepository.save(customerOrder);
 
-    return customerOrderRepository.save(customerOrder);
+    }
 
-  }
+    public CustomerOrder confirmPayOrder(String customerId) {
+
+        // get customer cart info
+        CustomerCart customerCart = customerCartService.getCustomerCart(customerId);
+
+        CustomerOrder customerOrder = customerOrderRepository.findByCustomerProfileAndStatusEquals(
+                customerCart.getCustomerProfile(), "Waiting for payment").orElseThrow(() ->
+                new ResponseStatusException(HttpStatus.NOT_FOUND, "Customer order does not exists !"));
+
+        // check if customer already paid
+        if (!Objects.equals(customerOrder.getStatus(), "Waiting for payment")) {
+            throw new ResponseStatusException(HttpStatus.FAILED_DEPENDENCY, "Customer already paid !");
+        }
+
+        LocalDateTime startOfDay = LocalDateTime.of(LocalDate.now(), LocalTime.MIDNIGHT);
+        LocalDateTime endOfDay = LocalDateTime.of(LocalDate.now(), LocalTime.MAX);
+
+        CustomerOrder previousCustomerOrder = customerOrderRepository.findFirstByStatusNotAndDateCreatedBetweenOrderByDateCreatedDesc(
+                "Waiting for payment", startOfDay, endOfDay).orElse(null);
+
+        // set order number from previous order +1
+        if (previousCustomerOrder != null) {
+            customerOrder.setNumber(previousCustomerOrder.getNumber() + 1);
+        } else {
+            customerOrder.setNumber(1);
+        }
+
+        // update status to completed
+        customerCart.setPayed(true);
+        customerOrder.setStatus("Completed");
+        customerCartRepository.save(customerCart);
+
+        // delete or reset current customer cart
+        customerCartRepository.delete(customerCart);
+
+        return customerOrderRepository.save(customerOrder);
+    }
 
 }

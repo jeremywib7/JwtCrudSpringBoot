@@ -10,11 +10,14 @@ import lombok.Data;
 import lombok.Getter;
 import lombok.Setter;
 import lombok.ToString;
+import org.hibernate.annotations.CreationTimestamp;
+import org.hibernate.annotations.UpdateTimestamp;
 
 import javax.persistence.*;
 import java.math.BigDecimal;
 import java.time.LocalDateTime;
 import java.util.List;
+import java.util.UUID;
 
 @Entity
 @Data
@@ -24,23 +27,25 @@ import java.util.List;
 public class CustomerOrder {
 
   @Id
-  private String id;
+  private String id = String.valueOf(UUID.randomUUID());
 
-  private int number;
+  private int number = -1;
 
-  private String status = "Preparing";
+  private String status = "Waiting for payment";
 
   @JsonFormat(pattern = "MM/dd/yyyy HH:mm:ss")
   @JsonDeserialize(using = LocalDateTimeDeserializer.class)
   @JsonSerialize(using = LocalDateTimeSerializer.class)
-  @Column(name = "date_created")
-  private LocalDateTime dateCreated = LocalDateTime.now();
+  @Column(name = "date_created", updatable = false)
+  @CreationTimestamp
+  private LocalDateTime dateCreated;
 
   @JsonFormat(pattern = "MM/dd/yyyy HH:mm:ss")
   @JsonDeserialize(using = LocalDateTimeDeserializer.class)
   @JsonSerialize(using = LocalDateTimeSerializer.class)
   @Column(name = "date_updated")
-  private LocalDateTime updatedOn = LocalDateTime.now();
+  @UpdateTimestamp
+  private LocalDateTime updatedOn;
 
   @OneToOne
   @JoinColumn(name = "customer_profile")

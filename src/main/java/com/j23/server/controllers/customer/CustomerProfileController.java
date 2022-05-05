@@ -25,4 +25,11 @@ public class CustomerProfileController {
     return ResponseHandler.generateResponse("Register success!", HttpStatus.OK, result);
   }
 
+  @PostMapping({"/update/profile"})
+  private ResponseEntity<Object> saveCustomerProfile(@RequestBody CustomerProfile customerProfile) {
+    CustomerProfile result = customerProfileService.saveCustomerProfile(customerProfile);
+
+    return ResponseHandler.generateResponse("Update profile success!", HttpStatus.OK, result);
+  }
+
 }

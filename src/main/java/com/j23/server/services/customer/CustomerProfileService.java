@@ -8,8 +8,6 @@ import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 import org.springframework.web.server.ResponseStatusException;
 
-import java.time.LocalDateTime;
-
 @Service
 public class CustomerProfileService {
 
@@ -24,7 +22,7 @@ public class CustomerProfileService {
     if (customerProfileRepo.existsByUsername(customerProfile.getUsername())) {
       throw new ResponseStatusException(HttpStatus.CONFLICT, "Username already exists !");
     }
-    customerProfile.setCreatedOn(LocalDateTime.now());
+
     CustomerProfile customerProfile1 = customerProfileRepo.save(customerProfile);
 
     // create cart
@@ -32,5 +30,9 @@ public class CustomerProfileService {
 
     return customerProfile1;
 
+  }
+
+  public CustomerProfile saveCustomerProfile(CustomerProfile customerProfile) {
+    return customerProfileRepo.save(customerProfile);
   }
 }

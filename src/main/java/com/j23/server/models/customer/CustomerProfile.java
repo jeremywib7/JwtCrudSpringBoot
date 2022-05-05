@@ -9,7 +9,9 @@ import lombok.Data;
 import lombok.Getter;
 import lombok.Setter;
 import lombok.ToString;
+import org.hibernate.annotations.CreationTimestamp;
 import org.hibernate.annotations.SQLDelete;
+import org.hibernate.annotations.UpdateTimestamp;
 import org.hibernate.annotations.Where;
 
 import javax.persistence.Column;
@@ -28,41 +30,43 @@ import java.time.LocalDateTime;
 @Where(clause = "deleted=false")
 public class CustomerProfile {
 
-  @Id
-  private String id;
+    @Id
+    private String id;
 
-  private String username;
+    private String username;
 
-  private String firstName;
+    private String firstName;
 
-  private String lastName;
+    private String lastName;
 
-  private String gender;
+    private String gender;
 
-  private String email;
+    private String email;
 
-  private String password;
+    private String password;
 
 
-  // server side update
+    // server side update
 
-  private boolean isActive;
+    private boolean isActive;
 
-  @JsonFormat(pattern = "yyyy-MM-dd HH:mm:ss")
-  @JsonDeserialize(using = LocalDateTimeDeserializer.class)
-  @JsonSerialize(using = LocalDateTimeSerializer.class)
-  @Column(name = "date_created")
-  private LocalDateTime createdOn;
+    @CreationTimestamp
+    @JsonFormat(pattern = "yyyy-MM-dd HH:mm:ss")
+    @JsonDeserialize(using = LocalDateTimeDeserializer.class)
+    @JsonSerialize(using = LocalDateTimeSerializer.class)
+    @Column(name = "date_created", updatable = false)
+    private LocalDateTime createdOn;
 
-  @JsonFormat(pattern = "yyyy-MM-dd HH:mm:ss")
-  @JsonDeserialize(using = LocalDateTimeDeserializer.class)
-  @JsonSerialize(using = LocalDateTimeSerializer.class)
-  @Column(name = "last_updated")
-  private LocalDateTime updatedOn;
+    @UpdateTimestamp
+    @JsonFormat(pattern = "yyyy-MM-dd HH:mm:ss")
+    @JsonDeserialize(using = LocalDateTimeDeserializer.class)
+    @JsonSerialize(using = LocalDateTimeSerializer.class)
+    @Column(name = "last_updated")
+    private LocalDateTime updatedOn;
 
-  //
+    //
 
-  //  @JsonIgnore
-  private boolean deleted = Boolean.FALSE;
+    //  @JsonIgnore
+    private boolean deleted = Boolean.FALSE;
 
 }

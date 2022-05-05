@@ -11,8 +11,8 @@ import java.util.List;
 @Repository
 public interface CartOrderedProductRepo extends JpaRepository<CartOrderedProduct, String> {
 
-  @Transactional
-  void deleteAllByProductId(String productId);
+//  @Transactional
+//  void deleteAllBy(String productId);
 
   List<CartOrderedProduct> findAllByProductId(String id);
 

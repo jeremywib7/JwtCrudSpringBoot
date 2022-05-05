@@ -73,8 +73,6 @@ public class CustomerCartService {
     cartOrderedProduct.setId(String.valueOf(UUID.randomUUID()));
     cartOrderedProduct.setProduct(product);
     cartOrderedProduct.setQuantity(productQuantity);
-//    cartOrderedProduct.setCreatedOn(LocalDateTime.now());
-//    cartOrderedProduct.setUpdatedOn(LocalDateTime.now());
     cartOrderedProduct = cartOrderedProductRepo.save(cartOrderedProduct);
 
     customerCart.setUpdatedOn(LocalDateTime.now());
@@ -83,6 +81,7 @@ public class CustomerCartService {
 
     return cartOrderedProduct;
   }
+
 
   public CustomerCart updateProductQuantityInCart(String customerId, String productId, Integer productQuantity) {
     LocalDateTime currentTime = LocalDateTime.now();

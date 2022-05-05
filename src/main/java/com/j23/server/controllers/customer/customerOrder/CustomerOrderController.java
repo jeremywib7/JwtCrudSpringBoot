@@ -23,5 +23,12 @@ public class CustomerOrderController {
         return ResponseHandler.generateResponse("Successfully fetch product!", HttpStatus.OK, customerOrder);
     }
 
+    @PostMapping("/pay")
+    private ResponseEntity<Object> confirmPayOrder(
+            @RequestParam String customerId) {
+        CustomerOrder customerOrder = customerOrderService.confirmPayOrder(customerId);
+        return ResponseHandler.generateResponse("Successfully confirm order as payed!", HttpStatus.OK, customerOrder);
+    }
+
 }
 

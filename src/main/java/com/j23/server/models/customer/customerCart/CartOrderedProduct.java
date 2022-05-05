@@ -23,29 +23,29 @@ import java.time.LocalDateTime;
 @ToString
 public class CartOrderedProduct {
 
-  @Id
-  private String id;
+    @Id
+    private String id;
 
-  @JsonIncludeProperties(value = {"id", "name", "unitPrice", "discount", "discountedPrice", "active", "deleted"})
-  @OneToOne(targetEntity = Product.class)
-  private Product product;
+    @JsonIncludeProperties(value = {"id", "name", "unitPrice", "discount", "discountedPrice", "images", "active", "deleted"})
+    @OneToOne(targetEntity = Product.class)
+    private Product product;
 
-  @Min(0)
-  @Max(100000)
-  @Column(name = "quantity")
-  private Integer quantity;
+    @Min(0)
+    @Max(100000)
+    @Column(name = "quantity")
+    private Integer quantity;
 
-  @CreationTimestamp
-  @JsonFormat(pattern="MM/dd/yyyy HH:mm:ss")
-  @JsonDeserialize(using = LocalDateTimeDeserializer.class)
-  @JsonSerialize(using = LocalDateTimeSerializer.class)
-  @Column(name = "date_created")
-  private LocalDateTime createdOn;
+    @CreationTimestamp
+    @JsonFormat(pattern = "MM/dd/yyyy HH:mm:ss")
+    @JsonDeserialize(using = LocalDateTimeDeserializer.class)
+    @JsonSerialize(using = LocalDateTimeSerializer.class)
+    @Column(name = "date_created")
+    private LocalDateTime createdOn;
 
-  @UpdateTimestamp
-  @JsonFormat(pattern="MM/dd/yyyy HH:mm:ss")
-  @JsonDeserialize(using = LocalDateTimeDeserializer.class)
-  @JsonSerialize(using = LocalDateTimeSerializer.class)
-  @Column(name = "date_updated")
-  private LocalDateTime updatedOn;
+    @UpdateTimestamp
+    @JsonFormat(pattern = "MM/dd/yyyy HH:mm:ss")
+    @JsonDeserialize(using = LocalDateTimeDeserializer.class)
+    @JsonSerialize(using = LocalDateTimeSerializer.class)
+    @Column(name = "date_updated")
+    private LocalDateTime updatedOn;
 }

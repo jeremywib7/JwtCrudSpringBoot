@@ -57,15 +57,4 @@ public class CustomerCartController {
       response);
   }
 
-//    @PostMapping("/update/product/quantity")
-//    public ResponseEntity<Object> updateProductQtyInCart(
-//            @RequestParam String customerId,
-//            @RequestParam String productId,
-//            @RequestParam Integer productQuantity
-//    ) {
-//        CustomerCart response = customerCartService.updateProductQuantityInCart(customerId, productId, productQuantity);
-//        return ResponseHandler.generateResponse("Successfully update product quantity!", HttpStatus.OK,
-//                response);
-//    }
-
 }

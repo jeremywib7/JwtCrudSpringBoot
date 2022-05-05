@@ -45,7 +45,7 @@ public class CustomerCart {
   @Column(name = "date_updated" , nullable=false)
   private LocalDateTime updatedOn;
 
-  @JsonIncludeProperties(value = {"id", "username"})
+//  @JsonIncludeProperties(value = {"id", "username"})
   @OneToOne()
   @JoinColumn(name = "customer_id" , nullable=false)
   private CustomerProfile customerProfile;
@@ -56,8 +56,8 @@ public class CustomerCart {
   @JsonProperty("isPayed")
   private boolean isPayed = false;
 
-  @OneToMany(targetEntity = CartOrderedProduct.class)
-  @JoinColumn(name = "cart_id" , nullable=false)
+  @OneToMany(targetEntity = CartOrderedProduct.class, cascade = CascadeType.REMOVE)
+  @JoinColumn(name = "cart_id")
   private List<CartOrderedProduct> cartOrderedProduct = new ArrayList<>();
 
 }
