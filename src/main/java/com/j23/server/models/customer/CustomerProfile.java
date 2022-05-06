@@ -48,7 +48,7 @@ public class CustomerProfile {
 
     // server side update
 
-    private boolean isActive;
+    private boolean isActive = true;
 
     @CreationTimestamp
     @JsonFormat(pattern = "yyyy-MM-dd HH:mm:ss")
