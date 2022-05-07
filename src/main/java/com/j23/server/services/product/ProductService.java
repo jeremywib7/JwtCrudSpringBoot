@@ -63,10 +63,7 @@ public class ProductService {
 
     // create 3 sample product
     // add default image
-    ProductImage defaultImage = new ProductImage();
-    defaultImage.setImageName("defaultimage.png");
-    List<ProductImage> listImages = new ArrayList<>();
-    listImages.add(defaultImage);
+
 
     Product satayAyam = new Product();
     satayAyam.setId("satayayam");
@@ -80,7 +77,15 @@ public class ProductService {
     satayAyam.setUpdatedOn(null);
     satayAyam.setCategory(breakfast);
     satayAyam.setActive(true);
+
+    ProductImage satayAyam_1 = new ProductImage();
+    satayAyam_1.setId("Satay Ayam_1");
+    satayAyam_1.setImageName("defaultimage.png");
+
+    List<ProductImage> listImages = new ArrayList<>();
+    listImages.add(satayAyam_1);
     satayAyam.setImages(listImages);
+
     productRepository.save(satayAyam);
 
     Product banana = new Product();
@@ -95,7 +100,14 @@ public class ProductService {
     banana.setUpdatedOn(null);
     banana.setCategory(breakfast);
     banana.setActive(true);
-    banana.setImages(listImages);
+
+    ProductImage aBanana_1 = new ProductImage();
+    aBanana_1.setId("A Banana_1");
+    aBanana_1.setImageName("defaultimage.png");
+
+    List<ProductImage> listImagesBanana = new ArrayList<>();
+    listImagesBanana.add(aBanana_1);
+    banana.setImages(listImagesBanana);
     productRepository.save(banana);
 
     Product iceCream = new Product();
@@ -110,10 +122,16 @@ public class ProductService {
     iceCream.setUpdatedOn(null);
     iceCream.setCategory(dinner);
     iceCream.setActive(false);
-    iceCream.setImages(listImages);
+
+    ProductImage iceCream_1 = new ProductImage();
+    iceCream_1.setId("Ice Cream_1");
+    iceCream_1.setImageName("defaultimage.png");
+
+    List<ProductImage> listImagesIceCream = new ArrayList<>();
+    listImagesIceCream.add(iceCream_1);
+    iceCream.setImages(listImagesIceCream);
     productRepository.save(iceCream);
 
-    // create
   }
 
   public Product addProduct(Product product) {
@@ -136,27 +154,6 @@ public class ProductService {
   }
 
   public void deleteProductById(String productId) {
-    // get all product in history order transaction
-//    List<HistoryProductOrder> historyProductOrders = historyProductOrderRepo.findAllByProductId(productId);
-
-    // for loop order product list
-    // set to null
-//    historyProductOrders.forEach(orderProductList -> {
-//      orderProductList.setProduct(null);
-//      historyProductOrderRepo.save(orderProductList);
-//    });
-
-
-    // get all product in cart
-//    List<CartOrderedProduct> cartOrderedProducts = cartOrderedProductRepo.findAllByProductId(productId);
-
-    // for loop product in cart
-    // set to null
-//    cartOrderedProducts.forEach(products -> {
-//      products.setProduct(null);
-//      cartOrderedProductRepo.save(products);
-//    });
-
     // delete product in database
     productRepository.deleteProductById(productId);
 

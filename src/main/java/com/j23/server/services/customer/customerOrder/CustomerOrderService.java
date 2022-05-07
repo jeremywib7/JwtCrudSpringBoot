@@ -1,9 +1,15 @@
 package com.j23.server.services.customer.customerOrder;
 
+import com.google.api.core.ApiFuture;
+import com.google.cloud.firestore.DocumentReference;
+import com.google.cloud.firestore.Firestore;
+import com.google.cloud.firestore.WriteResult;
+import com.google.firebase.cloud.FirestoreClient;
 import com.j23.server.models.customer.customerCart.CustomerCart;
 import com.j23.server.models.customer.CustomerProfile;
 import com.j23.server.models.customer.customerOrder.CustomerOrder;
 import com.j23.server.models.customer.customerOrder.HistoryProductOrder;
+import com.j23.server.models.waitingList.WaitingList;
 import com.j23.server.repos.customer.CustomerProfileRepo;
 import com.j23.server.repos.customer.customerCart.CustomerCartRepository;
 import com.j23.server.repos.customer.customerOrder.CustomerOrderRepository;
@@ -92,7 +98,7 @@ public class CustomerOrderService {
     return customerOrderRepository.findAllByCustomerProfile(customerProfile);
   }
 
-  public CustomerOrder confirmPayOrder(String customerId) {
+  public CustomerOrder confirmPayOrder(String customerId, int estHour, int estMinute, int estSecond) {
 
     // get customer cart info
     CustomerCart customerCart = customerCartService.getCustomerCart(customerId);
@@ -112,20 +118,39 @@ public class CustomerOrderService {
     CustomerOrder previousCustomerOrder = customerOrderRepository.findFirstByStatusNotAndDateCreatedBetweenOrderByDateCreatedDesc(
       "Waiting for payment", startOfDay, endOfDay).orElse(null);
 
-    // set order number from previous order +1
+    // set order number from previous order +1 if available
     if (previousCustomerOrder != null) {
       customerOrder.setNumber(previousCustomerOrder.getNumber() + 1);
     } else {
       customerOrder.setNumber(1);
     }
 
-    // update status to completed
+    // update status to processing order
     customerCart.setPayed(true);
-    customerOrder.setStatus("Completed");
+    customerOrder.setStatus("Processing");
     customerCartRepository.save(customerCart);
 
+    // add to waiting list in firebase
+    Firestore firestore = FirestoreClient.getFirestore();
+    DocumentReference documentReference = firestore.collection("Waiting_List").document();
+
+    WaitingList waitingList = new WaitingList();
+    waitingList.setId(documentReference.getId());
+    waitingList.setCustomerName(customerCart.getCustomerProfile().getUsername());
+    waitingList.setEstHour(estHour);
+    waitingList.setEstMinute(estMinute);
+    waitingList.setEstSecond(estSecond);
+
+    int hourToSecond = (estHour * 60) * 60;
+    int minuteToSecond = (estMinute * 60);
+    int totalSecond = (1000 * (hourToSecond + minuteToSecond + estSecond));
+
+    waitingList.setEstTime(totalSecond);
+
+    ApiFuture<WriteResult> apiFuture = documentReference.set(waitingList);
+
     // delete or reset current customer cart
-    customerCartRepository.delete(customerCart);
+    // customerCartRepository.delete(customerCart);
 
     return customerOrderRepository.save(customerOrder);
   }

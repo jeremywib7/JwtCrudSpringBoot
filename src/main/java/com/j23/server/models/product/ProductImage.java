@@ -12,8 +12,7 @@ import javax.persistence.*;
 @ToString
 public class ProductImage {
     @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Integer id;
+    private String id;
 
     @Column(length = 100)
     private String imageName;

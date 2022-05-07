@@ -14,8 +14,8 @@ public class WaitingListController {
 
     private WaitingListService waitingListService;
 
-    @GetMapping("/all")
-    private List<WaitingList> findAllWaitingList() {
-        return waitingListService.findAllWaitingList();
-    }
+//    @GetMapping("/all")
+//    private List<WaitingList> findAllWaitingList() {
+//        return waitingListService.findAllWaitingList();
+//    }
 }

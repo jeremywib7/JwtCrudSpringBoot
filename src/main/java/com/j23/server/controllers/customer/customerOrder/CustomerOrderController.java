@@ -32,8 +32,13 @@ public class CustomerOrderController {
   }
 
   @PostMapping("/pay")
-  private ResponseEntity<Object> confirmPayOrder(@RequestParam String customerId) {
-    CustomerOrder customerOrder = customerOrderService.confirmPayOrder(customerId);
+  private ResponseEntity<Object> confirmPayOrder(
+    @RequestParam String customerId,
+    @RequestParam int estHour,
+    @RequestParam int estMinute,
+    @RequestParam int estSecond
+  ) {
+    CustomerOrder customerOrder = customerOrderService.confirmPayOrder(customerId, estHour, estMinute, estSecond);
     return ResponseHandler.generateResponse("Successfully confirm order as payed!", HttpStatus.OK, customerOrder);
   }
 
