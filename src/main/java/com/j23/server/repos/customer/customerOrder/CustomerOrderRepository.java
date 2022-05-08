@@ -14,7 +14,7 @@ public interface CustomerOrderRepository extends JpaRepository<CustomerOrder, St
 
     Optional<CustomerOrder> findByCustomerProfileAndStatusEquals(CustomerProfile customerProfile, String status);
 
-    List<CustomerOrder> findAllByCustomerProfile(CustomerProfile customerProfile);
+    List<CustomerOrder> findAllByCustomerProfileOrderByDateCreatedDesc(CustomerProfile customerProfile);
 
     Optional<CustomerOrder> findFirstByStatusNotAndDateCreatedBetweenOrderByDateCreatedDesc(
             String status, LocalDateTime dateStart, LocalDateTime dateEnd);

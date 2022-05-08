@@ -1,6 +1,5 @@
 package com.j23.server.models.product;
 
-import com.fasterxml.jackson.annotation.JsonProperty;
 import lombok.*;
 
 import javax.persistence.*;
@@ -11,9 +10,8 @@ import javax.persistence.*;
 @Getter
 @ToString
 public class ProductImage {
-    @Id
-    private String id;
 
+    @Id
     @Column(length = 100)
     private String imageName;
 

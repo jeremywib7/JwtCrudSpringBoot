@@ -44,7 +44,7 @@ public class ImageService {
 
                 // format (Folder/productName/index.jpeg)
                 assert fileName != null;
-                Path pathFile = Paths.get(pathFolder + "/" + i + "." + fileName.substring(fileName.lastIndexOf(".") + 1));
+                Path pathFile = Paths.get(pathFolder + "/" + productId + "_" + i + "." + fileName.substring(fileName.lastIndexOf(".") + 1));
                 try {
                     Files.write(pathFile, files.get(i).getBytes());
                 } catch (IOException e) {

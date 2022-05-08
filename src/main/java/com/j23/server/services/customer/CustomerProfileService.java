@@ -11,28 +11,33 @@ import org.springframework.web.server.ResponseStatusException;
 @Service
 public class CustomerProfileService {
 
-  @Autowired
-  private CustomerProfileRepo customerProfileRepo;
+    @Autowired
+    private CustomerProfileRepo customerProfileRepo;
 
-  @Autowired
-  private CustomerCartService customerCartService;
+    @Autowired
+    private CustomerCartService customerCartService;
 
-  public CustomerProfile registerCustomer(CustomerProfile customerProfile) {
+    public CustomerProfile registerCustomer(CustomerProfile customerProfile) {
 
-    if (customerProfileRepo.existsByUsername(customerProfile.getUsername())) {
-      throw new ResponseStatusException(HttpStatus.CONFLICT, "Username already exists !");
+        if (customerProfileRepo.existsByUsername(customerProfile.getUsername())) {
+            throw new ResponseStatusException(HttpStatus.CONFLICT, "Username already exists !");
+        }
+
+        CustomerProfile customerProfile1 = customerProfileRepo.save(customerProfile);
+
+        // create cart
+        customerCartService.createCart(customerProfile);
+
+        return customerProfile1;
+
     }
 
-    CustomerProfile customerProfile1 = customerProfileRepo.save(customerProfile);
+    public CustomerProfile getCustomerById(String customerId) {
+        return customerProfileRepo.findById(customerId).orElseThrow(() ->
+                new ResponseStatusException(HttpStatus.NOT_FOUND, "Customer not found !"));
+    }
 
-    // create cart
-    customerCartService.createCart(customerProfile);
-
-    return customerProfile1;
-
-  }
-
-  public CustomerProfile saveCustomerProfile(CustomerProfile customerProfile) {
-    return customerProfileRepo.save(customerProfile);
-  }
+    public CustomerProfile saveCustomerProfile(CustomerProfile customerProfile) {
+        return customerProfileRepo.save(customerProfile);
+    }
 }

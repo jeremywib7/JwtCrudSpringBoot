@@ -79,8 +79,7 @@ public class ProductService {
     satayAyam.setActive(true);
 
     ProductImage satayAyam_1 = new ProductImage();
-    satayAyam_1.setId("Satay Ayam_1");
-    satayAyam_1.setImageName("defaultimage.png");
+    satayAyam_1.setImageName("satayAyam_1.png");
 
     List<ProductImage> listImages = new ArrayList<>();
     listImages.add(satayAyam_1);
@@ -102,8 +101,7 @@ public class ProductService {
     banana.setActive(true);
 
     ProductImage aBanana_1 = new ProductImage();
-    aBanana_1.setId("A Banana_1");
-    aBanana_1.setImageName("defaultimage.png");
+    aBanana_1.setImageName("aBanana_1.png");
 
     List<ProductImage> listImagesBanana = new ArrayList<>();
     listImagesBanana.add(aBanana_1);
@@ -124,8 +122,7 @@ public class ProductService {
     iceCream.setActive(false);
 
     ProductImage iceCream_1 = new ProductImage();
-    iceCream_1.setId("Ice Cream_1");
-    iceCream_1.setImageName("defaultimage.png");
+    iceCream_1.setImageName("iceCream_1.png");
 
     List<ProductImage> listImagesIceCream = new ArrayList<>();
     listImagesIceCream.add(iceCream_1);
@@ -147,6 +144,7 @@ public class ProductService {
   }
 
   public Product updateProduct(Product product) {
+
     LocalDateTime localDateTime = LocalDateTime.now();
     product.setUpdatedOn(LocalDateTime.from(localDateTime));
 
@@ -154,6 +152,7 @@ public class ProductService {
   }
 
   public void deleteProductById(String productId) {
+
     // delete product in database
     productRepository.deleteProductById(productId);
 
