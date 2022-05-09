@@ -14,41 +14,48 @@ import java.util.List;
 @RequestMapping("/order")
 public class CustomerOrderController {
 
-    @Autowired
-    private CustomerOrderService customerOrderService;
+  @Autowired
+  private CustomerOrderService customerOrderService;
 
-    @PostMapping("/add")
-    private ResponseEntity<Object> addOrder(@RequestParam String customerId) {
-        CustomerOrder customerOrder = customerOrderService.addOrder(customerId);
+  @PostMapping("/add")
+  private ResponseEntity<Object> addOrder(@RequestParam String customerId) {
+    CustomerOrder customerOrder = customerOrderService.addOrder(customerId);
 
-        return ResponseHandler.generateResponse("Successfully fetch product!", HttpStatus.OK, customerOrder);
-    }
+    return ResponseHandler.generateResponse("Successfully fetch product!", HttpStatus.OK, customerOrder);
+  }
 
-    @GetMapping("/view")
-    private ResponseEntity<Object> viewCustomerOrders(@RequestParam String customerId) {
-        List<CustomerOrder> customerOrders = customerOrderService.viewCustomerOrders(customerId);
+  @GetMapping("/view")
+  private ResponseEntity<Object> viewCustomerOrdersByCustomerId(@RequestParam String customerId) {
+    List<CustomerOrder> customerOrders = customerOrderService.viewCustomerOrdersByCustomerId(customerId);
 
-        return ResponseHandler.generateResponse("Successfully view customer orders!", HttpStatus.OK, customerOrders);
-    }
+    return ResponseHandler.generateResponse("Successfully view customer orders!", HttpStatus.OK, customerOrders);
+  }
 
-    @PostMapping("/pay")
-    private ResponseEntity<Object> confirmPayOrder(
-            @RequestParam String customerId,
-            @RequestParam int estHour,
-            @RequestParam int estMinute,
-            @RequestParam int estSecond
-    ) {
-        CustomerOrder customerOrder = customerOrderService.confirmPayOrder(customerId, estHour, estMinute, estSecond);
-        return ResponseHandler.generateResponse("Successfully confirm order as payed!", HttpStatus.OK, customerOrder);
-    }
+  @GetMapping("/view/byUsername/{username}")
+  private ResponseEntity<Object> viewCustomerOrdersByCustomerUsername(@PathVariable("username") String username) {
+    CustomerOrder customerOrder = customerOrderService.viewCustomerOrderByCustomerUsername(username);
 
-    @PutMapping("/completed")
-    private ResponseEntity<Object> confirmPayOrder(
-            @RequestParam String customerId
-    ) {
-        customerOrderService.finishOrder(customerId);
-        return ResponseHandler.generateResponse("Customer order successfully completed!", HttpStatus.OK, null);
-    }
+    return ResponseHandler.generateResponse("Successfully view customer orders!", HttpStatus.OK, customerOrder);
+  }
+
+  @PostMapping("/pay")
+  private ResponseEntity<Object> confirmPayOrder(
+    @RequestParam String customerId,
+    @RequestParam int estHour,
+    @RequestParam int estMinute,
+    @RequestParam int estSecond
+  ) {
+    CustomerOrder customerOrder = customerOrderService.confirmPayOrder(customerId, estHour, estMinute, estSecond);
+    return ResponseHandler.generateResponse("Successfully confirm order as payed!", HttpStatus.OK, customerOrder);
+  }
+
+  @PutMapping("/completed")
+  private ResponseEntity<Object> confirmPayOrder(
+    @RequestParam String customerId
+  ) {
+    customerOrderService.finishOrder(customerId);
+    return ResponseHandler.generateResponse("Customer order successfully completed!", HttpStatus.OK, null);
+  }
 
 }
 

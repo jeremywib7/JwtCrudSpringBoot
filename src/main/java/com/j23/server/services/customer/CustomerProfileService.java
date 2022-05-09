@@ -37,6 +37,11 @@ public class CustomerProfileService {
                 new ResponseStatusException(HttpStatus.NOT_FOUND, "Customer not found !"));
     }
 
+  public CustomerProfile getCustomerByUsername(String username) {
+    return customerProfileRepo.findByUsername(username).orElseThrow(() ->
+      new ResponseStatusException(HttpStatus.NOT_FOUND, "Customer not found !"));
+  }
+
     public CustomerProfile saveCustomerProfile(CustomerProfile customerProfile) {
         return customerProfileRepo.save(customerProfile);
     }

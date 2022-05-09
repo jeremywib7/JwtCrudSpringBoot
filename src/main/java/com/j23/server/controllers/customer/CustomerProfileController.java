@@ -23,6 +23,14 @@ public class CustomerProfileController {
                 customerProfile);
     }
 
+  @GetMapping({"/profile/username/{username}"})
+  private ResponseEntity<Object> getCustomerByUsername(@PathVariable("username") String username) {
+    CustomerProfile customerProfile = customerProfileService.getCustomerByUsername(username);
+
+    return ResponseHandler.generateResponse("Success fetch customer profile!", HttpStatus.OK,
+      customerProfile);
+  }
+
     @PostMapping({"/register"})
     private ResponseEntity<Object> registerCustomer(@RequestBody CustomerProfile customerProfile) {
         CustomerProfile result = customerProfileService.registerCustomer(customerProfile);
