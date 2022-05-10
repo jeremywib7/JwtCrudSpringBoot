@@ -138,6 +138,7 @@ public class CustomerOrderService {
     customerOrder.setStatus("Processing");
     customerCartRepository.save(customerCart);
 
+
     // add to waiting list in firebase
     Firestore firestore = FirestoreClient.getFirestore();
     DocumentReference documentReference = firestore.collection("Waiting_List").document();
@@ -148,6 +149,7 @@ public class CustomerOrderService {
     waitingList.setEstHour(estHour);
     waitingList.setEstMinute(estMinute);
     waitingList.setEstSecond(estSecond);
+    waitingList.setStatus("PROCESSING");
 
     int hourToSecond = (estHour * 60) * 60;
     int minuteToSecond = (estMinute * 60);
