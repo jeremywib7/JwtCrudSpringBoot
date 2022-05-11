@@ -56,7 +56,7 @@ public class CustomerCart {
   @JsonProperty("isPayed")
   private boolean isPayed = false;
 
-  @OneToMany(targetEntity = CartOrderedProduct.class, cascade = CascadeType.REMOVE)
+  @OneToMany(targetEntity = CartOrderedProduct.class, cascade = CascadeType.ALL)
   @JoinColumn(name = "cart_id")
   private List<CartOrderedProduct> cartOrderedProduct = new ArrayList<>();
 

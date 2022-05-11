@@ -1,18 +1,12 @@
 package com.j23.server.models.waitingList;
 
-import com.j23.server.models.auth.User;
-import com.j23.server.models.customer.CustomerProfile;
-import com.j23.server.models.customer.customerOrder.CustomerOrder;
-import lombok.Data;
 import lombok.Getter;
 import lombok.Setter;
 import lombok.ToString;
 import org.springframework.stereotype.Component;
 
-import javax.persistence.Entity;
 import javax.persistence.Id;
-import javax.persistence.OneToOne;
-import java.util.UUID;
+import java.time.Instant;
 
 @Component
 @Setter
@@ -31,7 +25,7 @@ public class WaitingList {
 
   private int estSecond;
 
-  private int estTime;
+  private Long estTime;
 
   private int number;
 
