@@ -4,8 +4,7 @@ import com.fasterxml.jackson.annotation.JsonView;
 import com.j23.server.configuration.ResponseHandler;
 import com.j23.server.models.product.Product;
 import com.j23.server.models.product.UnassignedProduct;
-import com.j23.server.models.product.Views;
-import com.j23.server.repos.product.ProductRepository;
+import com.j23.server.Views;
 import com.j23.server.services.product.ProductService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
@@ -13,7 +12,6 @@ import org.springframework.data.domain.PageRequest;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
-import org.springframework.web.server.ResponseStatusException;
 
 import javax.annotation.PostConstruct;
 import java.math.BigDecimal;

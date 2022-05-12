@@ -1,4 +1,4 @@
-package com.j23.server.models.product;
+package com.j23.server;
 
 public class Views {
 
@@ -6,7 +6,8 @@ public class Views {
     public interface ProductNameViews {
     }
 
-    public interface ProductReportViews {
+    public interface OrderDateOnlyViews {
+
     }
 
 }

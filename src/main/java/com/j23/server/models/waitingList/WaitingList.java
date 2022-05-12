@@ -6,7 +6,6 @@ import lombok.ToString;
 import org.springframework.stereotype.Component;
 
 import javax.persistence.Id;
-import java.time.Instant;
 
 @Component
 @Setter
@@ -17,18 +16,20 @@ public class WaitingList {
   @Id
   private String id;
 
-  private String customerName;
+  private String username;
 
-  private int estHour;
+  private int estHour = 0;
 
-  private int estMinute;
+  private int estMinute = 0;
 
-  private int estSecond;
+  private int estSecond = 0;
 
   private Long estTime;
 
-  private int number;
+  private int number = 0;
 
-  private String status;
+  private String status = "PROCESSING";
+
+  private int steps = 2;
 
 }

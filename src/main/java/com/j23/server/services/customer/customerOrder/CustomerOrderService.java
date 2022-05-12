@@ -106,14 +106,23 @@ public class CustomerOrderService {
       new ResponseStatusException(HttpStatus.NOT_FOUND, "Customer does not exists !"));
 
     return customerOrderRepository.findTopByCustomerProfileAndStatusEqualsOrderByDateCreatedDesc(customerProfile,
-      "Waiting for payment").orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "Customer order does not exists"));
+      "Waiting for payment").orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND,
+      "Customer order does not exists"));
   }
 
-  public CustomerOrder confirmPayOrder(String customerId, int estHour, int estMinute, int estSecond) {
+  public CustomerOrder viewCurrentCustomerOrder(String username) {
+    CustomerProfile customerProfile = customerProfileRepository.findByUsername(username).orElseThrow(() ->
+      new ResponseStatusException(HttpStatus.NOT_FOUND, "Customer does not exists !"));
+
+    return customerOrderRepository.findTopByCustomerProfileAndOrderIsActiveTrue(customerProfile).orElseThrow(() ->
+      new ResponseStatusException(HttpStatus.NOT_FOUND, "Customer order does not exists"));
+  }
+
+  public CustomerOrder confirmPayOrder(WaitingList waitingList) {
 
     // get customer cart and customer order info
     // check if customer order exists
-    CustomerCart customerCart = customerCartService.getCustomerCart(customerId);
+    CustomerCart customerCart = customerCartService.getCustomerCart(waitingList.getId());
     CustomerOrder customerOrder = customerOrderRepository.findTopByCustomerProfileAndStatusEqualsOrderByDateCreatedDesc(
       customerCart.getCustomerProfile(), "Waiting for payment").orElseThrow(() ->
       new ResponseStatusException(HttpStatus.NOT_FOUND, "Customer order does not exists !"));
@@ -129,7 +138,7 @@ public class CustomerOrderService {
       "Waiting for payment", startOfDay, endOfDay).orElse(null);
 
 
-    int currentNumber = 0;
+    int currentNumber;
     // set order number from previous order +1 if available
     if (previousCustomerOrder != null) {
       currentNumber = previousCustomerOrder.getNumber() + 1;
@@ -138,31 +147,27 @@ public class CustomerOrderService {
     }
 
 
-    // update status to processing order
+    // update status to processing order and set order to be active
     customerCart.setPayed(true);
     customerOrder.setStatus("Processing");
     customerOrder.setNumber(currentNumber);
+    customerOrder.setOrderIsActive(true);
+    customerOrder.setOrderProcessed(LocalDateTime.now());
     customerCartRepository.save(customerCart);
 
 
     // add to waiting list in firebase
-    Firestore firestore = FirestoreClient.getFirestore();
-    DocumentReference documentReference = firestore.collection("Waiting_List").document(customerId);
 
-    WaitingList waitingList = new WaitingList();
-    waitingList.setId(customerId);
-    waitingList.setCustomerName(customerCart.getCustomerProfile().getUsername());
-    waitingList.setEstHour(estHour);
-    waitingList.setEstMinute(estMinute);
-    waitingList.setEstSecond(estSecond);
-    waitingList.setNumber(currentNumber);
-    waitingList.setStatus("PROCESSING");
+    Firestore firestore = FirestoreClient.getFirestore();
+    DocumentReference documentReference = firestore.collection("Waiting_List").document(waitingList.getId());
+
 
     // calculate estimated time
-    int hourToSecond = (estHour * 60) * 60;
-    int minuteToSecond = (estMinute * 60);
-    Long addedTime = new Date().getTime() + (1000L * (hourToSecond + minuteToSecond + estSecond));
+    int hourToSecond = (waitingList.getEstHour() * 60) * 60;
+    int minuteToSecond = (waitingList.getEstMinute() * 60);
+    Long addedTime = new Date().getTime() + (1000L * (hourToSecond + minuteToSecond + waitingList.getEstSecond()));
     waitingList.setEstTime(addedTime);
+    waitingList.setNumber(currentNumber);
 
     ApiFuture<WriteResult> apiFuture = documentReference.set(waitingList);
 

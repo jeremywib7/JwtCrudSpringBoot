@@ -1,7 +1,10 @@
 package com.j23.server.controllers.customer.customerOrder;
 
+import com.fasterxml.jackson.annotation.JsonView;
+import com.j23.server.Views;
 import com.j23.server.configuration.ResponseHandler;
 import com.j23.server.models.customer.customerOrder.CustomerOrder;
+import com.j23.server.models.waitingList.WaitingList;
 import com.j23.server.services.customer.customerOrder.CustomerOrderService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
@@ -31,6 +34,14 @@ public class CustomerOrderController {
     return ResponseHandler.generateResponse("Successfully view customer orders!", HttpStatus.OK, customerOrders);
   }
 
+  @GetMapping("/view/active")
+  @JsonView(Views.OrderDateOnlyViews.class)
+  private ResponseEntity<Object> viewActiveCustomerOrder(@RequestParam String customerId) {
+    CustomerOrder customerOrders = customerOrderService.viewCurrentCustomerOrder(customerId);
+
+    return ResponseHandler.generateResponse("Successfully view customer orders!", HttpStatus.OK, customerOrders);
+  }
+
   @GetMapping("/view/byUsername/{username}")
   private ResponseEntity<Object> viewCustomerOrdersByCustomerUsername(@PathVariable("username") String username) {
     CustomerOrder customerOrder = customerOrderService.viewCustomerOrderByCustomerUsername(username);
@@ -40,12 +51,9 @@ public class CustomerOrderController {
 
   @PostMapping("/pay")
   private ResponseEntity<Object> confirmPayOrder(
-    @RequestParam String customerId,
-    @RequestParam int estHour,
-    @RequestParam int estMinute,
-    @RequestParam int estSecond
-  ) {
-    CustomerOrder customerOrder = customerOrderService.confirmPayOrder(customerId, estHour, estMinute, estSecond);
+    @RequestBody WaitingList waitingList
+    ) {
+    CustomerOrder customerOrder = customerOrderService.confirmPayOrder(waitingList);
     return ResponseHandler.generateResponse("Successfully confirm order as payed!", HttpStatus.OK, customerOrder);
   }
 

@@ -15,6 +15,8 @@ public interface CustomerOrderRepository extends JpaRepository<CustomerOrder, St
   Optional<CustomerOrder> findTopByCustomerProfileAndStatusEqualsOrderByDateCreatedDesc(CustomerProfile customerProfile,
                                                                                         String status);
 
+  Optional<CustomerOrder> findTopByCustomerProfileAndOrderIsActiveTrue(CustomerProfile customerProfile);
+
   List<CustomerOrder> findAllByCustomerProfileOrderByDateCreatedDesc(CustomerProfile customerProfile);
 
   Optional<CustomerOrder> findFirstByStatusNotAndDateCreatedBetweenOrderByDateCreatedDesc(
