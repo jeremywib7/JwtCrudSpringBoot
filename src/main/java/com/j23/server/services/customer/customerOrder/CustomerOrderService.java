@@ -118,7 +118,8 @@ public class CustomerOrderService {
       new ResponseStatusException(HttpStatus.NOT_FOUND, "Customer order does not exists"));
   }
 
-  public CustomerOrder confirmPayOrder(WaitingList waitingList) {
+  public CustomerOrder confirmPayOrder(WaitingList waitingList, BigDecimal totalPaid, BigDecimal totalChange,
+                                       int estHour, int estMinute, int estSecond) {
 
     // get customer cart and customer order info
     // check if customer order exists
@@ -153,6 +154,12 @@ public class CustomerOrderService {
     customerOrder.setNumber(currentNumber);
     customerOrder.setOrderIsActive(true);
     customerOrder.setOrderProcessed(LocalDateTime.now());
+
+    // save estimated time from params
+    customerOrder.setEstHour(estHour);
+    customerOrder.setEstMinute(estMinute);
+    customerOrder.setEstSecond(estSecond);
+
     customerCartRepository.save(customerCart);
 
 
@@ -163,9 +170,9 @@ public class CustomerOrderService {
 
 
     // calculate estimated time
-    int hourToSecond = (waitingList.getEstHour() * 60) * 60;
-    int minuteToSecond = (waitingList.getEstMinute() * 60);
-    Long addedTime = new Date().getTime() + (1000L * (hourToSecond + minuteToSecond + waitingList.getEstSecond()));
+    int hourToSecond = (estHour * 60) * 60;
+    int minuteToSecond = (estMinute * 60);
+    Long addedTime = new Date().getTime() + (1000L * (hourToSecond + minuteToSecond + estSecond));
     waitingList.setEstTime(addedTime);
     waitingList.setNumber(currentNumber);
 

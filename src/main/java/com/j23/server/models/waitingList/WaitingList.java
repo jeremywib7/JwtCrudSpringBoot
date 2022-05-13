@@ -6,6 +6,7 @@ import lombok.ToString;
 import org.springframework.stereotype.Component;
 
 import javax.persistence.Id;
+import java.math.BigDecimal;
 
 @Component
 @Setter
@@ -17,12 +18,6 @@ public class WaitingList {
   private String id;
 
   private String username;
-
-  private int estHour = 0;
-
-  private int estMinute = 0;
-
-  private int estSecond = 0;
 
   private Long estTime;
 

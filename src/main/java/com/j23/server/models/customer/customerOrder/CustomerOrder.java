@@ -56,6 +56,13 @@ public class CustomerOrder {
   @JsonFormat(pattern = "MM/dd/yyyy HH:mm:ss")
   @JsonDeserialize(using = LocalDateTimeDeserializer.class)
   @JsonSerialize(using = LocalDateTimeSerializer.class)
+  @Column(name = "order_finished")
+  @JsonView(Views.OrderDateOnlyViews.class)
+  private LocalDateTime orderFinished;
+
+  @JsonFormat(pattern = "MM/dd/yyyy HH:mm:ss")
+  @JsonDeserialize(using = LocalDateTimeDeserializer.class)
+  @JsonSerialize(using = LocalDateTimeSerializer.class)
   @Column(name = "date_updated")
   @UpdateTimestamp
   private LocalDateTime updatedOn;
@@ -73,5 +80,11 @@ public class CustomerOrder {
   private BigDecimal totalChange;
 
   private BigDecimal totalPrice;
+
+  private int estHour = 0;
+
+  private int estMinute = 0;
+
+  private int estSecond = 0;
 
 }

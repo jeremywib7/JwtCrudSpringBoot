@@ -11,6 +11,7 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+import java.math.BigDecimal;
 import java.util.List;
 
 @RestController
@@ -51,9 +52,15 @@ public class CustomerOrderController {
 
   @PostMapping("/pay")
   private ResponseEntity<Object> confirmPayOrder(
-    @RequestBody WaitingList waitingList
-    ) {
-    CustomerOrder customerOrder = customerOrderService.confirmPayOrder(waitingList);
+    @RequestBody WaitingList waitingList,
+    @RequestParam BigDecimal totalPaid,
+    @RequestParam BigDecimal totalChange,
+    @RequestParam int estHour,
+    @RequestParam int estMinute,
+    @RequestParam int estSecond
+  ) {
+    CustomerOrder customerOrder = customerOrderService.confirmPayOrder(waitingList, totalPaid, totalChange,
+      estHour, estMinute, estSecond);
     return ResponseHandler.generateResponse("Successfully confirm order as payed!", HttpStatus.OK, customerOrder);
   }
 
