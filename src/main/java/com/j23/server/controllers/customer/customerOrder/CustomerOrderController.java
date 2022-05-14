@@ -36,11 +36,10 @@ public class CustomerOrderController {
   }
 
   @GetMapping("/view/active")
-  @JsonView(Views.OrderDateOnlyViews.class)
   private ResponseEntity<Object> viewActiveCustomerOrder(@RequestParam String customerId) {
     CustomerOrder customerOrders = customerOrderService.viewCurrentCustomerOrder(customerId);
 
-    return ResponseHandler.generateResponse("Successfully view customer orders!", HttpStatus.OK, customerOrders);
+    return ResponseHandler.generateResponse("Successfully view customer order!", HttpStatus.OK, customerOrders);
   }
 
   @GetMapping("/view/byUsername/{username}")

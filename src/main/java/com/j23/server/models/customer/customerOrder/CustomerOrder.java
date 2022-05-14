@@ -87,6 +87,9 @@ public class CustomerOrder {
 
   private int estSecond = 0;
 
-  private String estTime;
+  @JsonFormat(pattern = "MM/dd/yyyy HH:mm:ss")
+  @JsonDeserialize(using = LocalDateTimeDeserializer.class)
+  @JsonSerialize(using = LocalDateTimeSerializer.class)
+  private LocalDateTime estTime;
 
 }
