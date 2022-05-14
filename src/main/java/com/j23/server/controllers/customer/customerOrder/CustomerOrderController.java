@@ -52,16 +52,10 @@ public class CustomerOrderController {
 
   @PostMapping("/pay")
   private ResponseEntity<Object> confirmPayOrder(
-    @RequestBody WaitingList waitingList,
-    @RequestParam BigDecimal totalPaid,
-    @RequestParam BigDecimal totalChange,
-    @RequestParam int estHour,
-    @RequestParam int estMinute,
-    @RequestParam int estSecond
-  ) {
-    CustomerOrder customerOrder = customerOrderService.confirmPayOrder(waitingList, totalPaid, totalChange,
-      estHour, estMinute, estSecond);
-    return ResponseHandler.generateResponse("Successfully confirm order as payed!", HttpStatus.OK, customerOrder);
+    @RequestBody CustomerOrder customerOrder
+    ) {
+    CustomerOrder response = customerOrderService.confirmPayOrder(customerOrder);
+    return ResponseHandler.generateResponse("Successfully confirm order as payed!", HttpStatus.OK, response);
   }
 
   @PutMapping("/completed")

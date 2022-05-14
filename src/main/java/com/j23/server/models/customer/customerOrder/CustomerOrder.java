@@ -87,4 +87,6 @@ public class CustomerOrder {
 
   private int estSecond = 0;
 
+  private String estTime;
+
 }
