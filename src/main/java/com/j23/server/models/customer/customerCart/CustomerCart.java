@@ -53,8 +53,8 @@ public class CustomerCart {
   @JsonProperty("isPlacedInOrder")
   private boolean isPlacedInOrder = false;
 
-  @JsonProperty("isPayed")
-  private boolean isPayed = false;
+  @JsonProperty("isPaid")
+  private boolean isPaid = false;
 
   @OneToMany(targetEntity = CartOrderedProduct.class, cascade = CascadeType.ALL)
   @JoinColumn(name = "cart_id")
