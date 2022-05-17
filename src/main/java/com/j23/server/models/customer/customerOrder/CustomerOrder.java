@@ -9,10 +9,7 @@ import com.fasterxml.jackson.datatype.jsr310.deser.LocalDateTimeDeserializer;
 import com.fasterxml.jackson.datatype.jsr310.ser.LocalDateTimeSerializer;
 import com.j23.server.Views;
 import com.j23.server.models.customer.CustomerProfile;
-import lombok.Data;
-import lombok.Getter;
-import lombok.Setter;
-import lombok.ToString;
+import lombok.*;
 import org.hibernate.annotations.CreationTimestamp;
 import org.hibernate.annotations.UpdateTimestamp;
 
@@ -24,9 +21,8 @@ import java.util.UUID;
 
 @Entity
 @Data
-@Setter
-@Getter
-@ToString
+@NoArgsConstructor
+@AllArgsConstructor
 public class CustomerOrder {
 
   @Id

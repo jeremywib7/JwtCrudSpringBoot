@@ -1,9 +1,7 @@
 package com.j23.server.controllers.waitingList;
 
 import com.google.api.core.ApiFuture;
-import com.google.cloud.firestore.Firestore;
-import com.google.cloud.firestore.QueryDocumentSnapshot;
-import com.google.cloud.firestore.QuerySnapshot;
+import com.google.cloud.firestore.*;
 import com.google.firebase.cloud.FirestoreClient;
 import com.j23.server.models.waitingList.CountdownWaitingList;
 import com.j23.server.models.waitingList.WaitingList;
@@ -29,9 +27,7 @@ public class WaitingListController {
 
   @PostConstruct
   public void getAllTimerList() throws ExecutionException, InterruptedException {
-    List<CountdownWaitingList> countdownWaitingLists = new ArrayList<>();
 
-    // get all waiting list and set countdown
     Firestore firestore = FirestoreClient.getFirestore();
 
     ApiFuture<QuerySnapshot> apiFuture = firestore.collection("Waiting_List").get();
@@ -39,30 +35,17 @@ public class WaitingListController {
     List<WaitingList> waitingListList = list.stream().map((doc) -> doc.toObject(WaitingList.class)).collect(Collectors.toList());
 
     waitingListList.forEach(waitingList -> {
-      LocalDateTime estTime = LocalDateTime.ofInstant(Instant.ofEpochMilli(waitingList.getEstTime()), TimeZone.getDefault().toZoneId());
-      TimerTask task = new TimerTask() {
-        public void run() {
-          System.out.println("Testting !!");
-        }
-      };
 
-      Calendar date = Calendar.getInstance();
-      date.set(Calendar.YEAR, estTime.getYear());
-      date.set(Calendar.MONTH, estTime.getMonthValue());
-      date.set(Calendar.DAY_OF_MONTH, estTime.getDayOfMonth());
-      date.set(Calendar.HOUR_OF_DAY, estTime.getHour());
-      date.set(Calendar.MINUTE, estTime.getMinute());
-      date.set(Calendar.SECOND, estTime.getSecond());
+      LocalDateTime currentDateTime = LocalDateTime.now();
+      LocalDateTime estimatedTime = LocalDateTime.ofInstant(Instant.ofEpochMilli(waitingList.getEstTime()), TimeZone.getDefault().toZoneId());
 
-      CountdownWaitingList countdownWaitingList = new CountdownWaitingList();
-      countdownWaitingList.schedule(countdownWaitingList.getCountdownAction(), date.getTime());
-//      timer.schedule(task, date.getTime());
-//      countdownWaitingList.setTimer(timer);
-
-      countdownWaitingLists.add(countdownWaitingList);
-      System.out.println(countdownWaitingLists);
+      // check if estimated time is already passed or equal with current time
+      if (currentDateTime.isBefore(estimatedTime) || currentDateTime.isEqual(estimatedTime)) {
+        waitingListService.addToCountdownWaitingList(waitingList);
+      } else {
+        waitingListService.updateWaitingListStatus(waitingList, "Waiting", 2);
+      }
 
     });
-
   }
 }

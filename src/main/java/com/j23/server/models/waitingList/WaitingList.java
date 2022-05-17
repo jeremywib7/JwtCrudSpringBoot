@@ -1,20 +1,13 @@
 package com.j23.server.models.waitingList;
 
-import lombok.Getter;
-import lombok.Setter;
-import lombok.ToString;
-import org.springframework.stereotype.Component;
+import com.fasterxml.jackson.annotation.JsonProperty;
+import lombok.*;
 
-import javax.persistence.Id;
-import java.math.BigDecimal;
-
-@Component
-@Setter
-@Getter
-@ToString
+@Data
+@NoArgsConstructor
+@AllArgsConstructor
 public class WaitingList {
 
-  @Id
   private String id;
 
   private String username;
@@ -22,6 +15,9 @@ public class WaitingList {
   private Long estTime;
 
   private int number = 0;
+
+  @JsonProperty("isDone")
+  private boolean isDone = false;
 
   private String status = "PROCESSING";
 

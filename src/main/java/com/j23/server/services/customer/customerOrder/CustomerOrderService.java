@@ -13,6 +13,7 @@ import com.j23.server.repos.customer.customerCart.CustomerCartRepository;
 import com.j23.server.repos.customer.customerOrder.CustomerOrderRepository;
 import com.j23.server.repos.customer.customerOrder.HistoryProductOrderRepo;
 import com.j23.server.services.customer.customerCart.CustomerCartService;
+import com.j23.server.services.waitingList.WaitingListService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
@@ -39,6 +40,9 @@ public class CustomerOrderService {
 
   @Autowired
   private CustomerCartService customerCartService;
+
+  @Autowired
+  private WaitingListService waitingListService;
 
   @Autowired
   private HistoryProductOrderRepo historyProductOrderRepo;
@@ -147,7 +151,7 @@ public class CustomerOrderService {
     // calculate estimated time
     int hourToSecond = (customerOrder.getEstHour() * 60) * 60;
     int minuteToSecond = (customerOrder.getEstMinute() * 60);
-    Long addedTime = new Date().getTime() + (1000L * (hourToSecond + minuteToSecond + customerOrder.getEstSecond()));
+    long addedTime = new Date().getTime() + (1000L * (hourToSecond + minuteToSecond + customerOrder.getEstSecond()));
 
     // set estimated time in dd/mm/yyyy format to be saved in database
     LocalDateTime estTime = LocalDateTime.ofInstant(Instant.ofEpochMilli(addedTime), TimeZone.getDefault().toZoneId());
@@ -172,12 +176,12 @@ public class CustomerOrderService {
       customerOrder.getCustomerProfile().getId());
     ApiFuture<WriteResult> apiFuture = documentReference.set(waitingList);
 
+    // add to countdown waiting list array to update from server side
+    waitingListService.addToCountdownWaitingList(waitingList);
+
     // update status to processing order and set order to be active
     customerCart.setPaid(true);
     customerCartRepository.save(customerCart);
-
-    // add into waiting list
-
 
     return customerOrderRepository.save(customerOrder);
   }
