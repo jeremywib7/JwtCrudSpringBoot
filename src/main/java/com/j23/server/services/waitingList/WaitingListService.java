@@ -7,7 +7,9 @@ import com.google.cloud.firestore.WriteResult;
 import com.google.firebase.cloud.FirestoreClient;
 import com.j23.server.models.waitingList.CountdownWaitingList;
 import com.j23.server.models.waitingList.WaitingList;
+import com.j23.server.services.customer.customerOrder.CustomerOrderService;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.time.Instant;
@@ -19,55 +21,64 @@ import java.util.*;
 @Slf4j
 public class WaitingListService {
 
-    public List<CountdownWaitingList> countdownWaitingLists = new ArrayList<>();
+  @Autowired
+  private CustomerOrderService customerOrderService;
 
-    public void addToCountdownWaitingList(WaitingList waitingList) {
+  public List<CountdownWaitingList> countdownWaitingLists = new ArrayList<>();
 
-        LocalDateTime estTime = LocalDateTime.ofInstant(Instant.ofEpochMilli(waitingList.getEstTime()), TimeZone.getDefault().toZoneId());
+  public void addToCountdownWaitingList(WaitingList waitingList) {
+    log.trace("Executing method addToCountdownWaitingList");
 
-        Calendar date = Calendar.getInstance();
-        date.set(Calendar.YEAR, estTime.getYear());
-        date.set(Calendar.MONTH, estTime.getMonthValue() - 1);
-        date.set(Calendar.DAY_OF_MONTH, estTime.getDayOfMonth());
-        date.set(Calendar.HOUR_OF_DAY, estTime.getHour());
-        date.set(Calendar.MINUTE, estTime.getMinute());
-        date.set(Calendar.SECOND, estTime.getSecond());
+    LocalDateTime estTime = LocalDateTime.ofInstant(Instant.ofEpochMilli(waitingList.getEstTime()), TimeZone.getDefault().toZoneId());
 
-        CountdownWaitingList countdownWaitingList = new CountdownWaitingList();
-        countdownWaitingList.setCustomerId(waitingList.getId());
-        TimerTask task = new TimerTask() {
-            public void run() {
-                log.info("Update waiting list status for {}", waitingList.getId());
+    Calendar date = Calendar.getInstance();
+    date.set(Calendar.YEAR, estTime.getYear());
+    date.set(Calendar.MONTH, estTime.getMonthValue() - 1);
+    date.set(Calendar.DAY_OF_MONTH, estTime.getDayOfMonth());
+    date.set(Calendar.HOUR_OF_DAY, estTime.getHour());
+    date.set(Calendar.MINUTE, estTime.getMinute());
+    date.set(Calendar.SECOND, estTime.getSecond());
 
-                // update status for current customer waiting list in firebase to WAITING
-                updateWaitingListStatus(waitingList, "WAITING", 2);
+    CountdownWaitingList countdownWaitingList = new CountdownWaitingList();
+    countdownWaitingList.setCustomerId(waitingList.getId());
+    TimerTask task = new TimerTask() {
+      public void run() {
+        log.trace("Executing timer task for firebase...");
+        log.info("Updating waiting list status for {}", waitingList.getId());
 
-                // delete from array
-                boolean isRemoved = countdownWaitingLists.removeIf(wl -> wl.getCustomerId().equals(waitingList.getId()));
-                if (isRemoved) {
-                    log.info("Success clear timer");
-                } else {
-                    log.info("Failed clear timer");
-                }
+        // update status in database
+        customerOrderService.updateOrderStatus(waitingList.getId(), "Waiting");
 
-                System.out.println("Current list : " + countdownWaitingLists);
-            }
-        };
-        countdownWaitingList.setOnFinished(task);
-        countdownWaitingList.getEstimatedTime().schedule(countdownWaitingList.getOnFinished(), date.getTime());
-        countdownWaitingLists.add(countdownWaitingList); // add to list of countdown waiting list timer
+        // update status for current customer waiting list in firebase to WAITING
+        updateWaitingListStatus(waitingList, "WAITING", 2);
 
-    }
+        // delete from array
+        boolean isRemoved = countdownWaitingLists.removeIf(wl -> wl.getCustomerId().equals(waitingList.getId()));
+        if (isRemoved) {
+          log.info("Success clear timer");
+        } else {
+          log.error("Failed clear timer");
+        }
 
-    public void updateWaitingListStatus(WaitingList waitingList, String status, int steps) {
-        // update status to waiting
-        Firestore firestore = FirestoreClient.getFirestore();
-        DocumentReference documentReference = firestore.collection("Waiting_List").document(waitingList.getId());
-        Map<String, Object> updates = new HashMap<>();
-        updates.put("status", status);
-        updates.put("steps", steps);
+        log.info("Current list : {}", (long) countdownWaitingLists.size());
 
-        ApiFuture<WriteResult> writeResult = documentReference.update(updates);
-    }
+      }
+    };
+    countdownWaitingList.setOnFinished(task);
+    countdownWaitingList.getEstimatedTime().schedule(countdownWaitingList.getOnFinished(), date.getTime());
+    countdownWaitingLists.add(countdownWaitingList); // add to list of countdown waiting list timer
+
+  }
+
+  public void updateWaitingListStatus(WaitingList waitingList, String status, int steps) {
+    // update status to waiting
+    Firestore firestore = FirestoreClient.getFirestore();
+    DocumentReference documentReference = firestore.collection("Waiting_List").document(waitingList.getId());
+    Map<String, Object> updates = new HashMap<>();
+    updates.put("status", status);
+    updates.put("steps", steps);
+
+    ApiFuture<WriteResult> writeResult = documentReference.update(updates);
+  }
 
 }

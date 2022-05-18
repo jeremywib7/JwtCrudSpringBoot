@@ -1,5 +1,8 @@
 package com.j23.server.services.customer;
 
+import com.google.cloud.firestore.Firestore;
+import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.cloud.FirestoreClient;
 import com.j23.server.models.customer.CustomerProfile;
 import com.j23.server.repos.customer.CustomerProfileRepo;
 import com.j23.server.services.customer.customerCart.CustomerCartService;
@@ -11,38 +14,40 @@ import org.springframework.web.server.ResponseStatusException;
 @Service
 public class CustomerProfileService {
 
-    @Autowired
-    private CustomerProfileRepo customerProfileRepo;
+  @Autowired
+  private CustomerProfileRepo customerProfileRepo;
 
-    @Autowired
-    private CustomerCartService customerCartService;
+  @Autowired
+  private CustomerCartService customerCartService;
 
-    public CustomerProfile registerCustomer(CustomerProfile customerProfile) {
+  public CustomerProfile registerCustomer(CustomerProfile customerProfile) {
 
-        if (customerProfileRepo.existsByUsername(customerProfile.getUsername())) {
-            throw new ResponseStatusException(HttpStatus.CONFLICT, "Username already exists !");
-        }
-
-        CustomerProfile customerProfile1 = customerProfileRepo.save(customerProfile);
-
-        // create cart
-        customerCartService.createCart(customerProfile);
-
-        return customerProfile1;
-
+    if (customerProfileRepo.existsByUsername(customerProfile.getUsername())) {
+      throw new ResponseStatusException(HttpStatus.CONFLICT, "Username already exists !");
     }
 
-    public CustomerProfile getCustomerById(String customerId) {
-        return customerProfileRepo.findById(customerId).orElseThrow(() ->
-                new ResponseStatusException(HttpStatus.NOT_FOUND, "Customer not found !"));
-    }
+//    FirebaseAuth.getInstance().createUser();
+
+    CustomerProfile customerProfile1 = customerProfileRepo.save(customerProfile);
+
+    // create cart
+    customerCartService.createCart(customerProfile);
+
+    return customerProfile1;
+
+  }
+
+  public CustomerProfile getCustomerById(String customerId) {
+    return customerProfileRepo.findById(customerId).orElseThrow(() ->
+      new ResponseStatusException(HttpStatus.NOT_FOUND, "Customer not found !"));
+  }
 
   public CustomerProfile getCustomerByUsername(String username) {
     return customerProfileRepo.findByUsername(username).orElseThrow(() ->
       new ResponseStatusException(HttpStatus.NOT_FOUND, "Customer not found !"));
   }
 
-    public CustomerProfile saveCustomerProfile(CustomerProfile customerProfile) {
-        return customerProfileRepo.save(customerProfile);
-    }
+  public CustomerProfile saveCustomerProfile(CustomerProfile customerProfile) {
+    return customerProfileRepo.save(customerProfile);
+  }
 }

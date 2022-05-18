@@ -14,6 +14,7 @@ import com.j23.server.repos.customer.customerOrder.CustomerOrderRepository;
 import com.j23.server.repos.customer.customerOrder.HistoryProductOrderRepo;
 import com.j23.server.services.customer.customerCart.CustomerCartService;
 import com.j23.server.services.waitingList.WaitingListService;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
@@ -27,6 +28,7 @@ import java.time.LocalTime;
 import java.util.*;
 
 @Service
+@Slf4j
 public class CustomerOrderService {
 
   @Autowired
@@ -186,12 +188,26 @@ public class CustomerOrderService {
     return customerOrderRepository.save(customerOrder);
   }
 
+  public void updateOrderStatus(String customerId, String status) {
+    // get customer cart info
+    CustomerCart customerCart = customerCartService.getCustomerCart(customerId);
+
+    CustomerOrder customerOrder = customerOrderRepository.findTopByCustomerProfileAndStatusEqualsOrderByDateCreatedDesc(
+      customerCart.getCustomerProfile(), status).orElseThrow(() ->
+      new ResponseStatusException(HttpStatus.NOT_FOUND, "Customer order does not exists !"));
+    customerOrder.setStatus(status);
+
+    log.info("Updating order status for id {}", customerId);
+
+    customerOrderRepository.save(customerOrder);
+  }
+
   public void finishOrder(String customerId) {
     // get customer cart info
     CustomerCart customerCart = customerCartService.getCustomerCart(customerId);
 
     CustomerOrder customerOrder = customerOrderRepository.findTopByCustomerProfileAndStatusEqualsOrderByDateCreatedDesc(
-      customerCart.getCustomerProfile(), "Processing").orElseThrow(() ->
+      customerCart.getCustomerProfile(), "Waiting").orElseThrow(() ->
       new ResponseStatusException(HttpStatus.NOT_FOUND, "Customer order does not exists !"));
     customerOrder.setStatus("Completed");
 
