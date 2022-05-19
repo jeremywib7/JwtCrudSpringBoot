@@ -1,7 +1,9 @@
 package com.j23.server.controllers.customer;
 
+import com.google.firebase.auth.FirebaseAuthException;
 import com.j23.server.configuration.ResponseHandler;
 import com.j23.server.models.customer.CustomerProfile;
+import com.j23.server.models.customer.customerCart.CustomerCart;
 import com.j23.server.services.customer.CustomerProfileService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
@@ -33,7 +35,7 @@ public class CustomerProfileController {
 
     @PostMapping({"/register"})
     private ResponseEntity<Object> registerCustomer(@RequestBody CustomerProfile customerProfile) {
-        CustomerProfile result = customerProfileService.registerCustomer(customerProfile);
+        CustomerCart result = customerProfileService.registerCustomer(customerProfile);
 
         return ResponseHandler.generateResponse("Register success!", HttpStatus.OK, result);
     }

@@ -45,6 +45,8 @@ public class CustomerProfile {
 
     private String password;
 
+    private String messagingToken; // for firebase fcm
+
 
     // server side update
 
