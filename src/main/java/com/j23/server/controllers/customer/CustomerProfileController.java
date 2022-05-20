@@ -1,6 +1,5 @@
 package com.j23.server.controllers.customer;
 
-import com.google.firebase.auth.FirebaseAuthException;
 import com.j23.server.configuration.ResponseHandler;
 import com.j23.server.models.customer.CustomerProfile;
 import com.j23.server.models.customer.customerCart.CustomerCart;

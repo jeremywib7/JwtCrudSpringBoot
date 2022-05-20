@@ -3,11 +3,13 @@ package com.j23.server.controllers.waitingList;
 import com.google.api.core.ApiFuture;
 import com.google.cloud.firestore.*;
 import com.google.firebase.cloud.FirestoreClient;
+import com.google.firebase.messaging.FirebaseMessagingException;
+import com.j23.server.models.note.Note;
 import com.j23.server.models.waitingList.WaitingList;
 import com.j23.server.services.waitingList.WaitingListService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
-import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.*;
 
 import javax.annotation.PostConstruct;
 import java.time.Instant;
@@ -16,7 +18,7 @@ import java.util.*;
 import java.util.concurrent.ExecutionException;
 import java.util.stream.Collectors;
 
-@Controller
+@RestController
 @RequestMapping("/waitingList")
 public class WaitingListController {
 
@@ -45,5 +47,10 @@ public class WaitingListController {
       }
 
     });
+  }
+  @PostMapping("/send-notification")
+  public String sendNotification(@RequestBody Note note,
+                                 @RequestParam String token) {
+    return waitingListService.sendPushNotification(note, token);
   }
 }

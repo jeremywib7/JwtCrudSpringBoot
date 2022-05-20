@@ -5,6 +5,8 @@ import com.google.cloud.firestore.DocumentReference;
 import com.google.cloud.firestore.Firestore;
 import com.google.cloud.firestore.WriteResult;
 import com.google.firebase.cloud.FirestoreClient;
+import com.google.firebase.messaging.*;
+import com.j23.server.models.note.Note;
 import com.j23.server.models.waitingList.CountdownWaitingList;
 import com.j23.server.models.waitingList.WaitingList;
 import com.j23.server.services.customer.customerOrder.CustomerOrderService;
@@ -23,7 +25,6 @@ public class WaitingListService {
 
   @Autowired
   private CustomerOrderService customerOrderService;
-
   public List<CountdownWaitingList> countdownWaitingLists = new ArrayList<>();
 
   public void addToCountdownWaitingList(WaitingList waitingList) {
@@ -47,7 +48,7 @@ public class WaitingListService {
         log.info("Updating waiting list status for {}", waitingList.getId());
 
         // update status in database
-        customerOrderService.updateOrderStatus(waitingList.getId(), "Waiting");
+        customerOrderService.updateOrderStatus(waitingList.getId(), "Processing");
 
         // update status for current customer waiting list in firebase to WAITING
         updateWaitingListStatus(waitingList, "WAITING", 2);
@@ -79,6 +80,49 @@ public class WaitingListService {
     updates.put("steps", steps);
 
     ApiFuture<WriteResult> writeResult = documentReference.update(updates);
+  }
+
+  // send push notification using fcm
+  public String sendPushNotification(Note note, String token) {
+
+    // to display notification
+    Notification notification = Notification
+      .builder()
+      .setTitle(note.getSubject())
+      .setImage(note.getImage())
+      .setBody(note.getContent())
+      .build();
+
+    // set link to redirect url to website
+    WebpushFcmOptions webpushFcmOptions = WebpushFcmOptions
+      .builder()
+      .setLink(note.getLink())
+      .build();
+
+    // to redirect website
+    WebpushConfig webpushConfig = WebpushConfig
+      .builder()
+      .setFcmOptions(webpushFcmOptions)
+      .build();
+
+    // set message
+    Message message = Message
+      .builder()
+      .setToken(token)
+      .setNotification(notification)
+      .setWebpushConfig(webpushConfig)
+      .putAllData(note.getData())
+      .build();
+
+    String response = null;
+    try {
+      response = FirebaseMessaging.getInstance().send(message);
+      log.info("Message sent to token {}", token);
+    } catch (FirebaseMessagingException e) {
+      log.error("Fail to send firebase notification", e);
+    }
+
+    return response;
   }
 
 }
