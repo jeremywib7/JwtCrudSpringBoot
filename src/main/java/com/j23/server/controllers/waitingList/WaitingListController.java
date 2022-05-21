@@ -7,11 +7,17 @@ import com.google.firebase.messaging.FirebaseMessagingException;
 import com.j23.server.models.note.Note;
 import com.j23.server.models.waitingList.WaitingList;
 import com.j23.server.services.waitingList.WaitingListService;
+import org.apache.tomcat.util.http.fileupload.IOUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.*;
 
 import javax.annotation.PostConstruct;
+import javax.servlet.http.HttpServletResponse;
+import java.io.File;
+import java.io.FileInputStream;
+import java.io.IOException;
+import java.io.InputStream;
 import java.time.Instant;
 import java.time.LocalDateTime;
 import java.util.*;
@@ -48,6 +54,7 @@ public class WaitingListController {
 
     });
   }
+
   @PostMapping("/send-notification")
   public String sendNotification(@RequestBody Note note,
                                  @RequestParam String token) {
