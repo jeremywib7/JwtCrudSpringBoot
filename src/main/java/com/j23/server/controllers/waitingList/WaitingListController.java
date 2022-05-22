@@ -49,7 +49,7 @@ public class WaitingListController {
       if (currentDateTime.isBefore(estimatedTime) || currentDateTime.isEqual(estimatedTime)) {
         waitingListService.addToCountdownWaitingList(waitingList);
       } else {
-        waitingListService.updateWaitingListStatus(waitingList, "Waiting", 2);
+        waitingListService.updateWaitingListStatus(waitingList, "WAITING", 2);
       }
 
     });
@@ -58,6 +58,6 @@ public class WaitingListController {
   @PostMapping("/send-notification")
   public String sendNotification(@RequestBody Note note,
                                  @RequestParam String token) {
-    return waitingListService.sendPushNotification(note, token);
+    return waitingListService.sendPushNotification(token, note);
   }
 }
