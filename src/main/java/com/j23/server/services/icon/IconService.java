@@ -20,7 +20,7 @@ public class IconService {
     public ResponseEntity<Resource> downloadMainIcon() throws IOException, URISyntaxException {
 
         Path filePath = Paths.get(Objects.requireNonNull(getClass().getClassLoader().getResource(
-                "icons/hyper.svg")).toURI());
+                "icons/hyper.ico")).toURI());
 
         Resource resource = new UrlResource(filePath.toUri());
         HttpHeaders httpHeaders = new HttpHeaders();
@@ -30,15 +30,5 @@ public class IconService {
         return ResponseEntity.ok().contentType(MediaType.parseMediaType(Files.probeContentType(filePath)))
                 .headers(httpHeaders).body(resource);
     }
-
-//    public static String getResourceFileAsString(String fileName) {
-//        InputStream is = getResourceFileAsInputStream(fileName);
-//        if (is != null) {
-//            BufferedReader reader = new BufferedReader(new InputStreamReader(is));
-//            return (String)reader.lines().collect(Collectors.joining(System.lineSeparator()));
-//        } else {
-//            throw new RuntimeException("resource not found");
-//        }
-//    }
 }
 
