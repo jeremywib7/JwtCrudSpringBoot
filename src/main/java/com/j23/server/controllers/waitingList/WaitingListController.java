@@ -4,11 +4,14 @@ import com.google.api.core.ApiFuture;
 import com.google.cloud.firestore.*;
 import com.google.firebase.cloud.FirestoreClient;
 import com.google.firebase.messaging.FirebaseMessagingException;
+import com.j23.server.configuration.ResponseHandler;
 import com.j23.server.models.note.Note;
 import com.j23.server.models.waitingList.WaitingList;
 import com.j23.server.services.waitingList.WaitingListService;
 import org.apache.tomcat.util.http.fileupload.IOUtils;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.*;
 
@@ -56,8 +59,8 @@ public class WaitingListController {
   }
 
   @PostMapping("/send-notification")
-  public String sendNotification(@RequestBody Note note,
-                                 @RequestParam String token) {
-    return waitingListService.sendPushNotification(token, note);
+  public ResponseEntity<Object> sendNotification(@RequestBody Note note) {
+    return ResponseHandler.generateResponse("Successfully send notification !", HttpStatus.OK,
+      waitingListService.sendOrderDoneNotification(note));
   }
 }

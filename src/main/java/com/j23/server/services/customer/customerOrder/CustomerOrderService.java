@@ -169,6 +169,7 @@ public class CustomerOrderService {
     WaitingList waitingList = new WaitingList();
     waitingList.setId(customerCart.getCustomerProfile().getId());
     waitingList.setUsername(customerCart.getCustomerProfile().getUsername());
+    waitingList.setMessagingToken(customerCart.getCustomerProfile().getMessagingToken());
     waitingList.setEstTime(addedTime);
     waitingList.setNumber(currentNumber);
 
