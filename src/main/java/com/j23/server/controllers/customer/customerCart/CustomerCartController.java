@@ -19,8 +19,9 @@ public class CustomerCartController {
 
 
   @GetMapping("/view")
-  public ResponseEntity<Object> viewCart(@RequestParam String customerId) {
-    CustomerCart customerCart = customerCartService.viewCart(customerId);
+  public ResponseEntity<Object> viewCart(@RequestParam String customerId,
+                                         @RequestParam String messagingToken) {
+    CustomerCart customerCart = customerCartService.viewCart(customerId, messagingToken);
     return ResponseHandler.generateResponse("Successfully fetch cart!", HttpStatus.OK,
       customerCart);
   }

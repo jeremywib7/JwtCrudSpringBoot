@@ -25,9 +25,6 @@ public class CustomerCartService {
   private CustomerCartRepository customerCartRepository;
 
   @Autowired
-  private ProductRepository productRepository;
-
-  @Autowired
   private CustomerProfileRepo customerProfileRepo;
 
   @Autowired
@@ -56,7 +53,10 @@ public class CustomerCartService {
     return customerCartRepository.save(customerCart);
   }
 
-  public CustomerCart viewCart(String customerId) {
+  public CustomerCart viewCart(String customerId, String messagingToken) {
+    // update messaging token fcm
+    customerProfileRepo.updateCustomerMessagingToken(messagingToken, customerId);
+
     return getCustomerCart(customerId);
   }
 

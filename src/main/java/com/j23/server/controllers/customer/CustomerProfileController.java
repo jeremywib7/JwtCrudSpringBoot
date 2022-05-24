@@ -24,13 +24,13 @@ public class CustomerProfileController {
                 customerProfile);
     }
 
-  @GetMapping({"/profile/username/{username}"})
-  private ResponseEntity<Object> getCustomerByUsername(@PathVariable("username") String username) {
-    CustomerProfile customerProfile = customerProfileService.getCustomerByUsername(username);
+    @GetMapping({"/profile/username/{username}"})
+    private ResponseEntity<Object> getCustomerByUsername(@PathVariable("username") String username) {
+        CustomerProfile customerProfile = customerProfileService.getCustomerByUsername(username);
 
-    return ResponseHandler.generateResponse("Success fetch customer profile!", HttpStatus.OK,
-      customerProfile);
-  }
+        return ResponseHandler.generateResponse("Success fetch customer profile!", HttpStatus.OK,
+                customerProfile);
+    }
 
     @PostMapping({"/register"})
     private ResponseEntity<Object> registerCustomer(@RequestBody CustomerProfile customerProfile) {
@@ -46,4 +46,13 @@ public class CustomerProfileController {
         return ResponseHandler.generateResponse("Update profile success!", HttpStatus.OK, result);
     }
 
+    @PutMapping({"/update/messaging-token"})
+    private ResponseEntity<Object> updateCustomerMessagingToken(
+            @RequestParam String customerId,
+            @RequestParam String messagingToken) {
+        customerProfileService.updateMessagingToken(messagingToken, customerId);
+
+        return ResponseHandler.generateResponse("Customer messaging token has been updated!", HttpStatus.OK,
+                null);
+    }
 }
