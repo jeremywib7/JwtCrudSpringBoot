@@ -85,6 +85,7 @@ public class CustomerOrderService {
 
     customerProfile.setId(customerId);
     customerOrder.setCustomerProfile(customerProfile);
+    customerOrder.setOrderIsActive(true);
     customerOrder.setTotalPrice(totalPrice);
     customerOrder.setHistoryProductOrders(historyProductOrders);
 
@@ -107,9 +108,8 @@ public class CustomerOrderService {
     CustomerProfile customerProfile = customerProfileRepository.findByUsername(username).orElseThrow(() ->
       new ResponseStatusException(HttpStatus.NOT_FOUND, "Customer does not exists !"));
 
-    return customerOrderRepository.findTopByCustomerProfileAndStatusEqualsOrderByDateCreatedDesc(customerProfile,
-      "Waiting for payment").orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND,
-      "Customer order does not exists"));
+    return customerOrderRepository.findTopByCustomerProfileAndOrderProcessedIsNullOrderByDateCreatedDesc(customerProfile)
+      .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "Customer order does not exists"));
   }
 
   public CustomerOrder viewCurrentCustomerOrder(String customerId) {
@@ -125,19 +125,21 @@ public class CustomerOrderService {
     // get customer cart and customer order info
     // check if customer order exists
     CustomerCart customerCart = customerCartService.getCustomerCart(customerOrder.getCustomerProfile().getId());
-    CustomerOrder currentCustomerOrder = customerOrderRepository.findTopByCustomerProfileAndStatusEqualsOrderByDateCreatedDesc(
-      customerCart.getCustomerProfile(), "Waiting for payment").orElseThrow(() ->
+    CustomerOrder currentCustomerOrder = customerOrderRepository.findTopByCustomerProfileAndOrderIsActiveTrueOrderByDateCreatedDesc(
+      customerCart.getCustomerProfile()).orElseThrow(() ->
       new ResponseStatusException(HttpStatus.NOT_FOUND, "Customer order does not exists !"));
 
-    // check if customer already paid
-    if (!Objects.equals(currentCustomerOrder.getStatus(), "Waiting for payment")) {
+    // check if customer already paid, by is order already active
+    // order is not active if customer haven't paid or order already finished
+    if (customerCart.isPaid()) {
       throw new ResponseStatusException(HttpStatus.FAILED_DEPENDENCY, "Customer already paid !");
     }
 
     LocalDateTime startOfDay = LocalDateTime.of(LocalDate.now(), LocalTime.MIDNIGHT);
     LocalDateTime endOfDay = LocalDateTime.of(LocalDate.now(), LocalTime.MAX);
-    CustomerOrder previousCustomerOrder = customerOrderRepository.findFirstByStatusNotAndDateCreatedBetweenOrderByDateCreatedDesc(
-      "Waiting for payment", startOfDay, endOfDay).orElse(null);
+    CustomerOrder previousCustomerOrder = customerOrderRepository
+      .findFirstByOrderProcessedIsNotNullAndDateCreatedBetweenOrderByDateCreatedDesc(
+      startOfDay, endOfDay).orElse(null);
 
 
     int currentNumber;
@@ -159,10 +161,9 @@ public class CustomerOrderService {
     LocalDateTime estTime = LocalDateTime.ofInstant(Instant.ofEpochMilli(addedTime), TimeZone.getDefault().toZoneId());
     customerOrder.setId(currentCustomerOrder.getId());
     customerOrder.setEstTime(estTime);
-    customerOrder.setStatus("Processing");
+    customerOrder.setOrderIsActive(currentCustomerOrder.isOrderIsActive());
     customerOrder.setHistoryProductOrders(currentCustomerOrder.getHistoryProductOrders());
     customerOrder.setNumber(currentNumber);
-    customerOrder.setOrderIsActive(true);
     customerOrder.setOrderProcessed(LocalDateTime.now());
 
     // add waiting list data to firebase
@@ -193,26 +194,21 @@ public class CustomerOrderService {
     // get customer cart info
     CustomerCart customerCart = customerCartService.getCustomerCart(customerId);
 
-    CustomerOrder customerOrder = customerOrderRepository.findTopByCustomerProfileAndStatusEqualsOrderByDateCreatedDesc(
-      customerCart.getCustomerProfile(), status).orElseThrow(() ->
-      new ResponseStatusException(HttpStatus.NOT_FOUND, "Customer order does not exists !"));
-    customerOrder.setStatus(status);
-
     log.info("Updating order status for id {}", customerId);
 
-    customerOrderRepository.save(customerOrder);
+//    customerOrderRepository.save(customerOrder);
   }
 
   public void finishOrder(String customerId) {
     // get customer cart info
     CustomerCart customerCart = customerCartService.getCustomerCart(customerId);
 
-    CustomerOrder customerOrder = customerOrderRepository.findTopByCustomerProfileAndStatusEqualsOrderByDateCreatedDesc(
-      customerCart.getCustomerProfile(), "Waiting").orElseThrow(() ->
-      new ResponseStatusException(HttpStatus.NOT_FOUND, "Customer order does not exists !"));
-    customerOrder.setStatus("Completed");
-
-    customerOrderRepository.save(customerOrder);
+//    CustomerOrder customerOrder = customerOrderRepository.findTopByCustomerProfileAndStatusEqualsOrderByDateCreatedDesc(
+//      customerCart.getCustomerProfile(), "Waiting").orElseThrow(() ->
+//      new ResponseStatusException(HttpStatus.NOT_FOUND, "Customer order does not exists !"));
+//    customerOrder.setStatus("Completed");
+//
+//    customerOrderRepository.save(customerOrder);
 
     // delete or reset current customer cart
     customerCartRepository.delete(customerCart);

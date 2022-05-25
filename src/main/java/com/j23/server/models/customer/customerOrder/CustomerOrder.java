@@ -30,8 +30,6 @@ public class CustomerOrder {
 
   private int number = -1;
 
-  private String status = "Waiting for payment";
-
   private boolean orderIsActive = false;
 
   @JsonFormat(pattern = "MM/dd/yyyy HH:mm:ss")

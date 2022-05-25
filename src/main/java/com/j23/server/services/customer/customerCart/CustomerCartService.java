@@ -53,10 +53,7 @@ public class CustomerCartService {
     return customerCartRepository.save(customerCart);
   }
 
-  public CustomerCart viewCart(String customerId, String messagingToken) {
-    // update messaging token fcm
-    customerProfileRepo.updateCustomerMessagingToken(messagingToken, customerId);
-
+  public CustomerCart viewCart(String customerId) {
     return getCustomerCart(customerId);
   }
 
