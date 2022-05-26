@@ -23,36 +23,50 @@ import java.util.stream.Collectors;
 @RequestMapping("/waitingList")
 public class WaitingListController {
 
-  @Autowired
-  private WaitingListService waitingListService;
+    @Autowired
+    private WaitingListService waitingListService;
 
-  @PostConstruct
-  public void getAllTimerList() throws ExecutionException, InterruptedException {
+    @PostConstruct
+    public void getAllTimerList() throws ExecutionException, InterruptedException {
 
-    Firestore firestore = FirestoreClient.getFirestore();
+        Firestore firestore = FirestoreClient.getFirestore();
 
-    ApiFuture<QuerySnapshot> apiFuture = firestore.collection("Waiting_List").get();
-    List<QueryDocumentSnapshot> list = apiFuture.get().getDocuments();
-    List<WaitingList> waitingListList = list.stream().map((doc) -> doc.toObject(WaitingList.class)).collect(Collectors.toList());
+        ApiFuture<QuerySnapshot> apiFuture = firestore.collection("Waiting_List").get();
+        List<QueryDocumentSnapshot> list = apiFuture.get().getDocuments();
+        List<WaitingList> waitingListList = list.stream().map((doc) -> doc.toObject(WaitingList.class)).collect(Collectors.toList());
 
-    waitingListList.forEach(waitingList -> {
+        waitingListList.forEach(waitingList -> {
 
-      LocalDateTime currentDateTime = LocalDateTime.now();
-      LocalDateTime estimatedTime = LocalDateTime.ofInstant(Instant.ofEpochMilli(waitingList.getEstTime()), TimeZone.getDefault().toZoneId());
+            LocalDateTime currentDateTime = LocalDateTime.now();
+            LocalDateTime estimatedTime = LocalDateTime.ofInstant(Instant.ofEpochMilli(waitingList.getEstTime()), TimeZone.getDefault().toZoneId());
 
-      // check if estimated time is already passed or equal with current time
-      if (currentDateTime.isBefore(estimatedTime) || currentDateTime.isEqual(estimatedTime)) {
-        waitingListService.addToCountdownWaitingList(waitingList);
-      } else {
-        waitingListService.updateWaitingListStatus(waitingList, "WAITING", 2);
-      }
+            // check if estimated time is already passed or equal with current time
+            if (currentDateTime.isBefore(estimatedTime) || currentDateTime.isEqual(estimatedTime)) {
+                waitingListService.addToCountdownWaitingList(waitingList);
+            }
 
-    });
-  }
+        });
+    }
 
-  @PostMapping("/send-notification")
-  public ResponseEntity<Object> sendNotification(@RequestBody Note note) {
-    return ResponseHandler.generateResponse("Successfully send notification !", HttpStatus.OK,
-      waitingListService.sendOrderDoneNotification(note));
-  }
+    @PutMapping("/update/status")
+    public ResponseEntity<Object> updateWaitingListStatus(@RequestBody WaitingList waitingList) {
+        waitingListService.updateWaitingListStatus(waitingList, waitingList.getStatus(), waitingList.getSteps());
+
+        return ResponseHandler.generateResponse("Successfully update customer waiting list status !",
+                HttpStatus.OK, null);
+    }
+
+    @PutMapping("/update/status/ready-to-pickup")
+    public ResponseEntity<Object> updateWaitingListStatusReadyToPickup(@RequestBody WaitingList waitingList) {
+        waitingListService.updateStatusToReadyToPickup(waitingList);
+
+        return ResponseHandler.generateResponse("Successfully update customer waiting list status !",
+                HttpStatus.OK, null);
+    }
+
+    @PostMapping("/send-notification")
+    public ResponseEntity<Object> sendNotification(@RequestBody Note note) {
+        return ResponseHandler.generateResponse("Successfully send notification !", HttpStatus.OK,
+                waitingListService.sendOrderDoneNotification(note));
+    }
 }

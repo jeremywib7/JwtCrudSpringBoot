@@ -8,8 +8,6 @@ import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseAuthException;
 import com.google.firebase.auth.UserRecord;
 import com.google.firebase.cloud.FirestoreClient;
-import com.google.firebase.messaging.FirebaseMessaging;
-import com.google.firebase.messaging.Message;
 import com.j23.server.models.customer.CustomerProfile;
 import com.j23.server.models.customer.customerCart.CustomerCart;
 import com.j23.server.repos.customer.CustomerProfileRepo;

@@ -28,6 +28,10 @@ public class WaitingListService {
 
   @Autowired
   private CustomerOrderService customerOrderService;
+
+  @Autowired
+  private WaitingListService waitingListService;
+
   public List<CountdownWaitingList> countdownWaitingLists = new ArrayList<>();
 
   public void addToCountdownWaitingList(WaitingList waitingList) {
@@ -50,11 +54,8 @@ public class WaitingListService {
         log.trace("Executing timer task for firebase...");
         log.info("Updating waiting list status for {}", waitingList.getId());
 
-        // update status in database
-        customerOrderService.updateOrderStatus(waitingList.getId(), "Processing");
-
-        // update status for current customer waiting list in firebase to WAITING
-        updateWaitingListStatus(waitingList, "WAITING", 2);
+        // update status for current customer waiting list in firebase to WAITING FOR CONFIRMATION
+        updateWaitingListStatus(waitingList, "WAITING FOR CONFIRMATION", 2);
 
         // delete from array
         boolean isRemoved = countdownWaitingLists.removeIf(wl -> wl.getCustomerId().equals(waitingList.getId()));
@@ -83,6 +84,25 @@ public class WaitingListService {
     updates.put("steps", steps);
 
     ApiFuture<WriteResult> writeResult = documentReference.update(updates);
+  }
+
+  public void updateStatusToReadyToPickup(WaitingList waitingList) {
+
+    // update status to waiting
+    Firestore firestore = FirestoreClient.getFirestore();
+    DocumentReference documentReference = firestore.collection("Waiting_List").document(waitingList.getId());
+    Map<String, Object> updates = new HashMap<>();
+    updates.put("status", "WAITING FOR PICKUP");
+    updates.put("steps", 3);
+
+    ApiFuture<WriteResult> writeResult = documentReference.update(updates);
+
+    // send fcm notification for customer
+    Note note = new Note();
+    note.setUsername(waitingList.getUsername());
+    note.setMessagingToken(waitingList.getMessagingToken());
+
+    waitingListService.sendOrderDoneNotification(note);
   }
 
   // send push notification using fcm
