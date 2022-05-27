@@ -21,7 +21,7 @@ public class FirebaseConfig {
 
 //    File file = ResourceUtils.getFile("classpath:config/serviceAccountKey.json");
 
-        File file = new File(Objects.requireNonNull(getClass().getResource("config/serviceAccountKey.json")).getFile());
+        File file = new File(Objects.requireNonNull(getClass().getResource("/config/serviceAccountKey.json")).getFile());
 
         FileInputStream serviceAccount = new FileInputStream(file);
 
