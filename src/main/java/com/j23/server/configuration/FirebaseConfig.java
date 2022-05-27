@@ -3,6 +3,7 @@ package com.j23.server.configuration;
 import com.google.auth.oauth2.GoogleCredentials;
 import com.google.firebase.FirebaseApp;
 import com.google.firebase.FirebaseOptions;
+import org.springframework.core.io.ClassPathResource;
 import org.springframework.stereotype.Service;
 import org.springframework.util.ResourceUtils;
 
@@ -17,9 +18,12 @@ public class FirebaseConfig {
   @PostConstruct
   public void configureFirebaseConnection() throws IOException {
 
-    File file = ResourceUtils.getFile("classpath:config/serviceAccountKey.json");
+    ClassPathResource classPathResource =
+      new ClassPathResource("config/serviceAccountKey.json"); // it is in resources folder
 
-    FileInputStream serviceAccount = new FileInputStream(file);
+//    File file = ResourceUtils.getFile("classpath:config/serviceAccountKey.json");
+
+    FileInputStream serviceAccount = new FileInputStream(String.valueOf(classPathResource));
 
     FirebaseOptions options = FirebaseOptions.builder()
       .setCredentials(GoogleCredentials.fromStream(serviceAccount))
