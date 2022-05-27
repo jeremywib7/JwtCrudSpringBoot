@@ -3,6 +3,7 @@ package com.j23.server.configuration;
 import com.google.auth.oauth2.GoogleCredentials;
 import com.google.firebase.FirebaseApp;
 import com.google.firebase.FirebaseOptions;
+import com.google.firebase.database.FirebaseDatabase;
 import org.springframework.core.io.ResourceLoader;
 import org.springframework.stereotype.Service;
 import org.springframework.util.ResourceUtils;
@@ -31,6 +32,7 @@ public class FirebaseConfig {
                 .build();
 
         if (FirebaseApp.getApps().isEmpty()) { //<--- check with this line
+            FirebaseDatabase.getInstance().setPersistenceEnabled(true);
             FirebaseApp.initializeApp(options);
         }
 
