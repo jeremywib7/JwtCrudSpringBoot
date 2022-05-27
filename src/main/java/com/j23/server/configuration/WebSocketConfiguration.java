@@ -17,7 +17,7 @@ public class WebSocketConfiguration implements WebSocketConfigurer {
     @Override
     public void registerWebSocketHandlers(WebSocketHandlerRegistry registry) {
         registry.addHandler(getWaitingListWebSocketHandler(), WAITING_LIST_ENDPOINT).
-                setAllowedOrigins("http://localhost:4200", "http://127.0.0.1:4200");
+                setAllowedOrigins("http://localhost:4200", "http://127.0.0.1:4200", "https://self-service-4820d.firebaseapp.com");
     }
 
     @Bean
