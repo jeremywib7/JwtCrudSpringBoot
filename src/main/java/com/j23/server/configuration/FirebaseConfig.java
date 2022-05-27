@@ -4,6 +4,8 @@ import com.google.auth.oauth2.GoogleCredentials;
 import com.google.firebase.FirebaseApp;
 import com.google.firebase.FirebaseOptions;
 import com.google.firebase.database.FirebaseDatabase;
+import org.springframework.core.io.ClassPathResource;
+import org.springframework.core.io.Resource;
 import org.springframework.core.io.ResourceLoader;
 import org.springframework.stereotype.Service;
 import org.springframework.util.ResourceUtils;
@@ -12,6 +14,7 @@ import javax.annotation.PostConstruct;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.IOException;
+import java.io.InputStream;
 import java.util.Objects;
 
 @Service
@@ -22,9 +25,13 @@ public class FirebaseConfig {
 
 //    File file = ResourceUtils.getFile("classpath:config/serviceAccountKey.json");
 
-        File file = new File(Objects.requireNonNull(getClass().getResource("/config/serviceAccountKey.json")).getFile());
+//        File file = new File(Objects.requireNonNull(getClass().getResource("/config/serviceAccountKey.json")).getFile());
 
-        FileInputStream serviceAccount = new FileInputStream(file);
+//        FileInputStream serviceAccount = new FileInputStream(file);
+
+        Resource resource = new ClassPathResource("config/serviceAccountKey.json");
+
+        InputStream serviceAccount = resource.getInputStream();
 
         FirebaseOptions options = FirebaseOptions.builder()
                 .setCredentials(GoogleCredentials.fromStream(serviceAccount))
