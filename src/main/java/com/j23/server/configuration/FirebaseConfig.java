@@ -31,8 +31,12 @@ public class FirebaseConfig {
                 .setDatabaseUrl("https://self-service-4820d-default-rtdb.asia-southeast1.firebasedatabase.app")
                 .build();
 
-        if (FirebaseApp.getApps().isEmpty()) { //<--- check with this line
+        if (!FirebaseApp.getApps().isEmpty()) {
             FirebaseDatabase.getInstance().setPersistenceEnabled(true);
+        }
+
+
+        if (FirebaseApp.getApps().isEmpty()) { //<--- check with this line
             FirebaseApp.initializeApp(options);
         }
 
