@@ -64,7 +64,7 @@ public class CustomerOrderService {
         BigDecimal totalPrice = BigDecimal.valueOf(0);
 
         // store list of product price
-        List<BigDecimal> prices = new ArrayList<>(List.of());
+        List<BigDecimal> prices = new ArrayList<>();
 
         // set in order product list
         customerCart.getCartOrderedProduct().forEach(orderedProduct -> {
