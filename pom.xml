@@ -137,12 +137,6 @@
             <artifactId>spring-data-jpa</artifactId>
         </dependency>
 
-        <dependency>
-            <groupId>io.jsonwebtoken</groupId>
-            <artifactId>jjwt-root</artifactId>
-            <version>0.11.2</version>
-        </dependency>
-
         <!-- https://mvnrepository.com/artifact/joda-time/joda-time -->
         <dependency>
             <groupId>joda-time</groupId>
