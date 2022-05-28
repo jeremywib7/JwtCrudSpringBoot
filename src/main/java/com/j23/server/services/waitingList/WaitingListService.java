@@ -20,6 +20,7 @@ import java.time.LocalDateTime;
 import java.util.*;
 
 import static com.j23.server.util.AppsConfig.frontEndUrl;
+import static com.j23.server.util.AppsConfig.productionFrontEndUrl;
 
 
 @Service
@@ -146,7 +147,7 @@ public class WaitingListService {
         .setFcmOptions(
           WebpushFcmOptions // to redirect to url
             .builder()
-            .setLink(frontEndUrl + "#/order-success")
+            .setLink(productionFrontEndUrl + "#/order-success")
             .build())
         .setNotification(
           WebpushNotification
