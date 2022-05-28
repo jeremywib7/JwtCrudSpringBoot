@@ -80,7 +80,7 @@ public class ImageService {
         String formattedFileName = i + getExtension(fullFileName); // example : 0.jpg
 
         File file = this.convertToFile(multipartFileList.get(i), formattedFileName);                      // to convert multipartFile to File
-        TEMP_URL = this.uploadFile(file, "Product/"+formattedFileName);                                   // to get uploaded file link
+        this.uploadFile(file, "Product/"+formattedFileName);                                   // to get uploaded file link
         file.delete();                                                                // to delete the copy of uploaded file stored in the project folder
       } catch (Exception e) {
         e.printStackTrace();
@@ -91,7 +91,7 @@ public class ImageService {
   }
 
 
-  private String uploadFile(File file, String filePath) throws IOException {
+  private void uploadFile(File file, String filePath) throws IOException {
     // bucket and blob
     BlobId blobId = BlobId.of("self-service-4820d.appspot.com", filePath);
     BlobInfo blobInfo = BlobInfo.newBuilder(blobId).setContentType("media").build();
@@ -104,7 +104,7 @@ public class ImageService {
     // storage
     Storage storage = StorageOptions.newBuilder().setCredentials(credentials).build().getService();
     storage.create(blobInfo, Files.readAllBytes(file.toPath()));
-    return String.format(DOWNLOAD_URL, URLEncoder.encode(filePath, StandardCharsets.UTF_8));
+//    return String.format(DOWNLOAD_URL, URLEncoder.encode(filePath, StandardCharsets.UTF_8));
   }
 
   private File convertToFile(MultipartFile multipartFile, String fileName) throws IOException {
