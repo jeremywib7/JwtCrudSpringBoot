@@ -17,6 +17,9 @@
     <!--      <properties>-->
     <!--          <java.version>11</java.version>-->
     <!--      </properties>-->
+    <properties>
+        <java.version>1.8</java.version>
+    </properties>
     <dependencies>
 
         <dependency>
@@ -153,12 +156,6 @@
         </dependency>
 
         <dependency>
-            <groupId>com.apple</groupId>
-            <artifactId>AppleJavaExtensions</artifactId>
-            <version>1.4</version>
-        </dependency>
-
-        <dependency>
             <groupId>net.sf.jasperreports</groupId>
             <artifactId>jasperreports</artifactId>
             <version>6.17.0</version>
@@ -180,11 +177,10 @@
                 <artifactId>spring-boot-maven-plugin</artifactId>
                 <version>${project.parent.version}</version>
             </plugin>
+
             <plugin>
-                <inherited>true</inherited>
                 <groupId>org.apache.maven.plugins</groupId>
                 <artifactId>maven-compiler-plugin</artifactId>
-                <version>${maven-compiler-plugin.version}</version>
                 <configuration>
                     <source>10</source>
                     <target>10</target>
