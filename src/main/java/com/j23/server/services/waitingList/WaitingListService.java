@@ -111,6 +111,8 @@ public class WaitingListService {
 
     AndroidNotification androidNofi = AndroidNotification.builder()
       .setSound("default")
+      .setPriority(AndroidNotification.Priority.HIGH)
+      .setClickAction("activity action")
       .build();
 
     Aps aps = Aps.builder()
@@ -129,6 +131,7 @@ public class WaitingListService {
 
     AndroidConfig androidConfig = AndroidConfig.builder()
       .setNotification(androidNofi)
+      .setPriority(AndroidConfig.Priority.HIGH)
       .build();
 
     Notification notification = Notification
