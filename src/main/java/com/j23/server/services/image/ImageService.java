@@ -91,9 +91,9 @@ public class ImageService {
   }
 
 
-  private String uploadFile(File file, String fileName) throws IOException {
+  private String uploadFile(File file, String filePath) throws IOException {
     // bucket and blob
-    BlobId blobId = BlobId.of("self-service-4820d.appspot.com", fileName);
+    BlobId blobId = BlobId.of("self-service-4820d.appspot.com", filePath);
     BlobInfo blobInfo = BlobInfo.newBuilder(blobId).setContentType("media").build();
 
     // get firebase json
@@ -104,7 +104,7 @@ public class ImageService {
     // storage
     Storage storage = StorageOptions.newBuilder().setCredentials(credentials).build().getService();
     storage.create(blobInfo, Files.readAllBytes(file.toPath()));
-    return String.format(DOWNLOAD_URL, URLEncoder.encode(fileName, StandardCharsets.UTF_8));
+    return String.format(DOWNLOAD_URL, URLEncoder.encode(filePath, StandardCharsets.UTF_8));
   }
 
   private File convertToFile(MultipartFile multipartFile, String fileName) throws IOException {
