@@ -132,6 +132,7 @@ public class WaitingListService {
     AndroidConfig androidConfig = AndroidConfig.builder()
       .setNotification(androidNofi)
       .setPriority(AndroidConfig.Priority.HIGH)
+
       .build();
 
     Notification notification = Notification
