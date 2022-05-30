@@ -1,17 +1,11 @@
 package com.j23.server.services.image;
 
-import com.google.auth.Credentials;
-import com.google.auth.oauth2.GoogleCredentials;
-import com.google.cloud.storage.BlobId;
-import com.google.cloud.storage.BlobInfo;
-import com.google.cloud.storage.Storage;
-import com.google.cloud.storage.StorageOptions;
+import com.google.cloud.ReadChannel;
+import com.google.cloud.storage.*;
+import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.io.FileUtils;
 import org.apache.commons.io.IOUtils;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.core.io.ClassPathResource;
-import org.springframework.core.io.Resource;
-import org.springframework.core.io.UrlResource;
+import org.springframework.core.io.*;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
@@ -20,152 +14,197 @@ import org.springframework.web.multipart.MultipartFile;
 
 import javax.servlet.http.HttpServletResponse;
 import java.io.*;
-import java.net.MalformedURLException;
-import java.net.URLEncoder;
-import java.nio.charset.StandardCharsets;
+import java.nio.channels.Channels;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.util.List;
-import java.util.stream.Collectors;
+
+import static com.j23.server.configuration.FirebaseConfig.*;
 
 @Service
+@Slf4j
 public class ImageService {
 
-  private static Object TEMP_URL = null;
-  private static final String DOWNLOAD_URL = "";
-  public static String home = System.getProperty("user.home");
-  public static String productFolder = home + "/Desktop/Jeremy/Selfservice/Product/";
-  public static String userFolder = home + "/Desktop/Jeremy/Selfservice/User/";
+    private static Object TEMP_URL = null;
+    private static final String DOWNLOAD_URL = "";
+    public static String home = System.getProperty("user.home");
+    public static String productFolder = home + "/Desktop/Jeremy/Selfservice/Product/";
+    public static String userFolder = home + "/Desktop/Jeremy/Selfservice/User/";
 
 
-  public void uploadProductImage(String productId, List<MultipartFile> files) throws IOException {
-    if (!files.isEmpty()) {
-      // folder format (productFolder + productName)
-      Path pathFolder = Paths.get(productFolder + productId);
+//  public void uploadProductImage(String productId, List<MultipartFile> files) throws IOException {
+//    if (!files.isEmpty()) {
+//      // folder format (productFolder + productName)
+//      Path pathFolder = Paths.get(productFolder + productId);
+//
+//      // clean all folder in directory
+//      if (Files.exists(pathFolder)) {
+//        FileUtils.cleanDirectory(new File(String.valueOf(pathFolder)));
+//      }
+//
+//      // create folder if not exists
+//      Files.createDirectories(pathFolder);
+//
+//      // add in folder
+//      for (int i = 0; i < files.size(); i++) {
+//        String fileName = files.get(i).getOriginalFilename();
+//
+//        // format (Folder/productName/index.jpeg)
+//        assert fileName != null;
+//        Path pathFile = Paths.get(pathFolder + "/" + productId + "_" + i + "." + fileName.substring(fileName.lastIndexOf(".") + 1));
+//        try {
+//          Files.write(pathFile, files.get(i).getBytes());
+//        } catch (IOException e) {
+//          e.printStackTrace();
+//        }
+//      }
+//    }
+//
+//  }
 
-      // clean all folder in directory
-      if (Files.exists(pathFolder)) {
-        FileUtils.cleanDirectory(new File(String.valueOf(pathFolder)));
-      }
+    // firebase cloud storage upload
+    public void upload(String folderId, String folderName, List<MultipartFile> multipartFileList) {
 
-      // create folder if not exists
-      Files.createDirectories(pathFolder);
 
-      // add in folder
-      for (int i = 0; i < files.size(); i++) {
-        String fileName = files.get(i).getOriginalFilename();
+        for (int i = 0; i < multipartFileList.size(); i++) {
+            String fullFileName = multipartFileList.get(i).getOriginalFilename();
 
-        // format (Folder/productName/index.jpeg)
-        assert fileName != null;
-        Path pathFile = Paths.get(pathFolder + "/" + productId + "_" + i + "." + fileName.substring(fileName.lastIndexOf(".") + 1));
-        try {
-          Files.write(pathFile, files.get(i).getBytes());
-        } catch (IOException e) {
-          e.printStackTrace();
+            try {
+                assert fullFileName != null; // check if not null
+                String formattedFileName = i + getExtension(fullFileName); // example : 0.jpg
+                String pathOfImage = folderName + folderId + "/" + formattedFileName;
+
+                File file = this.convertToFile(multipartFileList.get(i), formattedFileName);                      // to convert multipartFile to File
+                this.uploadFile(file, pathOfImage);                                   // to get uploaded file link
+                file.delete();                                                                // to delete the copy of uploaded file stored in the project folder
+            } catch (Exception e) {
+                e.printStackTrace();
+            }
         }
-      }
     }
 
-  }
+    public ResponseEntity<Object> download(String imageName, String productId, String folderName, HttpServletResponse response) throws IOException {
+        String pathOfImage = folderName + productId + "/" + imageName;
 
-  // firebase cloud storage upload
-  public Object uploadProductImage(List<MultipartFile> multipartFileList) {
+        Blob blob = GOOGLE_CLOUD_STORAGE.get(BlobId.of(BUCKET, pathOfImage));
 
-    for (int i = 0; i < multipartFileList.size(); i++) {
-      String fullFileName = multipartFileList.get(i).getOriginalFilename();
+        // if image doesn't exist in firebase storage
+        if (blob == null) {
+            // set path default product.png
+            blob = GOOGLE_CLOUD_STORAGE.get(BlobId.of(BUCKET, folderName + "defaultproduct.png"));
+        }
 
-      try {
-        assert fullFileName != null; // check if not null
-        String formattedFileName = i + getExtension(fullFileName); // example : 0.jpg
+        ReadChannel reader = blob.reader();
+        InputStream inputStream = Channels.newInputStream(reader);
 
-        File file = this.convertToFile(multipartFileList.get(i), formattedFileName);                      // to convert multipartFile to File
-        this.uploadFile(file, "Product/"+formattedFileName);                                   // to get uploaded file link
-        file.delete();                                                                // to delete the copy of uploaded file stored in the project folder
-      } catch (Exception e) {
-        e.printStackTrace();
-      }
-    }
-    return null;                     // Your customized response
+        log.info("File downloaded successfully.");
 
-  }
+        byte[] content = IOUtils.toByteArray(inputStream);
 
+        final ByteArrayResource byteArrayResource = new ByteArrayResource(content);
 
-  private void uploadFile(File file, String filePath) throws IOException {
-    // bucket and blob
-    BlobId blobId = BlobId.of("self-service-4820d.appspot.com", filePath);
-    BlobInfo blobInfo = BlobInfo.newBuilder(blobId).setContentType("media").build();
+        return ResponseEntity
+                .ok()
+                .contentLength(content.length)
+                .header("Content-type", "application/octet-stream")
+                .header(HttpHeaders.CONTENT_DISPOSITION, "attachment; filename=\"" + imageName + "\"")
+                .body(byteArrayResource);
 
-    // get firebase json
-    Resource resource = new ClassPathResource("config/serviceAccountKey.json");
-    InputStream serviceAccount = resource.getInputStream();
-    Credentials credentials = GoogleCredentials.fromStream(serviceAccount);
-
-    // storage
-    Storage storage = StorageOptions.newBuilder().setCredentials(credentials).build().getService();
-    storage.create(blobInfo, Files.readAllBytes(file.toPath()));
-//    return String.format(DOWNLOAD_URL, URLEncoder.encode(filePath, StandardCharsets.UTF_8));
-  }
-
-  private File convertToFile(MultipartFile multipartFile, String fileName) throws IOException {
-    File tempFile = new File(fileName);
-    try (FileOutputStream fos = new FileOutputStream(tempFile)) {
-      fos.write(multipartFile.getBytes());
-      fos.close();
-    }
-    return tempFile;
-  }
-
-  private String getExtension(String fileName) {
-    return fileName.substring(fileName.lastIndexOf("."));
-  }
-
-  public void downloadProductImage(String imageName, String productId, HttpServletResponse response) {
-
-    File fileToDownload = new File(productFolder + productId + "/" + imageName);
-
-    if (!fileToDownload.exists()) {
-      fileToDownload = new File(productFolder + "defaultproduct.png");
     }
 
-    try (InputStream inputStream = new FileInputStream(fileToDownload)) {
-      response.setContentType("application/force-download");
-      response.setHeader("Content-Disposition", "attachment: filename=" + imageName);
-      IOUtils.copy(inputStream, response.getOutputStream());
-      response.flushBuffer();
-    } catch (IOException e) {
-      e.printStackTrace();
-    }
-  }
 
-  public ResponseEntity<Resource> downloadProductImageAsFile(String imageName, String folderId) throws IOException {
-    Path filePath = Paths.get(productFolder + folderId).toAbsolutePath().normalize().resolve(imageName);
+    private void uploadFile(File file, String filePath) throws IOException {
+        // bucket and blob
+        BlobId blobId = BlobId.of(BUCKET, filePath);
+        BlobInfo blobInfo = BlobInfo.newBuilder(blobId).setContentType("media").build();
 
-    if (!Files.exists(filePath)) {
-      filePath = Paths.get(productFolder + "defaultproduct.png");
+        // storage
+        GOOGLE_CLOUD_STORAGE.create(blobInfo, Files.readAllBytes(file.toPath()));
     }
 
-    Resource resource = new UrlResource(filePath.toUri());
-    HttpHeaders httpHeaders = new HttpHeaders();
-    httpHeaders.add("File-Name", imageName);
-    httpHeaders.add(HttpHeaders.CONTENT_DISPOSITION, "attachment;File-Name=" + resource.getFilename());
+    private File convertToFile(MultipartFile multipartFile, String fileName) throws IOException {
+        File tempFile = new File(fileName);
+        try (FileOutputStream fos = new FileOutputStream(tempFile)) {
+            fos.write(multipartFile.getBytes());
+            fos.close();
+        }
+        return tempFile;
+    }
 
-    return ResponseEntity.ok().contentType(MediaType.parseMediaType(Files.probeContentType(filePath)))
-      .headers(httpHeaders).body(resource);
-  }
+    private String getExtension(String fileName) {
+        return fileName.substring(fileName.lastIndexOf("."));
+    }
 
-  // delete a folder with product name
-  public void deletePath(String folderId) {
-    try {
-      Path pathFolder = Paths.get(productFolder + folderId);
-      System.out.println("THE PATH : " + pathFolder);
-      if (Files.exists(pathFolder)) {
-        FileUtils.deleteDirectory(new File(String.valueOf(pathFolder)));
+    public ResponseEntity<Resource> downloadAsFile(String imageName, String itemId, String folderName) throws IOException {
+        String pathOfImage = folderName + itemId + "/" + imageName;
+
+        Blob blob = GOOGLE_CLOUD_STORAGE.get(BlobId.of(BUCKET, pathOfImage));
+
+        // if image doesn't exist in firebase storage
+        if (blob == null) {
+            // set path default product.png
+            blob = GOOGLE_CLOUD_STORAGE.get(BlobId.of(BUCKET, folderName + "defaultproduct.png"));
+        }
+        ReadChannel reader = blob.reader();
+        InputStream inputStream = Channels.newInputStream(reader);
+
+        byte[] content = IOUtils.toByteArray(inputStream);
+
+        File f = new File("someimg.jpg");
+
+        Path path = Paths.get(f.getAbsolutePath());
+        try {
+            Files.write(path, content);
+        } catch (IOException ignored) {
+
+        }
+
+        Resource resource = new UrlResource(path.toUri());
+        HttpHeaders httpHeaders = new HttpHeaders();
+        httpHeaders.add("File-Name", imageName);
+        httpHeaders.add(HttpHeaders.CONTENT_DISPOSITION, "attachment;File-Name=" + resource.getFilename());
+
+        return ResponseEntity.ok().contentType(MediaType.parseMediaType(Files.probeContentType(path)))
+                .headers(httpHeaders).body(resource);//        InputStreamResource resource = new InputStreamResource(new FileInputStream(content));
+//        HttpHeaders headers = new HttpHeaders();
+//        headers.set("Content-Disposition", String.format("attachment; filename=your_file_name"));
+//        return ResponseEntity.ok()
+//                .headers(headers)
+//                .contentLength(content.length)
+//                .contentType(MediaType.valueOf("application/octet-stream"))
+//                .body(resource);
+
+    }
+
+    public ResponseEntity<Resource> downloadProductImageAsFile(String imageName, String folderId) throws IOException {
+        Path filePath = Paths.get(productFolder + folderId).toAbsolutePath().normalize().resolve(imageName);
+
+        if (!Files.exists(filePath)) {
+            filePath = Paths.get(productFolder + "defaultproduct.png");
+        }
+
+        Resource resource = new UrlResource(filePath.toUri());
+        HttpHeaders httpHeaders = new HttpHeaders();
+        httpHeaders.add("File-Name", imageName);
+        httpHeaders.add(HttpHeaders.CONTENT_DISPOSITION, "attachment;File-Name=" + resource.getFilename());
+
+        return ResponseEntity.ok().contentType(MediaType.parseMediaType(Files.probeContentType(filePath)))
+                .headers(httpHeaders).body(resource);
+    }
+
+    // delete a folder with product name
+    public void deletePath(String folderId) {
+        try {
+            Path pathFolder = Paths.get(productFolder + folderId);
+            System.out.println("THE PATH : " + pathFolder);
+            if (Files.exists(pathFolder)) {
+                FileUtils.deleteDirectory(new File(String.valueOf(pathFolder)));
 //                Files.delete(pathFolder);
-      }
-    } catch (Exception e) {
-      throw new RuntimeException(e);
-    }
+            }
+        } catch (Exception e) {
+            throw new RuntimeException(e);
+        }
 
-  }
+    }
 }

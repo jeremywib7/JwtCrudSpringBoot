@@ -19,8 +19,7 @@ import java.time.Instant;
 import java.time.LocalDateTime;
 import java.util.*;
 
-import static com.j23.server.util.AppsConfig.frontEndUrl;
-import static com.j23.server.util.AppsConfig.productionFrontEndUrl;
+import static com.j23.server.util.AppsConfig.*;
 
 
 @Service
@@ -151,12 +150,12 @@ public class WaitingListService {
         .setFcmOptions(
           WebpushFcmOptions // to redirect to url
             .builder()
-            .setLink(productionFrontEndUrl + "#/order-success")
+            .setLink(PROD_FRONT_END_URL + "#/order-success")
             .build())
         .setNotification(
           WebpushNotification
             .builder()
-            .setIcon(AppsConfig.mainUrl + AppsConfig.appName
+            .setIcon(MAIN_URL + appName
               + "icon/download/main") // notification icon
             .build())
         .build())

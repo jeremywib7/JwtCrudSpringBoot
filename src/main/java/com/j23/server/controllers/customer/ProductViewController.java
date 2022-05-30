@@ -25,6 +25,7 @@ public class ProductViewController {
         Product product = productService.findProductByName(name).orElseThrow(() ->
                 new ResponseStatusException(HttpStatus.NOT_FOUND, "Product not found"));
 
-        return ResponseHandler.generateResponse("Successfully fetch product!", HttpStatus.OK, product);
+        return ResponseHandler.generateResponse("Successfully fetch product!",
+                HttpStatus.OK, product);
     }
 }
