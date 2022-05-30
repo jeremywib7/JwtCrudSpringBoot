@@ -26,8 +26,6 @@ import static com.j23.server.configuration.FirebaseConfig.*;
 @Slf4j
 public class ImageService {
 
-    private static Object TEMP_URL = null;
-    private static final String DOWNLOAD_URL = "";
     public static String home = System.getProperty("user.home");
     public static String productFolder = home + "/Desktop/Jeremy/Selfservice/Product/";
     public static String userFolder = home + "/Desktop/Jeremy/Selfservice/User/";
