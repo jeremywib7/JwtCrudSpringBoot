@@ -24,6 +24,8 @@ public class FirebaseConfig {
 
     public static Storage GOOGLE_CLOUD_STORAGE;
 
+    public static Bucket BUCKET_STORAGE_CLIENT;
+
     public static final String BUCKET = "self-service-4820d.appspot.com";
 
     @PostConstruct
@@ -35,6 +37,7 @@ public class FirebaseConfig {
 
         GOOGLE_CREDENTIALS = GoogleCredentials.fromStream(serviceAccount);
         GOOGLE_CLOUD_STORAGE = StorageOptions.newBuilder().setCredentials(GOOGLE_CREDENTIALS).build().getService();
+        BUCKET_STORAGE_CLIENT = StorageClient.getInstance().bucket(BUCKET);
 
 
         FirebaseOptions options = FirebaseOptions.builder()
