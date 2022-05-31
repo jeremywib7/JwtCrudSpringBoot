@@ -14,4 +14,6 @@ public final class AppsConfig {
 
   public static final String PRODUCT_FOLDER = "Product/";
 
+  public static final String USER_FOLDER = "User/";
+
 }

@@ -19,104 +19,123 @@ import java.nio.file.Paths;
 import java.util.List;
 
 import static com.j23.server.util.AppsConfig.PRODUCT_FOLDER;
+import static com.j23.server.util.AppsConfig.USER_FOLDER;
 
 @RestController
 @RequestMapping("/images")
 @Slf4j
 public class ImageController {
 
-    //    For Windows
-//    String productFolder = "D:\\ImageData\\Product\\";
-//    String userFolder = "D:\\ImageData\\User\\";
+  //    For Windows
+  //    String productFolder = "D:\\ImageData\\Product\\";
+  //    String userFolder = "D:\\ImageData\\User\\";
 
-    //    //    For Mac
-    String home = System.getProperty("user.home");
-    String userFolder = home + "/Desktop/Jeremy/Selfservice/User/";
+  //    //    For Mac
+  String home = System.getProperty("user.home");
+  String userFolder = home + "/Desktop/Jeremy/Selfservice/User/";
 
-    @Autowired
-    private ImageService imageService;
+  @Autowired
+  private ImageService imageService;
 
-    @PostMapping("/product/upload")
-    public ResponseEntity<?> uploadProductImage(
-            @RequestParam String productId,
-            @RequestParam(value = "files", required = false) List<MultipartFile> multipartFileList) {
-        imageService.upload(productId, PRODUCT_FOLDER, multipartFileList);
+  @PostMapping("/product/upload")
+  public ResponseEntity<?> uploadProductImage(
+    @RequestParam String productId,
+    @RequestParam(value = "files", required = false) List<MultipartFile> multipartFileList) {
+    imageService.uploadListOfFile(productId, PRODUCT_FOLDER, multipartFileList);
 
-        return ResponseHandler.generateResponse("Successfully upload image!",
-                HttpStatus.OK, null);
-    }
+    return ResponseHandler.generateResponse("Successfully upload image!",
+      HttpStatus.OK, null);
+  }
 
-    @GetMapping("/product/download")
-    public ResponseEntity<Object> downloadProductImage(
-            @RequestParam("imageName") String imageName,
-            @RequestParam("productId") String productId,
-            HttpServletResponse response) throws IOException {
-        return imageService.download(imageName, productId, PRODUCT_FOLDER, response);
-    }
+  @GetMapping("/product/download")
+  public ResponseEntity<Object> downloadProductImage(
+    @RequestParam("imageName") String imageName,
+    @RequestParam("productId") String productId) throws IOException {
+    return imageService.download(imageName, productId, PRODUCT_FOLDER);
+  }
 
-    @GetMapping("/product/download/file")
-    public ResponseEntity<Resource> downloadProductImageAsFile(
-            @RequestParam("imageName") String imageName,
-            @RequestParam("productId") String productId) throws IOException {
-        return imageService.downloadAsFile(imageName, productId, PRODUCT_FOLDER);
-    }
+  @GetMapping("/product/download/file")
+  public ResponseEntity<Resource> downloadProductImageAsFile(
+    @RequestParam("imageName") String imageName,
+    @RequestParam("productId") String productId) throws IOException {
+    return imageService.downloadAsFile(imageName, productId, PRODUCT_FOLDER);
+  }
 
-    // set required jwt to false
-    // because this for customer
-    @GetMapping("/customer/product/download/file")
-    public ResponseEntity<Resource> downloadProductImageForCustomer(
-            @RequestParam("imageName") String imageName,
-            @RequestParam("productId") String productId) throws IOException {
-        return imageService.downloadAsFile(imageName, productId, PRODUCT_FOLDER);
-    }
+  @PostMapping("/user/upload")
+  public ResponseEntity<?> uploadUserImage(
+    @RequestParam("userId") String userId,
+    @RequestParam("file") MultipartFile file
+  ) throws IOException {
+    imageService.uploadFile(userId, USER_FOLDER, file);
 
-    @GetMapping("/user/download/{username}")
-    public void downloadUserImage(
-            @PathVariable("username") String username,
-            HttpServletResponse response) {
-        File fileToDownload = new File(userFolder + username);
+    return ResponseHandler.generateResponse("Successfully upload image!",
+      HttpStatus.OK, null);
+  }
 
-        if (!fileToDownload.exists()) {
-            fileToDownload = new File(userFolder + "defaultuser.png");
-        }
+  @GetMapping("/user/download/{username}")
+  public void downloadUserImage(
+    @PathVariable("username") String username,
+    HttpServletResponse response) {
+    return imageService.download(imageName, productId, PRODUCT_FOLDER);
 
-        try (InputStream inputStream = new FileInputStream(fileToDownload)) {
-            response.setContentType("application/force-download");
-            response.setHeader("Content-Disposition", "attachment: filename=" + username);
-            IOUtils.copy(inputStream, response.getOutputStream());
-            response.flushBuffer();
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
+  }
 
-    }
+  // set required jwt to false
+  // because this for customer
+  @GetMapping("/customer/product/download/file")
+  public ResponseEntity<Resource> downloadProductImageForCustomer(
+    @RequestParam("imageName") String imageName,
+    @RequestParam("productId") String productId) throws IOException {
+    return imageService.downloadAsFile(imageName, productId, PRODUCT_FOLDER);
+  }
 
-    @PostMapping("/user/upload")
-    public ResponseEntity<?> uploadUserImage(
-            @RequestParam("name") String name,
-            @RequestParam("file") MultipartFile file
-    ) {
+//  @GetMapping("/user/download/{username}")
+//  public void downloadUserImage(
+//    @PathVariable("username") String username,
+//    HttpServletResponse response) {
+//    File fileToDownload = new File(userFolder + username);
+//
+//    if (!fileToDownload.exists()) {
+//      fileToDownload = new File(userFolder + "defaultuser.png");
+//    }
+//
+//    try (InputStream inputStream = new FileInputStream(fileToDownload)) {
+//      response.setContentType("application/force-download");
+//      response.setHeader("Content-Disposition", "attachment: filename=" + username);
+//      IOUtils.copy(inputStream, response.getOutputStream());
+//      response.flushBuffer();
+//    } catch (IOException e) {
+//      e.printStackTrace();
+//    }
+//
+//  }
 
-        if (file.isEmpty()) {
-            throw new RuntimeException("File given is  not valid");
-        }
+  @DeleteMapping("/product/delete/")
+  public ResponseEntity<Object> deleteProduct(@RequestParam String productId) {
+    imageService.resetAllFilesInDirectory(PRODUCT_FOLDER, productId);
+    return new ResponseEntity<>(HttpStatus.OK);
+  }
 
-        try {
-            Path pathFolder = Paths.get(userFolder);
-            Files.createDirectories(pathFolder);
-            Path pathFile = Paths.get(userFolder + name);
-            Files.write(pathFile, file.getBytes());
-        } catch (IOException e) {
-            throw new RuntimeException(e);
-        }
-
-        return new ResponseEntity<>(HttpStatus.OK);
-    }
-
-    @DeleteMapping("/product/delete/")
-    public ResponseEntity<Object> deleteProduct(@RequestParam String id) {
-        imageService.deletePath(id);
-        return new ResponseEntity<>(HttpStatus.OK);
-    }
+//    @PostMapping("/user/upload")
+//    public ResponseEntity<?> uploadUserImage(
+//            @RequestParam("name") String name,
+//            @RequestParam("file") MultipartFile file
+//    ) {
+//
+//        if (file.isEmpty()) {
+//            throw new RuntimeException("File given is  not valid");
+//        }
+//
+//        try {
+//            Path pathFolder = Paths.get(userFolder);
+//            Files.createDirectories(pathFolder);
+//            Path pathFile = Paths.get(userFolder + name);
+//            Files.write(pathFile, file.getBytes());
+//        } catch (IOException e) {
+//            throw new RuntimeException(e);
+//        }
+//
+//        return new ResponseEntity<>(HttpStatus.OK);
+//    }
 
 }

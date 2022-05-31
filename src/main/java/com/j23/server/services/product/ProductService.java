@@ -21,6 +21,8 @@ import java.math.BigDecimal;
 import java.time.LocalDateTime;
 import java.util.*;
 
+import static com.j23.server.util.AppsConfig.PRODUCT_FOLDER;
+
 @Service
 public class ProductService {
 
@@ -157,16 +159,16 @@ public class ProductService {
     productRepository.deleteProductById(productId);
 
     // delete folder image
-    imageService.deletePath(productId);
+    imageService.resetAllFilesInDirectory(PRODUCT_FOLDER, productId);
   }
 
-  public void deleteSelectedProducts(List<String> id) {
-    id.forEach(value -> {
+  public void deleteSelectedProducts(List<String> ids) {
+    ids.forEach(id -> {
       // delete in database
-      productRepository.deleteProductById(value);
+      productRepository.deleteProductById(id);
 
       // delete folder image
-      imageService.deletePath(value);
+      imageService.resetAllFilesInDirectory(PRODUCT_FOLDER, id);
     });
   }
 

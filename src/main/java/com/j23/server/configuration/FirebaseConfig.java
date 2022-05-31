@@ -20,39 +20,39 @@ import java.io.InputStream;
 @Service
 public class FirebaseConfig {
 
-    public static GoogleCredentials GOOGLE_CREDENTIALS;
+  public static GoogleCredentials GOOGLE_CREDENTIALS;
 
-    public static Storage GOOGLE_CLOUD_STORAGE;
+  public static Storage GOOGLE_CLOUD_STORAGE;
 
-    public static Bucket BUCKET_STORAGE_CLIENT;
+  public static Bucket BUCKET_STORAGE_CLIENT;
 
-    public static final String BUCKET = "self-service-4820d.appspot.com";
+  public static final String BUCKET = "self-service-4820d.appspot.com";
 
-    @PostConstruct
-    public void configureFirebaseConnection() throws IOException {
+  @PostConstruct
+  public void configureFirebaseConnection() throws IOException {
 
-        Resource resource = new ClassPathResource("config/serviceAccountKey.json");
+    Resource resource = new ClassPathResource("config/serviceAccountKey.json");
 
-        InputStream serviceAccount = resource.getInputStream();
+    InputStream serviceAccount = resource.getInputStream();
 
-        GOOGLE_CREDENTIALS = GoogleCredentials.fromStream(serviceAccount);
-        GOOGLE_CLOUD_STORAGE = StorageOptions.newBuilder().setCredentials(GOOGLE_CREDENTIALS).build().getService();
-        BUCKET_STORAGE_CLIENT = StorageClient.getInstance().bucket(BUCKET);
+    GOOGLE_CREDENTIALS = GoogleCredentials.fromStream(serviceAccount);
 
+    FirebaseOptions options = FirebaseOptions.builder()
+      .setCredentials(GOOGLE_CREDENTIALS)
+      .setDatabaseUrl("https://self-service-4820d-default-rtdb.asia-southeast1.firebasedatabase.app")
+      .build();
 
-        FirebaseOptions options = FirebaseOptions.builder()
-                .setCredentials(GOOGLE_CREDENTIALS)
-                .setDatabaseUrl("https://self-service-4820d-default-rtdb.asia-southeast1.firebasedatabase.app")
-                .build();
-
-        if (!FirebaseApp.getApps().isEmpty()) {
-            FirebaseDatabase.getInstance().setPersistenceEnabled(true);
-        }
-
-
-        if (FirebaseApp.getApps().isEmpty()) { //<--- check with this line
-            FirebaseApp.initializeApp(options);
-        }
-
+    if (!FirebaseApp.getApps().isEmpty()) {
+      FirebaseDatabase.getInstance().setPersistenceEnabled(true);
     }
+
+
+    if (FirebaseApp.getApps().isEmpty()) { //<--- check with this line
+      FirebaseApp.initializeApp(options);
+    }
+
+    GOOGLE_CLOUD_STORAGE = StorageOptions.newBuilder().setCredentials(GOOGLE_CREDENTIALS).build().getService();
+    BUCKET_STORAGE_CLIENT = StorageClient.getInstance().bucket(BUCKET);
+
+  }
 }

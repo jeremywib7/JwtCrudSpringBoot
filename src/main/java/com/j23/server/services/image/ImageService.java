@@ -30,12 +30,180 @@ import static com.j23.server.configuration.FirebaseConfig.*;
 @Slf4j
 public class ImageService {
 
-    public static String home = System.getProperty("user.home");
-    public static String productFolder = home + "/Desktop/Jeremy/Selfservice/Product/";
-    public static String userFolder = home + "/Desktop/Jeremy/Selfservice/User/";
+  public static String home = System.getProperty("user.home");
+  public static String productFolder = home + "/Desktop/Jeremy/Selfservice/Product/";
+  public static String userFolder = home + "/Desktop/Jeremy/Selfservice/User/";
 
 
-//  public void uploadProductImage(String productId, List<MultipartFile> files) throws IOException {
+  // firebase cloud storage upload
+  public void uploadListOfFile(String folderId, String folderName, List<MultipartFile> multipartFileList) {
+
+    // reset file for current id
+    resetAllFilesInDirectory(folderName, folderId);
+
+    for (int i = 0; i < multipartFileList.size(); i++) {
+      String fullFileName = multipartFileList.get(i).getOriginalFilename();
+
+      try {
+        assert fullFileName != null; // check if not null
+        String formattedFileName = folderId + "_" + i + "." + getExtension(fullFileName); // example : someid_0.jpg
+        String pathOfFile = folderName + folderId + "/" + formattedFileName;
+
+        // bucket and blob (folder)
+        BlobId blobId = BlobId.of(BUCKET, pathOfFile);
+        BlobInfo blobInfo = BlobInfo.newBuilder(blobId).setContentType("image/" + getExtension(fullFileName)).build();
+
+        File file = this.convertToFile(multipartFileList.get(i), formattedFileName);  // to convert multipartFile to File
+        GOOGLE_CLOUD_STORAGE.create(blobInfo, Files.readAllBytes(file.toPath()));     // upload to firebase storage
+        file.delete();                                                                // to delete the copy of uploaded file stored in the project folder
+      } catch (Exception e) {
+        e.printStackTrace();
+      }
+    }
+  }
+
+  public ResponseEntity<Object> download(String fileName, String productId, String folderName) throws IOException {
+    String pathOfFile = folderName + productId + "/" + fileName;
+
+    Blob blob = this.getImageBlobInfo(pathOfFile, folderName);
+
+    ReadChannel reader = blob.reader();
+    InputStream inputStream = Channels.newInputStream(reader);
+
+    byte[] content = IOUtils.toByteArray(inputStream);
+    final ByteArrayResource byteArrayResource = new ByteArrayResource(content);
+
+    return ResponseEntity
+      .ok()
+      .contentLength(content.length)
+      .header("Content-type", "application/octet-stream")
+      .header(HttpHeaders.CONTENT_DISPOSITION, "attachment; filename=\"" + fileName + "\"")
+      .body(byteArrayResource);
+
+  }
+
+  public void uploadFile(String folderId, String folderName, MultipartFile multipartFile) throws IOException {
+
+    // reset file for current id
+    resetAllFilesInDirectory(folderName, folderId);
+
+    String fullFileName = multipartFile.getOriginalFilename();
+
+    assert fullFileName != null;
+    String formattedFileName = "profile_picture." + getExtension(fullFileName); // example : profile_picture.jpg
+    String pathOfFile = folderName + folderId + "/" + formattedFileName;
+
+    BlobId blobId = BlobId.of(BUCKET, pathOfFile);
+    BlobInfo blobInfo = BlobInfo.newBuilder(blobId).setContentType("image/" + getExtension(fullFileName)).build();
+
+    File file = this.convertToFile(multipartFile, formattedFileName);  // to convert multipartFile to File
+    GOOGLE_CLOUD_STORAGE.create(blobInfo, Files.readAllBytes(file.toPath()));     // upload to firebase storage
+
+  }
+
+  public void resetAllFilesInDirectory(String folderName, String folderId) {
+    Page<Blob> blobs = GOOGLE_CLOUD_STORAGE.list(BUCKET, Storage.BlobListOption.currentDirectory(),
+      Storage.BlobListOption.prefix(folderName + folderId + "/"));
+    Iterator<Blob> blobIterator = blobs.iterateAll().iterator();
+    while (blobIterator.hasNext()) {
+      Blob blob = blobIterator.next();
+      BUCKET_STORAGE_CLIENT.get(blob.getName()).delete();
+      log.info("the blob is : " + blob);
+    }
+  }
+
+  private Blob getImageBlobInfo(String pathOfImage, String folderName) {
+    Blob blob = GOOGLE_CLOUD_STORAGE.get(BlobId.of(BUCKET, pathOfImage));
+
+    // if file doesn't exist in firebase storage
+    if (blob == null) {
+      // set path default product.png
+      blob = GOOGLE_CLOUD_STORAGE.get(BlobId.of(BUCKET, folderName + "defaultproduct.png"));
+    }
+    return blob;
+  }
+
+  private File convertToFile(MultipartFile multipartFile, String fileName) throws IOException {
+    File tempFile = new File(fileName);
+    try (FileOutputStream fos = new FileOutputStream(tempFile)) {
+      fos.write(multipartFile.getBytes());
+    }
+    return tempFile;
+  }
+
+  private String getExtension(String fileName) {
+    return fileName.substring(fileName.lastIndexOf(".") + 1);
+  }
+
+  public ResponseEntity<Resource> downloadAsFile(String fileName, String itemId, String folderName) throws IOException {
+    String pathOfFile = folderName + itemId + "/" + fileName;
+
+    Blob blob = this.getImageBlobInfo(pathOfFile, folderName);
+
+    // if image doesn't exist in firebase storage
+    if (blob == null) {
+      // set path default product.png
+      blob = GOOGLE_CLOUD_STORAGE.get(BlobId.of(BUCKET, folderName + "defaultproduct.png"));
+    }
+
+    ReadChannel reader = blob.reader();
+    InputStream inputStream = Channels.newInputStream(reader);
+
+    byte[] content = IOUtils.toByteArray(inputStream);
+
+    File f = new File("someimg.jpg");
+
+    Path path = Paths.get(f.getAbsolutePath());
+    try {
+      Files.write(path, content);
+    } catch (IOException ignored) {
+
+    }
+
+    Resource resource = new UrlResource(path.toUri());
+    HttpHeaders httpHeaders = new HttpHeaders();
+    httpHeaders.add("File-Name", fileName);
+    httpHeaders.add(HttpHeaders.CONTENT_DISPOSITION, "attachment;File-Name=" + resource.getFilename());
+
+    f.delete();
+
+    return ResponseEntity.ok().contentType(MediaType.parseMediaType(Files.probeContentType(path)))
+      .headers(httpHeaders).body(resource);
+
+  }
+
+  public ResponseEntity<Resource> downloadProductImageAsFile(String imageName, String folderId) throws IOException {
+    Path filePath = Paths.get(productFolder + folderId).toAbsolutePath().normalize().resolve(imageName);
+
+    if (!Files.exists(filePath)) {
+      filePath = Paths.get(productFolder + "defaultproduct.png");
+    }
+
+    Resource resource = new UrlResource(filePath.toUri());
+    HttpHeaders httpHeaders = new HttpHeaders();
+    httpHeaders.add("File-Name", imageName);
+    httpHeaders.add(HttpHeaders.CONTENT_DISPOSITION, "attachment;File-Name=" + resource.getFilename());
+
+    return ResponseEntity.ok().contentType(MediaType.parseMediaType(Files.probeContentType(filePath)))
+      .headers(httpHeaders).body(resource);
+  }
+
+  // delete a folder with product name
+//  public void deletePath(String folderId) {
+//    try {
+//      Path pathFolder = Paths.get(productFolder + folderId);
+//      System.out.println("THE PATH : " + pathFolder);
+//      if (Files.exists(pathFolder)) {
+//        FileUtils.deleteDirectory(new File(String.valueOf(pathFolder)));
+////                Files.delete(pathFolder);
+//      }
+//    } catch (Exception e) {
+//      throw new RuntimeException(e);
+//    }
+//
+//  }
+
+  //  public void uploadProductImage(String productId, List<MultipartFile> files) throws IOException {
 //    if (!files.isEmpty()) {
 //      // folder format (productFolder + productName)
 //      Path pathFolder = Paths.get(productFolder + productId);
@@ -64,148 +232,4 @@ public class ImageService {
 //    }
 //
 //  }
-
-    // firebase cloud storage upload
-    public void upload(String folderId, String folderName, List<MultipartFile> multipartFileList) {
-
-        // reset file for current id
-        Page<Blob> blobs = GOOGLE_CLOUD_STORAGE.list(BUCKET, Storage.BlobListOption.currentDirectory(),
-                Storage.BlobListOption.prefix(folderName + folderId + "/"));
-        Iterator<Blob> blobIterator = blobs.iterateAll().iterator();
-        while (blobIterator.hasNext()) {
-            Blob blob = blobIterator.next();
-            BUCKET_STORAGE_CLIENT.get(blob.getName()).delete();
-            log.info("the blob is : " + blob);
-        }
-
-        for (int i = 0; i < multipartFileList.size(); i++) {
-            String fullFileName = multipartFileList.get(i).getOriginalFilename();
-
-            try {
-                assert fullFileName != null; // check if not null
-                String formattedFileName = folderId + "_" + i + getExtension(fullFileName); // example : adawdadcfefadaxd_0.jpg
-                String pathOfImage = folderName + folderId + "/" + formattedFileName;
-
-                // bucket and blob (folder)
-                BlobId blobId = BlobId.of(BUCKET, pathOfImage);
-                BlobInfo blobInfo = BlobInfo.newBuilder(blobId).setContentType("media").build();
-
-                File file = this.convertToFile(multipartFileList.get(i), formattedFileName);  // to convert multipartFile to File
-                GOOGLE_CLOUD_STORAGE.create(blobInfo, Files.readAllBytes(file.toPath()));     // upload to firebase storage
-                file.delete();                                                                // to delete the copy of uploaded file stored in the project folder
-            } catch (Exception e) {
-                e.printStackTrace();
-            }
-        }
-    }
-
-    public ResponseEntity<Object> download(String fileName, String productId, String folderName, HttpServletResponse response) throws IOException {
-        String pathOfFile = folderName + productId + "/" + fileName;
-
-        Blob blob = this.getImageBlobInfo(pathOfFile, folderName);
-
-        ReadChannel reader = blob.reader();
-        InputStream inputStream = Channels.newInputStream(reader);
-
-        byte[] content = IOUtils.toByteArray(inputStream);
-        final ByteArrayResource byteArrayResource = new ByteArrayResource(content);
-
-        return ResponseEntity
-                .ok()
-                .contentLength(content.length)
-                .header("Content-type", "application/octet-stream")
-                .header(HttpHeaders.CONTENT_DISPOSITION, "attachment; filename=\"" + fileName + "\"")
-                .body(byteArrayResource);
-
-    }
-
-    private Blob getImageBlobInfo(String pathOfImage, String folderName) {
-        Blob blob = GOOGLE_CLOUD_STORAGE.get(BlobId.of(BUCKET, pathOfImage));
-
-        // if file doesn't exist in firebase storage
-        if (blob == null) {
-            // set path default product.png
-            blob = GOOGLE_CLOUD_STORAGE.get(BlobId.of(BUCKET, folderName + "defaultproduct.png"));
-        }
-        return blob;
-    }
-
-
-    private File convertToFile(MultipartFile multipartFile, String fileName) throws IOException {
-        File tempFile = new File(fileName);
-        try (FileOutputStream fos = new FileOutputStream(tempFile)) {
-            fos.write(multipartFile.getBytes());
-        }
-        return tempFile;
-    }
-
-    private String getExtension(String fileName) {
-        return fileName.substring(fileName.lastIndexOf("."));
-    }
-
-    public ResponseEntity<Resource> downloadAsFile(String fileName, String itemId, String folderName) throws IOException {
-        String pathOfFile = folderName + itemId + "/" + fileName;
-
-        Blob blob = this.getImageBlobInfo(pathOfFile, folderName);
-
-        // if image doesn't exist in firebase storage
-        if (blob == null) {
-            // set path default product.png
-            blob = GOOGLE_CLOUD_STORAGE.get(BlobId.of(BUCKET, folderName + "defaultproduct.png"));
-        }
-
-        ReadChannel reader = blob.reader();
-        InputStream inputStream = Channels.newInputStream(reader);
-
-        byte[] content = IOUtils.toByteArray(inputStream);
-
-        File f = new File("someimg.jpg");
-
-        Path path = Paths.get(f.getAbsolutePath());
-        try {
-            Files.write(path, content);
-        } catch (IOException ignored) {
-
-        }
-
-        Resource resource = new UrlResource(path.toUri());
-        HttpHeaders httpHeaders = new HttpHeaders();
-        httpHeaders.add("File-Name", fileName);
-        httpHeaders.add(HttpHeaders.CONTENT_DISPOSITION, "attachment;File-Name=" + resource.getFilename());
-
-        return ResponseEntity.ok().contentType(MediaType.parseMediaType(Files.probeContentType(path)))
-                .headers(httpHeaders).body(resource);
-
-    }
-
-    public ResponseEntity<Resource> downloadProductImageAsFile(String imageName, String folderId) throws IOException {
-        Path filePath = Paths.get(productFolder + folderId).toAbsolutePath().normalize().resolve(imageName);
-
-        if (!Files.exists(filePath)) {
-            filePath = Paths.get(productFolder + "defaultproduct.png");
-        }
-
-        Resource resource = new UrlResource(filePath.toUri());
-        HttpHeaders httpHeaders = new HttpHeaders();
-        httpHeaders.add("File-Name", imageName);
-        httpHeaders.add(HttpHeaders.CONTENT_DISPOSITION, "attachment;File-Name=" + resource.getFilename());
-
-        return ResponseEntity.ok().contentType(MediaType.parseMediaType(Files.probeContentType(filePath)))
-                .headers(httpHeaders).body(resource);
-    }
-
-    // delete a folder with product name
-    public void deletePath(String folderId) {
-        try {
-            Path pathFolder = Paths.get(productFolder + folderId);
-            System.out.println("THE PATH : " + pathFolder);
-            if (Files.exists(pathFolder)) {
-                FileUtils.deleteDirectory(new File(String.valueOf(pathFolder)));
-//                Files.delete(pathFolder);
-            }
-        } catch (Exception e) {
-            throw new RuntimeException(e);
-        }
-
-    }
 }
