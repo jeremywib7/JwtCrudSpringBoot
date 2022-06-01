@@ -27,7 +27,7 @@ public class ProductController {
   @PostConstruct
     public void onInit() {
 
-//      productService.createTestProduct();
+      productService.createTestProduct();
     }
 
     @GetMapping("/all")

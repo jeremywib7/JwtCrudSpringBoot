@@ -86,10 +86,16 @@ public class UserService {
         adminUser.setId("Iam Cool");
         adminUser.setUserFirstName("Admin");
         adminUser.setUserLastName("Admin");
+        adminUser.setGender("Male");
+        adminUser.setAddress("Purimas Regency B6 no 2");
+        adminUser.setBankAccount("1291892812");
+        adminUser.setEmail("jeremywib7@gmail.com");
         adminUser.setDateJoined(LocalDate.now());
         adminUser.setActive(true);
+        adminUser.setImageUrl("profile_picture.png");
         adminUser.setUsername("Admin");
         adminUser.setUserPassword(getEncodedPassword("admin@pass"));
+        adminUser.setPhoneNumber("081226974475");
         adminUser.setRole(adminRole);
         userRepo.save(adminUser);
 
@@ -97,10 +103,14 @@ public class UserService {
         customerUser.setId("1234aa");
         customerUser.setUserFirstName("John");
         customerUser.setUserLastName("Doe");
+        adminUser.setGender("female");
+        adminUser.setEmail("mastah@gmail.com");
         customerUser.setDateJoined(LocalDate.now());
         customerUser.setActive(true);
+        customerUser.setImageUrl("profile_picture.png");
         customerUser.setUsername("John");
         customerUser.setUserPassword(getEncodedPassword("customer@pass"));
+        customerUser.setPhoneNumber("07182671267");
         customerUser.setRole(customerRole);
         userRepo.save(customerUser);
 

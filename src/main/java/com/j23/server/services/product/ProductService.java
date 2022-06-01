@@ -63,9 +63,8 @@ public class ProductService {
     productCategoryRepository.save(dinner);
 
 
-    // create 3 sample product
+    // create 5 sample product
     // add default image
-
 
     Product satayAyam = new Product();
     satayAyam.setId("satayayam");
@@ -80,10 +79,14 @@ public class ProductService {
     satayAyam.setCategory(breakfast);
     satayAyam.setActive(true);
 
+    ProductImage satayAyam_0 = new ProductImage();
+    satayAyam_0.setImageName("satayayam_0.jpeg");
+
     ProductImage satayAyam_1 = new ProductImage();
-    satayAyam_1.setImageName("satayAyam_1.png");
+    satayAyam_1.setImageName("satayayam_1.jpeg");
 
     List<ProductImage> listImages = new ArrayList<>();
+    listImages.add(satayAyam_0);
     listImages.add(satayAyam_1);
     satayAyam.setImages(listImages);
 
@@ -103,7 +106,7 @@ public class ProductService {
     banana.setActive(true);
 
     ProductImage aBanana_1 = new ProductImage();
-    aBanana_1.setImageName("aBanana_1.png");
+    aBanana_1.setImageName("banana_0.jpeg");
 
     List<ProductImage> listImagesBanana = new ArrayList<>();
     listImagesBanana.add(aBanana_1);
@@ -124,7 +127,7 @@ public class ProductService {
     iceCream.setActive(false);
 
     ProductImage iceCream_1 = new ProductImage();
-    iceCream_1.setImageName("iceCream_1.png");
+    iceCream_1.setImageName("icecream_0.jpeg");
 
     List<ProductImage> listImagesIceCream = new ArrayList<>();
     listImagesIceCream.add(iceCream_1);

@@ -41,9 +41,9 @@ public class User {
     @JsonSerialize(using = LocalDateSerializer.class)
     private LocalDate dateJoined;
 
-    private Long phoneNumber;
+    private String phoneNumber;
     private String address;
-    private Long bankAccount;
+    private String bankAccount;
 
     @ManyToOne(fetch = FetchType.EAGER)
     @JoinTable(name = "USER_ROLE",

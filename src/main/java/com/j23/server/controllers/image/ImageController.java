@@ -3,20 +3,17 @@ package com.j23.server.controllers.image;
 import com.j23.server.configuration.ResponseHandler;
 import com.j23.server.services.image.ImageService;
 import lombok.extern.slf4j.Slf4j;
-import org.apache.tomcat.util.http.fileupload.IOUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.core.io.Resource;
 import org.springframework.http.HttpStatus;
+import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 
-import javax.servlet.http.HttpServletResponse;
 import java.io.*;
-import java.nio.file.Files;
-import java.nio.file.Path;
-import java.nio.file.Paths;
 import java.util.List;
+import java.util.Objects;
 
 import static com.j23.server.util.AppsConfig.PRODUCT_FOLDER;
 import static com.j23.server.util.AppsConfig.USER_FOLDER;
@@ -26,68 +23,69 @@ import static com.j23.server.util.AppsConfig.USER_FOLDER;
 @Slf4j
 public class ImageController {
 
-  //    For Windows
-  //    String productFolder = "D:\\ImageData\\Product\\";
-  //    String userFolder = "D:\\ImageData\\User\\";
+    @Autowired
+    private ImageService imageService;
 
-  //    //    For Mac
-  String home = System.getProperty("user.home");
-  String userFolder = home + "/Desktop/Jeremy/Selfservice/User/";
+    //    For Windows
+    //    String productFolder = "D:\\ImageData\\Product\\";
+    //    String userFolder = "D:\\ImageData\\User\\";
 
-  @Autowired
-  private ImageService imageService;
+    //    //    For Mac
+    String home = System.getProperty("user.home");
+    String userFolder = home + "/Desktop/Jeremy/Selfservice/User/";
 
-  @PostMapping("/product/upload")
-  public ResponseEntity<?> uploadProductImage(
-    @RequestParam String productId,
-    @RequestParam(value = "files", required = false) List<MultipartFile> multipartFileList) {
-    imageService.uploadListOfFile(productId, PRODUCT_FOLDER, multipartFileList);
+    @PostMapping("/product/upload")
+    public ResponseEntity<?> uploadProductImage(
+            @RequestParam String productId,
+            @RequestParam(value = "files", required = false) List<MultipartFile> multipartFileList) {
+        imageService.uploadListOfFile(productId, PRODUCT_FOLDER, multipartFileList);
 
-    return ResponseHandler.generateResponse("Successfully upload image!",
-      HttpStatus.OK, null);
-  }
+        return ResponseHandler.generateResponse("Successfully upload image!",
+                HttpStatus.OK, null);
+    }
 
-  @GetMapping("/product/download")
-  public ResponseEntity<Object> downloadProductImage(
-    @RequestParam("imageName") String imageName,
-    @RequestParam("productId") String productId) throws IOException {
-    return imageService.download(imageName, productId, PRODUCT_FOLDER);
-  }
+    @GetMapping("/product/download")
+    public ResponseEntity<Object> downloadProductImage(
+            @RequestParam("imageName") String imageName,
+            @RequestParam("productId") String productId) throws IOException {
+        return imageService.download(imageName, productId, PRODUCT_FOLDER);
+    }
 
-  @GetMapping("/product/download/file")
-  public ResponseEntity<Resource> downloadProductImageAsFile(
-    @RequestParam("imageName") String imageName,
-    @RequestParam("productId") String productId) throws IOException {
-    return imageService.downloadAsFile(imageName, productId, PRODUCT_FOLDER);
-  }
+    @GetMapping(path = "/product/download/file", produces = MediaType.IMAGE_JPEG_VALUE)
+    public ResponseEntity<Resource> downloadProductImageAsFile(
+            @RequestParam("imageName") String imageName,
+            @RequestParam("productId") String productId) throws IOException {
+        return imageService.downloadAsFile(imageName, productId, PRODUCT_FOLDER);
+    }
 
-  @PostMapping("/user/upload")
-  public ResponseEntity<?> uploadUserImage(
-    @RequestParam("userId") String userId,
-    @RequestParam("file") MultipartFile file
-  ) throws IOException {
-    imageService.uploadFile(userId, USER_FOLDER, file);
+    @PostMapping("/user/upload")
+    public ResponseEntity<?> uploadUserImage(
+            @RequestParam("id") String id,
+            @RequestParam("file") MultipartFile file
+    ) throws IOException {
+        imageService.uploadFile(id, USER_FOLDER, file, "profile_picture." +
+                imageService.getExtension(Objects.requireNonNull(file.getOriginalFilename())));
 
-    return ResponseHandler.generateResponse("Successfully upload image!",
-      HttpStatus.OK, null);
-  }
+        return ResponseHandler.generateResponse("Successfully upload image!",
+                HttpStatus.OK, null);
+    }
 
-  @GetMapping("/user/download/{username}")
-  public void downloadUserImage(
-    @PathVariable("username") String username,
-    HttpServletResponse response) {
-    return imageService.download(imageName, productId, PRODUCT_FOLDER);
+    @GetMapping("/user/download")
+    public ResponseEntity<Object> downloadUserImage(
+            @RequestParam("userId") String userId,
+            @RequestParam("imageName") String imageName // to get extension of image
+    ) throws IOException {
+        return imageService.download(imageName, userId, USER_FOLDER);
+    }
 
-  }
-
-  // set required jwt to false
-  // because this for customer
-  @GetMapping("/customer/product/download/file")
-  public ResponseEntity<Resource> downloadProductImageForCustomer(
-    @RequestParam("imageName") String imageName,
-    @RequestParam("productId") String productId) throws IOException {
-    return imageService.downloadAsFile(imageName, productId, PRODUCT_FOLDER);
-  }
+    // set required jwt to false
+    // because this for customer
+    @GetMapping("/customer/product/download/file")
+    public ResponseEntity<Resource> downloadProductImageForCustomer(
+            @RequestParam("imageName") String imageName,
+            @RequestParam("productId") String productId) throws IOException {
+        return imageService.downloadAsFile(imageName, productId, PRODUCT_FOLDER);
+    }
 
 //  @GetMapping("/user/download/{username}")
 //  public void downloadUserImage(
@@ -110,11 +108,11 @@ public class ImageController {
 //
 //  }
 
-  @DeleteMapping("/product/delete/")
-  public ResponseEntity<Object> deleteProduct(@RequestParam String productId) {
-    imageService.resetAllFilesInDirectory(PRODUCT_FOLDER, productId);
-    return new ResponseEntity<>(HttpStatus.OK);
-  }
+    @DeleteMapping("/product/delete/")
+    public ResponseEntity<Object> deleteProduct(@RequestParam String productId) {
+        imageService.resetAllFilesInDirectory(PRODUCT_FOLDER, productId);
+        return new ResponseEntity<>(HttpStatus.OK);
+    }
 
 //    @PostMapping("/user/upload")
 //    public ResponseEntity<?> uploadUserImage(
