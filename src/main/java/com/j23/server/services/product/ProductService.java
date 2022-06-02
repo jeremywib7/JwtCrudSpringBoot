@@ -141,8 +141,11 @@ public class ProductService {
       throw new ResponseStatusException(HttpStatus.CONFLICT, "Product name already exists");
     }
 
+    if (product.getId().isEmpty() || product.getId() == null || Objects.equals(product.getId(), "")) {
+      product.setId(String.valueOf(UUID.randomUUID()));
+    }
+
     LocalDateTime localDateTime = LocalDateTime.now();
-    product.setId(String.valueOf(UUID.randomUUID()));
     product.setCreatedOn(LocalDateTime.from(localDateTime));
 
     return productRepository.save(product);

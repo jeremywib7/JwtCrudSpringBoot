@@ -80,12 +80,19 @@ public class ImageController {
 
     // set required jwt to false
     // because this for customer
-    @GetMapping("/customer/product/download/file")
-    public ResponseEntity<Resource> downloadProductImageForCustomer(
-            @RequestParam("imageName") String imageName,
-            @RequestParam("productId") String productId) throws IOException {
-        return imageService.downloadAsFile(imageName, productId, PRODUCT_FOLDER);
+    @GetMapping("/customer/product/download")
+    public ResponseEntity<Object> downloadProductImageForCustomer(
+      @RequestParam("imageName") String imageName,
+      @RequestParam("productId") String productId) throws IOException {
+      return imageService.download(imageName, productId, PRODUCT_FOLDER);
     }
+
+//    @GetMapping("/customer/product/download/file")
+//    public ResponseEntity<Resource> downloadProductImageForCustomer(
+//            @RequestParam("imageName") String imageName,
+//            @RequestParam("productId") String productId) throws IOException {
+//        return imageService.downloadAsFile(imageName, productId, PRODUCT_FOLDER);
+//    }
 
 //  @GetMapping("/user/download/{username}")
 //  public void downloadUserImage(
