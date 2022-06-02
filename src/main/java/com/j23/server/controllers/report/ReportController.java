@@ -29,7 +29,7 @@ public class ReportController {
     @Autowired
     ProductService productService;
 
-    @GetMapping("/user/report")
+    @GetMapping("/user")
     public ResponseEntity<byte[]> generatePdf(@RequestParam String title) throws FileNotFoundException, JRException {
 
         JRBeanCollectionDataSource beanCollectionDataSource = new JRBeanCollectionDataSource(userService.findAllUser());
@@ -47,7 +47,9 @@ public class ReportController {
         //        set inline for see pdf in browser || set attachment for download pdf
         String localDateTime = LocalDateTime.now().format(DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss"));
         HttpHeaders headers = new HttpHeaders();
-        headers.set(HttpHeaders.CONTENT_DISPOSITION, "inline;filename=" + "User List_" + localDateTime + ".pdf");
+        // attachment for force download
+        // inline for preview
+        headers.set(HttpHeaders.CONTENT_DISPOSITION, "attachment;filename=" + "User List_" + localDateTime + ".pdf");
 
         return ResponseEntity.ok().headers(headers).contentType(MediaType.APPLICATION_PDF).body(data);
     }
