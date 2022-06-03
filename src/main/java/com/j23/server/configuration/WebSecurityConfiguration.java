@@ -45,7 +45,7 @@ public class WebSecurityConfiguration extends WebSecurityConfigurerAdapter {
       .authorizeRequests().antMatchers(
         "/authenticate",
         "/checkJWT",
-        "/reports/user",
+//        "/reports/user",
         "/waitingList",
 
         // for product display

@@ -16,4 +16,9 @@ public final class AppsConfig {
 
   public static final String USER_FOLDER = "User/";
 
+  // report
+
+  public static final String USER_REPORT_TITLE = "USER REPORT";
+  public static final String USER_REPORT_PATH = "src/main/resources/reports/User.jrxml";
+
 }
