@@ -15,8 +15,7 @@ import java.io.*;
 import java.util.List;
 import java.util.Objects;
 
-import static com.j23.server.util.AppsConfig.PRODUCT_FOLDER;
-import static com.j23.server.util.AppsConfig.USER_FOLDER;
+import static com.j23.server.util.AppsConfig.*;
 
 @RestController
 @RequestMapping("/images")
@@ -56,6 +55,11 @@ public class ImageController {
             @RequestParam("imageName") String imageName,
             @RequestParam("productId") String productId) throws IOException {
         return imageService.downloadAsFile(imageName, productId, PRODUCT_FOLDER);
+    }
+
+    @GetMapping(path = "/sale-report")
+    public ResponseEntity<Object> downloadSaleReportImage() throws IOException {
+        return imageService.download("sales.png", "Sales Report", REPORT_FOLDER);
     }
 
     @PostMapping("/user/upload")

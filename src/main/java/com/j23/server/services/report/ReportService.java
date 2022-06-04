@@ -4,7 +4,6 @@ import com.j23.server.models.customer.customerOrder.CustomerOrder;
 import com.j23.server.models.report.SaleReport;
 import com.j23.server.repos.customer.customerOrder.CustomerOrderRepository;
 import com.j23.server.services.auth.UserService;
-import jdk.vm.ci.meta.Local;
 import net.sf.jasperreports.engine.*;
 import net.sf.jasperreports.engine.data.JRBeanCollectionDataSource;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -23,10 +22,8 @@ import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
-import java.util.stream.Collectors;
 
-import static com.j23.server.util.AppsConfig.USER_REPORT_PATH;
-import static com.j23.server.util.AppsConfig.USER_REPORT_TITLE;
+import static com.j23.server.util.AppsConfig.*;
 
 @Service
 public class ReportService {
@@ -44,27 +41,30 @@ public class ReportService {
 
   public ResponseEntity<byte[]> generateSaleReport(String dateFrom, String dateTill) throws IOException, JRException {
 
-    LocalDateTime from = LocalDateTime.from(LocalDateTime.parse(dateFrom));
-    LocalDateTime till = LocalDateTime.from(LocalDateTime.parse(dateTill));
+    DateTimeFormatter df = DateTimeFormatter.ofPattern("dd-MM-yyyy HH:mm:ss");
+    LocalDateTime from = LocalDateTime.parse(dateFrom+" 00:00:00", df);
+    LocalDateTime till = LocalDateTime.parse(dateTill+" 00:00:00", df);
 
     List<CustomerOrder> customerOrderList = customerOrderRepository
       .findAllByOrderFinishedIsNotNullAndOrderFinishedBetweenOrderByOrderFinishedDesc(from, till);
 
-    List<SaleReport> saleReportList = new ArrayList<>();
+    System.out.println("The list : " + customerOrderList);
 
-    customerOrderList.stream().map(customerOrder -> {
-      SaleReport saleReport = new SaleReport();
-      saleReport.setOrderCreated(customerOrder.getDateCreated());
-      saleReport.setOrderFinished(customerOrder.getOrderFinished());
-      saleReport.setCustomerId(customerOrder.getId());
-      saleReport.setTotal(customerOrder.getTotalPrice());
+//    List<SaleReport> saleReportList = new ArrayList<>();
+//
+//    customerOrderList.stream().map(customerOrder -> {
+//      SaleReport saleReport = new SaleReport();
+//      saleReport.setOrderCreated(customerOrder.getDateCreated());
+//      saleReport.setOrderFinished(customerOrder.getOrderFinished());
+//      saleReport.setCustomerId(customerOrder.getId());
+//      saleReport.setTotal(customerOrder.getTotalPrice());
+//
+//      return saleReportList.add(saleReport);
+//    }).collect(Collectors.toList()).clear();
 
-      return saleReportList.add(saleReport);
-    }).collect(Collectors.toList()).clear();
+    JRBeanCollectionDataSource beanCollectionDataSource = new JRBeanCollectionDataSource(customerOrderList);
 
-    JRBeanCollectionDataSource beanCollectionDataSource = new JRBeanCollectionDataSource(saleReportList);
-
-    return generatePdf(USER_REPORT_TITLE, beanCollectionDataSource, USER_REPORT_PATH);
+    return generatePdf(SALES_REPORT_TITLE, beanCollectionDataSource, SALES_REPORT_PATH);
   }
 
   private ResponseEntity<byte[]> generatePdf(String title, JRBeanCollectionDataSource jrBeanCollectionDataSource,

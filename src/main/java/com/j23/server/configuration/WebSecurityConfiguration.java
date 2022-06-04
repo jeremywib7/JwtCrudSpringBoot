@@ -52,6 +52,9 @@ public class WebSecurityConfiguration extends WebSecurityConfigurerAdapter {
         "/product/customer/all/table",
         "/images/customer/product/download",
 
+        // for report image
+        "/images/sale-report",
+
         // for downloading icon
         "/icon/download/main",
 
