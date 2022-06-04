@@ -16,7 +16,17 @@
 	<queryString language="SQL">
 		<![CDATA[]]>
 	</queryString>
-	<field name="orderFinished" class="java.util.Date"/>
+	<field name="dateTimeCreated" class="java.time.LocalDateTime"/>
+	<field name="customerProfile.id" class="java.lang.String">
+		<fieldDescription><![CDATA[customerProfile.id]]></fieldDescription>
+	</field>
+	<field name="customerProfile.username" class="java.lang.String">
+		<fieldDescription><![CDATA[customerProfile.username]]></fieldDescription>
+	</field>
+	<field name="customerProfile.createdOn" class="java.time.LocalDateTime">
+		<fieldDescription><![CDATA[customerProfile.createdOn]]></fieldDescription>
+	</field>
+	<field name="totalPrice" class="java.math.BigDecimal"/>
 	<background>
 		<band splitType="Stretch"/>
 	</background>
@@ -61,7 +71,7 @@
 	<columnHeader>
 		<band height="26" splitType="Stretch">
 			<staticText>
-				<reportElement style="Column header" x="0" y="7" width="92" height="18" forecolor="#000000" uuid="ce69bffd-2ae4-4f68-bbbe-0b1629d1058e">
+				<reportElement style="Column header" x="0" y="7" width="140" height="18" forecolor="#000000" uuid="ce69bffd-2ae4-4f68-bbbe-0b1629d1058e">
 					<property name="com.jaspersoft.studio.spreadsheet.connectionID" value="0ac077b5-aeb5-413f-8371-da9d7ce521ac"/>
 				</reportElement>
 				<textElement>
@@ -70,7 +80,7 @@
 				<text><![CDATA[DATETIME]]></text>
 			</staticText>
 			<staticText>
-				<reportElement style="Column header" x="92" y="7" width="158" height="18" forecolor="#000000" uuid="706a386e-f1a7-442b-8864-880ec1f8d908">
+				<reportElement style="Column header" x="140" y="7" width="140" height="18" forecolor="#000000" uuid="706a386e-f1a7-442b-8864-880ec1f8d908">
 					<property name="com.jaspersoft.studio.spreadsheet.connectionID" value="7dec9f17-e628-4380-bcfc-962cdebb8fbd"/>
 				</reportElement>
 				<textElement>
@@ -79,7 +89,7 @@
 				<text><![CDATA[CUSTOMERID]]></text>
 			</staticText>
 			<staticText>
-				<reportElement style="Column header" x="250" y="7" width="170" height="18" forecolor="#000000" uuid="56348e64-282d-4f25-ae48-a19cb758aa48">
+				<reportElement style="Column header" x="280" y="7" width="140" height="18" forecolor="#000000" uuid="56348e64-282d-4f25-ae48-a19cb758aa48">
 					<property name="com.jaspersoft.studio.spreadsheet.connectionID" value="b7114af6-4880-4d1f-9824-820348265bf7"/>
 				</reportElement>
 				<textElement>
@@ -103,13 +113,40 @@
 			<frame>
 				<reportElement style="Row" mode="Opaque" x="0" y="0" width="555" height="18" uuid="b50221b5-8254-440b-8c6f-1f0b138c9259"/>
 				<textField textAdjust="StretchHeight" pattern="EE. dd.MM.yyyy">
-					<reportElement style="Detail" positionType="Float" x="0" y="0" width="92" height="18" uuid="16a6fc71-b56c-43b4-89dc-ba33fdf6271d">
+					<reportElement style="Detail" positionType="Float" x="0" y="0" width="140" height="18" uuid="16a6fc71-b56c-43b4-89dc-ba33fdf6271d">
 						<property name="com.jaspersoft.studio.spreadsheet.connectionID" value="0ac077b5-aeb5-413f-8371-da9d7ce521ac"/>
 					</reportElement>
 					<textElement>
 						<font size="14"/>
 					</textElement>
-					<textFieldExpression><![CDATA[java.util.Date.from($F{orderFinished}.toInstant())]]></textFieldExpression>
+					<textFieldExpression><![CDATA[java.util.Date.from($F{dateTimeCreated}.atZone(java.time.ZoneId.systemDefault()).toInstant())]]></textFieldExpression>
+				</textField>
+				<textField textAdjust="StretchHeight">
+					<reportElement style="Detail" positionType="Float" x="280" y="0" width="140" height="18" uuid="f4a754f5-2ebe-4ce4-a84e-dfc915560220">
+						<property name="com.jaspersoft.studio.spreadsheet.connectionID" value="0ac077b5-aeb5-413f-8371-da9d7ce521ac"/>
+					</reportElement>
+					<textElement>
+						<font size="14"/>
+					</textElement>
+					<textFieldExpression><![CDATA[$F{customerProfile.username}]]></textFieldExpression>
+				</textField>
+				<textField textAdjust="StretchHeight">
+					<reportElement style="Detail" positionType="Float" x="140" y="0" width="140" height="18" uuid="bb3ad0a8-e52f-4e2d-890d-30ad7c1a8905">
+						<property name="com.jaspersoft.studio.spreadsheet.connectionID" value="0ac077b5-aeb5-413f-8371-da9d7ce521ac"/>
+					</reportElement>
+					<textElement>
+						<font size="14"/>
+					</textElement>
+					<textFieldExpression><![CDATA[$F{customerProfile.id}]]></textFieldExpression>
+				</textField>
+				<textField textAdjust="StretchHeight" pattern="Rp #,##0.##;¤-#,##0.##">
+					<reportElement style="Detail" positionType="Float" x="420" y="0" width="134" height="18" uuid="f7f8e9a7-9df8-4cb7-9a49-c792a28d0bad">
+						<property name="com.jaspersoft.studio.spreadsheet.connectionID" value="0ac077b5-aeb5-413f-8371-da9d7ce521ac"/>
+					</reportElement>
+					<textElement>
+						<font size="14"/>
+					</textElement>
+					<textFieldExpression><![CDATA[$F{totalPrice}]]></textFieldExpression>
 				</textField>
 			</frame>
 		</band>

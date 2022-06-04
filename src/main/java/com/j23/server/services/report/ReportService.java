@@ -1,25 +1,23 @@
 package com.j23.server.services.report;
 
 import com.j23.server.models.customer.customerOrder.CustomerOrder;
-import com.j23.server.models.report.SaleReport;
 import com.j23.server.repos.customer.customerOrder.CustomerOrderRepository;
 import com.j23.server.services.auth.UserService;
 import net.sf.jasperreports.engine.*;
 import net.sf.jasperreports.engine.data.JRBeanCollectionDataSource;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpHeaders;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
+import org.springframework.web.server.ResponseStatusException;
 
 import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Paths;
-import java.time.LocalDate;
 import java.time.LocalDateTime;
-import java.time.LocalTime;
 import java.time.format.DateTimeFormatter;
-import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 
@@ -42,25 +40,15 @@ public class ReportService {
   public ResponseEntity<byte[]> generateSaleReport(String dateFrom, String dateTill) throws IOException, JRException {
 
     DateTimeFormatter df = DateTimeFormatter.ofPattern("dd-MM-yyyy HH:mm:ss");
-    LocalDateTime from = LocalDateTime.parse(dateFrom+" 00:00:00", df);
-    LocalDateTime till = LocalDateTime.parse(dateTill+" 00:00:00", df);
+    LocalDateTime from = LocalDateTime.parse(dateFrom + " 00:00:00", df);
+    LocalDateTime till = LocalDateTime.parse(dateTill + " 23:59:59", df);
 
     List<CustomerOrder> customerOrderList = customerOrderRepository
       .findAllByOrderFinishedIsNotNullAndOrderFinishedBetweenOrderByOrderFinishedDesc(from, till);
 
-    System.out.println("The list : " + customerOrderList);
-
-//    List<SaleReport> saleReportList = new ArrayList<>();
-//
-//    customerOrderList.stream().map(customerOrder -> {
-//      SaleReport saleReport = new SaleReport();
-//      saleReport.setOrderCreated(customerOrder.getDateCreated());
-//      saleReport.setOrderFinished(customerOrder.getOrderFinished());
-//      saleReport.setCustomerId(customerOrder.getId());
-//      saleReport.setTotal(customerOrder.getTotalPrice());
-//
-//      return saleReportList.add(saleReport);
-//    }).collect(Collectors.toList()).clear();
+    if (customerOrderList.isEmpty()) {
+      throw new ResponseStatusException(HttpStatus.OK, "No data to export", null);
+    }
 
     JRBeanCollectionDataSource beanCollectionDataSource = new JRBeanCollectionDataSource(customerOrderList);
 
@@ -68,7 +56,7 @@ public class ReportService {
   }
 
   private ResponseEntity<byte[]> generatePdf(String title, JRBeanCollectionDataSource jrBeanCollectionDataSource,
-                                            String path) throws IOException, JRException {
+                                             String path) throws IOException, JRException {
     JasperReport jasperReport = JasperCompileManager.compileReport(Files.newInputStream(Paths.get(path)));
 
     HashMap<String, Object> map = new HashMap<>();

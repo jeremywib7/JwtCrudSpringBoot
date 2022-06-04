@@ -102,14 +102,14 @@ public class CustomerOrderService {
     CustomerProfile customerProfile = customerProfileRepository.findById(customerId).orElseThrow(() ->
       new ResponseStatusException(HttpStatus.NOT_FOUND, "Customer does not exists !"));
 
-    return customerOrderRepository.findAllByCustomerProfileOrderByDateCreatedDesc(customerProfile);
+    return customerOrderRepository.findAllByCustomerProfileOrderByDateTimeCreatedDesc(customerProfile);
   }
 
   public CustomerOrder viewCustomerOrderByCustomerUsername(String username) {
     CustomerProfile customerProfile = customerProfileRepository.findByUsername(username).orElseThrow(() ->
       new ResponseStatusException(HttpStatus.NOT_FOUND, "Customer does not exists !"));
 
-    return customerOrderRepository.findTopByCustomerProfileAndOrderProcessedIsNullOrderByDateCreatedDesc(customerProfile)
+    return customerOrderRepository.findTopByCustomerProfileAndOrderProcessedIsNullOrderByDateTimeCreatedDesc(customerProfile)
       .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "Customer order does not exists"));
   }
 
@@ -126,7 +126,7 @@ public class CustomerOrderService {
     // get customer cart and customer order info
     // check if customer order exists
     CustomerCart customerCart = customerCartService.getCustomerCart(customerOrder.getCustomerProfile().getId());
-    CustomerOrder currentCustomerOrder = customerOrderRepository.findTopByCustomerProfileAndOrderIsActiveTrueOrderByDateCreatedDesc(
+    CustomerOrder currentCustomerOrder = customerOrderRepository.findTopByCustomerProfileAndOrderIsActiveTrueOrderByDateTimeCreatedDesc(
       customerCart.getCustomerProfile()).orElseThrow(() ->
       new ResponseStatusException(HttpStatus.NOT_FOUND, "Customer order does not exists !"));
 
@@ -139,7 +139,7 @@ public class CustomerOrderService {
     LocalDateTime startOfDay = LocalDateTime.of(LocalDate.now(), LocalTime.MIDNIGHT);
     LocalDateTime endOfDay = LocalDateTime.of(LocalDate.now(), LocalTime.MAX);
     CustomerOrder previousCustomerOrder = customerOrderRepository
-      .findFirstByOrderProcessedIsNotNullAndDateCreatedBetweenOrderByDateCreatedDesc(
+      .findFirstByOrderProcessedIsNotNullAndDateTimeCreatedBetweenOrderByDateTimeCreatedDesc(
         startOfDay, endOfDay).orElse(null);
 
 
@@ -195,10 +195,11 @@ public class CustomerOrderService {
     // get customer cart info
     CustomerCart customerCart = customerCartService.getCustomerCart(customerId);
 
-    CustomerOrder customerOrder = customerOrderRepository.findTopByCustomerProfileAndOrderIsActiveTrueOrderByDateCreatedDesc(
+    CustomerOrder customerOrder = customerOrderRepository.findTopByCustomerProfileAndOrderIsActiveTrueOrderByDateTimeCreatedDesc(
       customerCart.getCustomerProfile()).orElseThrow(() ->
       new ResponseStatusException(HttpStatus.NOT_FOUND, "Customer order does not exists !"));
     customerOrder.setOrderFinished(LocalDateTime.now());
+
     customerOrder.setOrderIsActive(false);
     customerOrderRepository.save(customerOrder);
 

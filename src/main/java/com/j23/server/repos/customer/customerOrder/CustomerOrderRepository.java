@@ -12,15 +12,15 @@ import java.util.Optional;
 @Repository
 public interface CustomerOrderRepository extends JpaRepository<CustomerOrder, String> {
 
-  Optional<CustomerOrder> findTopByCustomerProfileAndOrderIsActiveTrueOrderByDateCreatedDesc(CustomerProfile customerProfile);
+  Optional<CustomerOrder> findTopByCustomerProfileAndOrderIsActiveTrueOrderByDateTimeCreatedDesc(CustomerProfile customerProfile);
 
-  Optional<CustomerOrder> findTopByCustomerProfileAndOrderProcessedIsNullOrderByDateCreatedDesc(CustomerProfile customerProfile);
+  Optional<CustomerOrder> findTopByCustomerProfileAndOrderProcessedIsNullOrderByDateTimeCreatedDesc(CustomerProfile customerProfile);
 
   Optional<CustomerOrder> findByCustomerProfileAndOrderIsActiveTrue(CustomerProfile customerProfile);
 
-  List<CustomerOrder> findAllByCustomerProfileOrderByDateCreatedDesc(CustomerProfile customerProfile);
+  List<CustomerOrder> findAllByCustomerProfileOrderByDateTimeCreatedDesc(CustomerProfile customerProfile);
 
-  Optional<CustomerOrder> findFirstByOrderProcessedIsNotNullAndDateCreatedBetweenOrderByDateCreatedDesc(
+  Optional<CustomerOrder> findFirstByOrderProcessedIsNotNullAndDateTimeCreatedBetweenOrderByDateTimeCreatedDesc(
     LocalDateTime dateStart, LocalDateTime dateEnd);
   List<CustomerOrder> findAllByOrderFinishedIsNotNullAndOrderFinishedBetweenOrderByOrderFinishedDesc(
     LocalDateTime dateStart, LocalDateTime dateEnd);

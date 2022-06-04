@@ -15,7 +15,11 @@ import org.hibernate.annotations.UpdateTimestamp;
 
 import javax.persistence.*;
 import java.math.BigDecimal;
+import java.sql.Time;
+import java.time.LocalDate;
 import java.time.LocalDateTime;
+import java.time.LocalTime;
+import java.util.Date;
 import java.util.List;
 import java.util.UUID;
 
@@ -35,10 +39,20 @@ public class CustomerOrder {
   @JsonFormat(pattern = "MM/dd/yyyy HH:mm:ss")
   @JsonDeserialize(using = LocalDateTimeDeserializer.class)
   @JsonSerialize(using = LocalDateTimeSerializer.class)
-  @Column(name = "date_created", updatable = false)
+  @Column(updatable = false)
   @CreationTimestamp
   @JsonView(Views.OrderDateOnlyViews.class)
-  private LocalDateTime dateCreated;
+  private LocalDateTime dateTimeCreated;
+
+//  @CreationTimestamp
+//  @Temporal(TemporalType.TIMESTAMP)
+//  @Column(updatable = false)
+//  private Date dateCreated;
+//
+//  @UpdateTimestamp
+//  @Temporal(TemporalType.TIMESTAMP)
+//  @Column(updatable = false)
+//  private Date dateUpdated;
 
   @JsonFormat(pattern = "MM/dd/yyyy HH:mm:ss")
   @JsonDeserialize(using = LocalDateTimeDeserializer.class)
@@ -54,12 +68,15 @@ public class CustomerOrder {
   @JsonView(Views.OrderDateOnlyViews.class)
   private LocalDateTime orderFinished;
 
+//  private Date orderDateFinished;
+//
+//  private Time orderTimeFinished;
+
   @JsonFormat(pattern = "MM/dd/yyyy HH:mm:ss")
   @JsonDeserialize(using = LocalDateTimeDeserializer.class)
   @JsonSerialize(using = LocalDateTimeSerializer.class)
-  @Column(name = "date_updated")
   @UpdateTimestamp
-  private LocalDateTime updatedOn;
+  private LocalDateTime dateTimeUpdated;
 
   @OneToOne
   @JoinColumn(name = "customer_profile")
