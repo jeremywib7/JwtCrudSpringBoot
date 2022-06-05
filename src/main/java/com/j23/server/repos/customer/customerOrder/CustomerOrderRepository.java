@@ -22,6 +22,9 @@ public interface CustomerOrderRepository extends JpaRepository<CustomerOrder, St
 
   Optional<CustomerOrder> findFirstByOrderProcessedIsNotNullAndDateTimeCreatedBetweenOrderByDateTimeCreatedDesc(
     LocalDateTime dateStart, LocalDateTime dateEnd);
+
   List<CustomerOrder> findAllByOrderFinishedIsNotNullAndOrderFinishedBetweenOrderByOrderFinishedDesc(
     LocalDateTime dateStart, LocalDateTime dateEnd);
+
+  List<CustomerOrder> findAllByOrderFinishedIsNotNull();
 }
