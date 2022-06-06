@@ -19,6 +19,7 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 import java.io.IOException;
+import java.net.URISyntaxException;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 import java.util.Date;
@@ -36,7 +37,7 @@ public class ReportController {
     ReportService reportService;
 
     @GetMapping("/user")
-    public ResponseEntity<byte[]> generateUserReportPdf() throws IOException, JRException {
+    public ResponseEntity<byte[]> generateUserReportPdf() throws Exception {
         return reportService.generateUserReport();
     }
 
@@ -44,7 +45,7 @@ public class ReportController {
     public ResponseEntity<byte[]> generateSaleReportPdf(
             @RequestParam(required = false) @DateTimeFormat(pattern = "dd-MM-yyyy HH:mm:ss") LocalDateTime dateFrom,
             @RequestParam(required = false) @DateTimeFormat(pattern = "dd-MM-yyyy HH:mm:ss") LocalDateTime dateTill
-    ) throws IOException, JRException {
+    ) throws Exception {
         return reportService.generateSaleReport(dateFrom, dateTill);
     }
 

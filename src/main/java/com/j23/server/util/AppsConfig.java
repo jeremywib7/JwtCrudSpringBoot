@@ -1,14 +1,12 @@
 package com.j23.server.util;
 
 public final class AppsConfig {
-
-  public static final String MAIN_URL = "http://localhost:8080/";
-
   public static final String appName = "selfservice/";
 
-  public static final String FRONT_END_URL = "http://localhost:4201/";
+  public static final String DEV_FRONT_END_URL = "http://localhost:4201/";
 
-  public static final String PROD_FRONT_END_URL = "https://selfserviceonline.herokuapp.com/";
+  public static final String DEV_SERVER_URL = "http://localhost:8080/";
+  public static final String PROD_SERVER_URL = "https://selfserviceonline.herokuapp.com/";
 
   // firebase storage
 
@@ -22,6 +20,10 @@ public final class AppsConfig {
   public static final String USER_REPORT_PATH = "src/main/resources/reports/User.jrxml";
 
   public static final String SALES_REPORT_TITLE = "SALES REPORT";
-  public static final String SALES_REPORT_PATH = "src/main/resources/reports/sales_report/Sales_Report.jrxml";
+  public static final String SALES_REPORT_PATH = "/reports/sales_report/Sales_Report.jrxml";
+
+  // CONFIGURATION
+  public static String MAIN_FRONTEND_URL = DEV_FRONT_END_URL;
+  public static String MAIN_SERVER_URL = PROD_SERVER_URL;
 
 }

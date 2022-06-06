@@ -150,12 +150,12 @@ public class WaitingListService {
         .setFcmOptions(
           WebpushFcmOptions // to redirect to url
             .builder()
-            .setLink(PROD_FRONT_END_URL + "#/order-success")
+            .setLink(MAIN_FRONTEND_URL + "#/order-success")
             .build())
         .setNotification(
           WebpushNotification
             .builder()
-            .setIcon(MAIN_URL + appName
+            .setIcon(MAIN_SERVER_URL + appName
               + "icon/download/main") // notification icon
             .build())
         .build())
