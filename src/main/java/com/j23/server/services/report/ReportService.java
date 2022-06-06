@@ -72,8 +72,11 @@ public class ReportService {
   private ResponseEntity<byte[]> generatePdf(String title, JRBeanCollectionDataSource jrBeanCollectionDataSource,
                                              String path) throws Exception {
 
-    InputStream in = getClass().getResourceAsStream(path);
-    JasperReport jasperReport = JasperCompileManager.compileReport(in);
+    JasperReport jasperReport;
+
+    try (InputStream in = getClass().getResourceAsStream(path)) {
+      jasperReport = JasperCompileManager.compileReport(in);
+    }
 
     HashMap<String, Object> map = new HashMap<>();
     map.put("title", title);
