@@ -17,6 +17,7 @@ import org.springframework.web.server.ResponseStatusException;
 
 import java.io.FileInputStream;
 import java.io.IOException;
+import java.io.InputStream;
 import java.net.URISyntaxException;
 import java.nio.file.Files;
 import java.nio.file.Path;
@@ -71,29 +72,14 @@ public class ReportService {
   private ResponseEntity<byte[]> generatePdf(String title, JRBeanCollectionDataSource jrBeanCollectionDataSource,
                                              String path) throws Exception {
 
-//    Getting "Error loading object from InputStream" exception during call JasperRunManager.runReportToPdfStream
-
-//    InputStream reportStream = getServletConfig().getServletContext().getResourceAsStream("WEB-INF/HR/Jasp.jrxml");
-//
-//
-//    ByteArrayOutputStream baos =new ByteArrayOutputStream();
-//    response.setContentType("application/pdf");
-//
-//    JasperDesign design = JRXmlLoader.load(reportStream);
-
-//    JasperReport report = JasperCompileManager.compileReport(design);
-
-
-    JasperReport jasperReport = JasperCompileManager.compileReport(Files.newInputStream(
-      Paths.get("src/main/resources/reports/sales_report/Sales_Report.jrxml")));
+    InputStream in = getClass().getResourceAsStream(path);
+    JasperReport jasperReport = JasperCompileManager.compileReport(in);
 
     HashMap<String, Object> map = new HashMap<>();
     map.put("title", title);
 
     JasperPrint report = JasperFillManager.fillReport(jasperReport, map, jrBeanCollectionDataSource);
-
     byte[] data = JasperExportManager.exportReportToPdf(report);
-
     String localDateTime = LocalDateTime.now().format(DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss"));
     HttpHeaders headers = new HttpHeaders();
 
