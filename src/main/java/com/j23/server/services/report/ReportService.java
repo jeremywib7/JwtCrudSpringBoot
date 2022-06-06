@@ -15,6 +15,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 import org.springframework.web.server.ResponseStatusException;
 
+import java.io.FileInputStream;
 import java.io.IOException;
 import java.net.URISyntaxException;
 import java.nio.file.Files;
@@ -70,10 +71,8 @@ public class ReportService {
   private ResponseEntity<byte[]> generatePdf(String title, JRBeanCollectionDataSource jrBeanCollectionDataSource,
                                              String path) throws Exception {
 
-//    Path filePath = Paths.get(Objects.requireNonNull(getClass().getResource(path)).toURI());
-
-    JasperReport jasperReport = JasperCompileManager.compileReport(new ClassPathResource(
-      path).getInputStream());
+    JasperReport jasperReport = JasperCompileManager.compileReport(Files.newInputStream(
+      Paths.get(Objects.requireNonNull(getClass().getResource(path)).toURI())));
 
     HashMap<String, Object> map = new HashMap<>();
     map.put("title", title);
