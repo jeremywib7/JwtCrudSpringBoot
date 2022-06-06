@@ -185,6 +185,13 @@
             <version>5.3.20</version>
         </dependency>
 
+        <!-- https://mvnrepository.com/artifact/net.sf.jasperreports/jasperreports-fonts -->
+        <dependency>
+            <groupId>net.sf.jasperreports</groupId>
+            <artifactId>jasperreports-fonts</artifactId>
+            <version>6.19.1</version>
+        </dependency>
+
     </dependencies>
 
     <build>
