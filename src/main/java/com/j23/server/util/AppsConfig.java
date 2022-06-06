@@ -20,7 +20,7 @@ public final class AppsConfig {
   public static final String USER_REPORT_PATH = "src/main/resources/reports/User.jrxml";
 
   public static final String SALES_REPORT_TITLE = "SALES REPORT";
-  public static final String SALES_REPORT_PATH = "/reports/sales_report/Sales_Report.jrxml";
+  public static final String SALES_REPORT_PATH = "reports/sales_report/Sales_Report.jrxml";
 
   // CONFIGURATION
   public static String MAIN_FRONTEND_URL = DEV_FRONT_END_URL;

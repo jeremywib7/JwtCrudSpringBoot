@@ -7,6 +7,7 @@ import lombok.extern.slf4j.Slf4j;
 import net.sf.jasperreports.engine.*;
 import net.sf.jasperreports.engine.data.JRBeanCollectionDataSource;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.core.io.ClassPathResource;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
@@ -69,10 +70,10 @@ public class ReportService {
   private ResponseEntity<byte[]> generatePdf(String title, JRBeanCollectionDataSource jrBeanCollectionDataSource,
                                              String path) throws Exception {
 
-    Path filePath = Paths.get(Objects.requireNonNull(getClass().getResource(
-      path)).toURI());
+//    Path filePath = Paths.get(Objects.requireNonNull(getClass().getResource(path)).toURI());
 
-    JasperReport jasperReport = JasperCompileManager.compileReport(Files.newInputStream(filePath));
+    JasperReport jasperReport = JasperCompileManager.compileReport(new ClassPathResource(
+      path).getInputStream());
 
     HashMap<String, Object> map = new HashMap<>();
     map.put("title", title);
