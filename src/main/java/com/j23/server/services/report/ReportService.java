@@ -85,7 +85,7 @@ public class ReportService {
 
 
     JasperReport jasperReport = JasperCompileManager.compileReport(Files.newInputStream(
-      Paths.get(Objects.requireNonNull(getClass().getResource(path)).toURI())));
+      Paths.get("src/main/resources/reports/sales_report/Sales_Report.jrxml")));
 
     HashMap<String, Object> map = new HashMap<>();
     map.put("title", title);
