@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!-- Created with Jaspersoft Studio version 6.19.0.final using JasperReports Library version 6.19.0-646c68931cebf1a58bc65c4359d1f0ca223c5e94  -->
-<jasperReport xmlns="http://jasperreports.sourceforge.net/jasperreports" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://jasperreports.sourceforge.net/jasperreports http://jasperreports.sourceforge.net/xsd/jasperreport.xsd" name="Cherry" pageWidth="595" pageHeight="842" columnWidth="535" leftMargin="20" rightMargin="20" topMargin="20" bottomMargin="20" uuid="13acf49e-4913-4d1b-bccc-113817ad15d1">
+<jasperReport xmlns="http://jasperreports.sourceforge.net/jasperreports" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://jasperreports.sourceforge.net/jasperreports http://jasperreports.sourceforge.net/xsd/jasperreport.xsd" name="Sales_Report" pageWidth="595" pageHeight="842" columnWidth="535" leftMargin="20" rightMargin="20" topMargin="20" bottomMargin="20" uuid="13acf49e-4913-4d1b-bccc-113817ad15d1">
 	<property name="com.jaspersoft.studio.data.sql.tables" value=""/>
 	<property name="com.jaspersoft.studio.data.defaultdataadapter" value="One Empty Record"/>
 	<style name="Title" forecolor="#FFFFFF" fontName="Times New Roman" fontSize="50" isBold="false"/>
@@ -17,8 +17,8 @@
 		<![CDATA[]]>
 	</queryString>
 	<field name="dateTimeCreated" class="java.time.LocalDateTime"/>
-	<field name="customerProfile.id" class="java.lang.String">
-		<fieldDescription><![CDATA[customerProfile.id]]></fieldDescription>
+	<field name="number" class="java.lang.Integer">
+		<fieldDescription><![CDATA[number]]></fieldDescription>
 	</field>
 	<field name="customerProfile.username" class="java.lang.String">
 		<fieldDescription><![CDATA[customerProfile.username]]></fieldDescription>
@@ -27,6 +27,21 @@
 		<fieldDescription><![CDATA[customerProfile.createdOn]]></fieldDescription>
 	</field>
 	<field name="totalPrice" class="java.math.BigDecimal"/>
+	<variable name="TOTALS_PROFIT" class="java.math.BigDecimal" calculation="Sum">
+		<variableExpression><![CDATA[$F{totalPrice}]]></variableExpression>
+	</variable>
+	<variable name="TOTALS_ROW" class="java.lang.Integer" calculation="Count">
+		<variableExpression><![CDATA[$F{totalPrice}]]></variableExpression>
+	</variable>
+	<variable name="AVERAGE_PROFIT" class="java.math.BigDecimal" incrementType="Report" calculation="Average">
+		<variableExpression><![CDATA[$F{totalPrice}]]></variableExpression>
+	</variable>
+	<variable name="MAX_PROFIT" class="java.math.BigDecimal" calculation="Highest">
+		<variableExpression><![CDATA[$F{totalPrice}]]></variableExpression>
+	</variable>
+	<variable name="MIN_PROFIT" class="java.math.BigDecimal" calculation="Lowest">
+		<variableExpression><![CDATA[$F{totalPrice}]]></variableExpression>
+	</variable>
 	<background>
 		<band splitType="Stretch"/>
 	</background>
@@ -86,7 +101,7 @@
 				<textElement>
 					<font isBold="false"/>
 				</textElement>
-				<text><![CDATA[CUSTOMERID]]></text>
+				<text><![CDATA[ORDER NUMBER]]></text>
 			</staticText>
 			<staticText>
 				<reportElement style="Column header" x="280" y="7" width="140" height="18" forecolor="#000000" uuid="56348e64-282d-4f25-ae48-a19cb758aa48">
@@ -137,7 +152,7 @@
 					<textElement>
 						<font size="14"/>
 					</textElement>
-					<textFieldExpression><![CDATA[$F{customerProfile.id}]]></textFieldExpression>
+					<textFieldExpression><![CDATA[$F{number}]]></textFieldExpression>
 				</textField>
 				<textField textAdjust="StretchHeight" pattern="Rp #,##0.##;¤-#,##0.##">
 					<reportElement style="Detail" positionType="Float" x="420" y="0" width="134" height="18" uuid="f7f8e9a7-9df8-4cb7-9a49-c792a28d0bad">
@@ -152,13 +167,118 @@
 		</band>
 	</detail>
 	<columnFooter>
-		<band height="7" splitType="Stretch">
+		<band height="120" splitType="Stretch">
+			<property name="com.jaspersoft.studio.unit.height" value="px"/>
 			<line>
 				<reportElement positionType="FixRelativeToBottom" x="0" y="3" width="555" height="1" uuid="1133a906-5b71-476e-9f3e-bc97c97058c1"/>
 				<graphicElement>
 					<pen lineWidth="0.5" lineColor="#999999"/>
 				</graphicElement>
 			</line>
+			<staticText>
+				<reportElement style="Column header" x="290" y="30" width="120" height="20" forecolor="#000000" uuid="8abf29be-16db-42d9-ae93-e41212276b37">
+					<property name="com.jaspersoft.studio.spreadsheet.connectionID" value="f26f0fe9-8675-43bf-8bd2-8d5502f37d37"/>
+					<property name="com.jaspersoft.studio.unit.height" value="px"/>
+				</reportElement>
+				<textElement textAlignment="Left" verticalAlignment="Middle">
+					<font size="12" isBold="true"/>
+				</textElement>
+				<text><![CDATA[TOTALS PROFIT]]></text>
+			</staticText>
+			<textField textAdjust="StretchHeight" pattern="Rp #,##0.##;¤-#,##0.##">
+				<reportElement style="Detail" positionType="Float" x="420" y="30" width="122" height="20" uuid="977884d3-bbec-4de8-8ef2-965eda1f0fbb">
+					<property name="com.jaspersoft.studio.spreadsheet.connectionID" value="0ac077b5-aeb5-413f-8371-da9d7ce521ac"/>
+					<property name="com.jaspersoft.studio.unit.y" value="px"/>
+					<property name="com.jaspersoft.studio.unit.height" value="px"/>
+				</reportElement>
+				<textElement verticalAlignment="Middle">
+					<font size="14"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$V{TOTALS_PROFIT}]]></textFieldExpression>
+			</textField>
+			<staticText>
+				<reportElement style="Column header" x="290" y="50" width="120" height="20" forecolor="#000000" uuid="21048953-06bb-4eda-8e0f-32f82e0d90d0">
+					<property name="com.jaspersoft.studio.spreadsheet.connectionID" value="f26f0fe9-8675-43bf-8bd2-8d5502f37d37"/>
+					<property name="com.jaspersoft.studio.unit.height" value="px"/>
+				</reportElement>
+				<textElement textAlignment="Left" verticalAlignment="Middle">
+					<font size="12" isBold="true"/>
+				</textElement>
+				<text><![CDATA[TOTALS TRANSC]]></text>
+			</staticText>
+			<staticText>
+				<reportElement style="Column header" x="0" y="70" width="130" height="20" forecolor="#000000" uuid="d5e4a52c-37a2-4493-a4b0-124a393781df">
+					<property name="com.jaspersoft.studio.spreadsheet.connectionID" value="f26f0fe9-8675-43bf-8bd2-8d5502f37d37"/>
+					<property name="com.jaspersoft.studio.unit.height" value="px"/>
+				</reportElement>
+				<textElement textAlignment="Left" verticalAlignment="Middle">
+					<font size="12" isBold="true"/>
+				</textElement>
+				<text><![CDATA[AVERAGE PROFIT]]></text>
+			</staticText>
+			<textField textAdjust="StretchHeight" pattern="Rp #,##0.##;¤-#,##0.##">
+				<reportElement style="Detail" positionType="Float" x="140" y="70" width="133" height="20" uuid="caef5b35-66e5-4c61-9abb-3eb1fb191e10">
+					<property name="com.jaspersoft.studio.spreadsheet.connectionID" value="0ac077b5-aeb5-413f-8371-da9d7ce521ac"/>
+					<property name="com.jaspersoft.studio.unit.height" value="px"/>
+				</reportElement>
+				<textElement verticalAlignment="Middle">
+					<font size="14"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$V{AVERAGE_PROFIT}]]></textFieldExpression>
+			</textField>
+			<textField textAdjust="StretchHeight">
+				<reportElement style="Detail" positionType="Float" x="420" y="50" width="122" height="20" uuid="0e657620-b2f0-4e82-9e25-66d3a3079e34">
+					<property name="com.jaspersoft.studio.spreadsheet.connectionID" value="0ac077b5-aeb5-413f-8371-da9d7ce521ac"/>
+					<property name="com.jaspersoft.studio.unit.y" value="pixel"/>
+					<property name="com.jaspersoft.studio.unit.height" value="px"/>
+				</reportElement>
+				<textElement verticalAlignment="Middle">
+					<font size="14"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$V{TOTALS_ROW}]]></textFieldExpression>
+			</textField>
+			<staticText>
+				<reportElement style="Column header" x="0" y="30" width="130" height="20" forecolor="#000000" uuid="d7bf68ee-bbb2-4b83-a1f8-47d6e4d60fc2">
+					<property name="com.jaspersoft.studio.spreadsheet.connectionID" value="f26f0fe9-8675-43bf-8bd2-8d5502f37d37"/>
+					<property name="com.jaspersoft.studio.unit.height" value="px"/>
+					<property name="com.jaspersoft.studio.unit.width" value="px"/>
+				</reportElement>
+				<textElement textAlignment="Left" verticalAlignment="Middle">
+					<font size="12" isBold="true"/>
+				</textElement>
+				<text><![CDATA[HIGHEST PROFIT]]></text>
+			</staticText>
+			<textField textAdjust="StretchHeight" pattern="Rp #,##0.##;¤-#,##0.##">
+				<reportElement style="Detail" positionType="Float" x="140" y="30" width="133" height="20" uuid="35f2c527-c18b-47ec-ac8e-d2ef11de7b40">
+					<property name="com.jaspersoft.studio.spreadsheet.connectionID" value="0ac077b5-aeb5-413f-8371-da9d7ce521ac"/>
+					<property name="com.jaspersoft.studio.unit.height" value="px"/>
+				</reportElement>
+				<textElement verticalAlignment="Middle">
+					<font size="14"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$V{MAX_PROFIT}]]></textFieldExpression>
+			</textField>
+			<staticText>
+				<reportElement style="Column header" x="0" y="50" width="130" height="20" forecolor="#000000" uuid="12c9b763-8154-4a74-8c92-e181636b98c8">
+					<property name="com.jaspersoft.studio.spreadsheet.connectionID" value="f26f0fe9-8675-43bf-8bd2-8d5502f37d37"/>
+					<property name="com.jaspersoft.studio.unit.height" value="px"/>
+					<property name="com.jaspersoft.studio.unit.width" value="px"/>
+				</reportElement>
+				<textElement textAlignment="Left" verticalAlignment="Middle">
+					<font size="12" isBold="true"/>
+				</textElement>
+				<text><![CDATA[LOWEST PROFIT]]></text>
+			</staticText>
+			<textField textAdjust="StretchHeight" pattern="Rp #,##0.##;¤-#,##0.##">
+				<reportElement style="Detail" positionType="Float" x="140" y="50" width="133" height="20" uuid="47a3840d-febc-4cd5-90dc-84e51c16efd1">
+					<property name="com.jaspersoft.studio.spreadsheet.connectionID" value="0ac077b5-aeb5-413f-8371-da9d7ce521ac"/>
+					<property name="com.jaspersoft.studio.unit.height" value="px"/>
+				</reportElement>
+				<textElement verticalAlignment="Middle">
+					<font size="14"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$V{MIN_PROFIT}]]></textFieldExpression>
+			</textField>
 		</band>
 	</columnFooter>
 	<pageFooter>

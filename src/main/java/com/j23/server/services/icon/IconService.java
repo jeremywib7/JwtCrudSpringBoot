@@ -19,7 +19,7 @@ public class IconService {
 
     public ResponseEntity<Resource> downloadMainIcon() throws IOException, URISyntaxException {
 
-        Path filePath = Paths.get(Objects.requireNonNull(getClass().getClassLoader().getResource(
+        Path filePath = Paths.get(Objects.requireNonNull(getClass().getResource(
                 "/icons/hyper.ico")).toURI());
 
         Resource resource = new UrlResource(filePath.toUri());
