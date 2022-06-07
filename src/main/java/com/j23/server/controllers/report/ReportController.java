@@ -49,8 +49,6 @@ public class ReportController {
         return reportService.generateSaleReport(dateFrom, dateTill);
     }
 
-    @JsonSerialize(using = LocalDateTimeSerializer.class)
-    @JsonDeserialize(using = LocalDateTimeDeserializer.class)
     @GetMapping("/sale-report/data")
     public ResponseEntity<Object> loadDateRangeSaleReportData(
             @RequestParam(required = false) @DateTimeFormat(pattern = "dd-MM-yyyy HH:mm:ss") LocalDateTime dateFrom,

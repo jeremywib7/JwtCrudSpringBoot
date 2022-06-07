@@ -59,10 +59,10 @@ public class UserController {
         return ResponseHandler.generateResponse("Successfully update user!", HttpStatus.OK, updateUser);
     }
 
-    @GetMapping("/find/{username}")
-    public ResponseEntity<User> getUserByUsername(@PathVariable("username") String username) {
+    @GetMapping("/find")
+    public ResponseEntity<Object> getUserByUsername(@RequestParam("username") String username) throws Exception {
         User user = userService.findUserByUsername(username);
-        return new ResponseEntity<>(user, HttpStatus.OK);
+      return ResponseHandler.generateResponse("Successfully get user!", HttpStatus.OK, user);
     }
 
     @DeleteMapping("/delete/{username}")
