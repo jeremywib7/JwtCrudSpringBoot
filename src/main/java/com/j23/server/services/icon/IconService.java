@@ -33,8 +33,7 @@ public class IconService {
     httpHeaders.add("File-Name", "mainicon");
     httpHeaders.add(HttpHeaders.CONTENT_DISPOSITION, "attachment;File-Name=" + resource.getFilename());
 
-    return ResponseEntity.ok().contentType(MediaType.parseMediaType(url.getPath()))
-      .headers(httpHeaders).body(resource);
+    return ResponseEntity.ok().contentType(MediaType.valueOf("image/x-icon")).headers(httpHeaders).body(resource);
   }
 }
 
