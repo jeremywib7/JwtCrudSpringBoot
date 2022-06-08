@@ -7,6 +7,7 @@ import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.time.LocalDateTime;
 import java.util.Optional;
 
 public interface CustomerProfileRepo extends JpaRepository<CustomerProfile, String> {
@@ -19,4 +20,7 @@ public interface CustomerProfileRepo extends JpaRepository<CustomerProfile, Stri
     @Query("update CustomerProfile cu SET cu.messagingToken=:messagingToken WHERE cu.id =:customerId")
     void updateCustomerMessagingToken(@Param(value = "messagingToken") String messagingToken,
                                       @Param(value = "customerId") String customerId);
+
+//    int countAllByCreatedOnBetween(LocalDateTime startDate, LocalDateTime endDate);
+
 }

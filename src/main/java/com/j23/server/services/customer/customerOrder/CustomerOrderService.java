@@ -7,13 +7,13 @@ import com.j23.server.models.customer.customerCart.CustomerCart;
 import com.j23.server.models.customer.CustomerProfile;
 import com.j23.server.models.customer.customerOrder.CustomerOrder;
 import com.j23.server.models.customer.customerOrder.HistoryProductOrder;
-import com.j23.server.models.note.Note;
 import com.j23.server.models.waitingList.WaitingList;
 import com.j23.server.repos.customer.CustomerProfileRepo;
 import com.j23.server.repos.customer.customerCart.CustomerCartRepository;
 import com.j23.server.repos.customer.customerOrder.CustomerOrderRepository;
 import com.j23.server.repos.customer.customerOrder.HistoryProductOrderRepo;
 import com.j23.server.services.customer.customerCart.CustomerCartService;
+import com.j23.server.services.time.TimeService;
 import com.j23.server.services.waitingList.WaitingListService;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -22,10 +22,8 @@ import org.springframework.stereotype.Service;
 import org.springframework.web.server.ResponseStatusException;
 
 import java.math.BigDecimal;
-import java.time.Instant;
-import java.time.LocalDate;
-import java.time.LocalDateTime;
-import java.time.LocalTime;
+import java.time.*;
+import java.time.format.DateTimeFormatter;
 import java.util.*;
 
 @Service
@@ -49,6 +47,12 @@ public class CustomerOrderService {
 
   @Autowired
   private HistoryProductOrderRepo historyProductOrderRepo;
+
+  @Autowired
+  private TimeService timeService;
+
+  DateTimeFormatter df = DateTimeFormatter.ofPattern("dd-MM-yyyy HH:mm:ss");
+  DateTimeFormatter dateFormat = DateTimeFormatter.ofPattern("dd-MM-yyyy");
 
   public CustomerOrder addOrder(String customerId) {
 
@@ -212,6 +216,16 @@ public class CustomerOrderService {
       customerOrder.getCustomerProfile().getId());
     ApiFuture<WriteResult> apiFuture = documentReference.delete();
 
+  }
+
+  public long getTotalOrdersForCurrentMonth() {
+    return customerOrderRepository.countAllByOrderFinishedBetweenOrderByOrderFinishedDesc(
+      timeService.getStartDateTimeOfCurrentMonth(), timeService.getEndDateTimeOfCurrentMonth());
+  }
+
+  public BigDecimal getTotalRevenue() {
+    return customerOrderRepository.totalReveneu(timeService.getStartDateTimeOfCurrentMonth(),
+      timeService.getEndDateTimeOfCurrentMonth());
   }
 
 }

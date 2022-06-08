@@ -253,4 +253,8 @@ public class ProductService {
       maxCalories, minPrice, maxPrice, pageable);
   }
 
+  public Long getTotalProducts() {
+    return productRepository.count();
+  }
+
 }

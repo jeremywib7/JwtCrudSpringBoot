@@ -12,6 +12,7 @@ import com.j23.server.models.customer.CustomerProfile;
 import com.j23.server.models.customer.customerCart.CustomerCart;
 import com.j23.server.repos.customer.CustomerProfileRepo;
 import com.j23.server.services.customer.customerCart.CustomerCartService;
+import com.j23.server.services.time.TimeService;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
@@ -31,6 +32,9 @@ public class CustomerProfileService {
   @Autowired
   private CustomerCartService customerCartService;
 
+  @Autowired
+  private TimeService timeService;
+
   public CustomerCart registerCustomer(CustomerProfile customerProfile) {
 
     if (customerProfileRepo.existsByUsername(customerProfile.getUsername())) {
@@ -49,7 +53,7 @@ public class CustomerProfileService {
       // get uid from firebase and set in user record
       customerProfile.setId(userRecord.getUid());
     } catch (FirebaseAuthException e) {
-      log.error("Firebase auth exception"+ e.getAuthErrorCode() + "code for username" + customerProfile.getUsername());
+      log.error("Firebase auth exception" + e.getAuthErrorCode() + "code for username" + customerProfile.getUsername());
       throw new ResponseStatusException(HttpStatus.BAD_REQUEST, e.getMessage());
     }
 
@@ -83,5 +87,9 @@ public class CustomerProfileService {
 
     ApiFuture<WriteResult> writeResult = documentReference.update(updates);
     log.info("Customer messaging token has been updated!");
+  }
+
+  public Long getTotalCustomers() {
+    return customerProfileRepo.count();
   }
 }

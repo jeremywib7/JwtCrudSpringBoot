@@ -44,16 +44,6 @@ public class CustomerOrder {
   @JsonView(Views.OrderDateOnlyViews.class)
   private LocalDateTime dateTimeCreated;
 
-//  @CreationTimestamp
-//  @Temporal(TemporalType.TIMESTAMP)
-//  @Column(updatable = false)
-//  private Date dateCreated;
-//
-//  @UpdateTimestamp
-//  @Temporal(TemporalType.TIMESTAMP)
-//  @Column(updatable = false)
-//  private Date dateUpdated;
-
   @JsonFormat(pattern = "MM/dd/yyyy HH:mm:ss")
   @JsonDeserialize(using = LocalDateTimeDeserializer.class)
   @JsonSerialize(using = LocalDateTimeSerializer.class)
