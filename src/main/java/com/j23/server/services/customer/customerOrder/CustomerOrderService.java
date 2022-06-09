@@ -23,7 +23,6 @@ import org.springframework.web.server.ResponseStatusException;
 
 import java.math.BigDecimal;
 import java.time.*;
-import java.time.format.DateTimeFormatter;
 import java.util.*;
 
 @Service
@@ -50,9 +49,6 @@ public class CustomerOrderService {
 
   @Autowired
   private TimeService timeService;
-
-  DateTimeFormatter df = DateTimeFormatter.ofPattern("dd-MM-yyyy HH:mm:ss");
-  DateTimeFormatter dateFormat = DateTimeFormatter.ofPattern("dd-MM-yyyy");
 
   public CustomerOrder addOrder(String customerId) {
 
@@ -140,27 +136,12 @@ public class CustomerOrderService {
       throw new ResponseStatusException(HttpStatus.FAILED_DEPENDENCY, "Customer already paid !");
     }
 
-    LocalDateTime startOfDay = LocalDateTime.of(LocalDate.now(), LocalTime.MIDNIGHT);
-    LocalDateTime endOfDay = LocalDateTime.of(LocalDate.now(), LocalTime.MAX);
-    CustomerOrder previousCustomerOrder = customerOrderRepository
-      .findFirstByOrderProcessedIsNotNullAndDateTimeCreatedBetweenOrderByDateTimeCreatedDesc(
-        startOfDay, endOfDay).orElse(null);
-
-
-    int currentNumber;
-    // set order number from previous order +1 if available
-    if (previousCustomerOrder != null) {
-      currentNumber = previousCustomerOrder.getNumber() + 1;
-    } else {
-      currentNumber = 1;
-    }
-
+    // check number from previous customer order
+    int currentNumber = checkNumberFromPreviousOrderOfTheDay();
 
     // update customer order
     // calculate estimated time
-    int hourToSecond = (customerOrder.getEstHour() * 60) * 60;
-    int minuteToSecond = (customerOrder.getEstMinute() * 60);
-    long addedTime = new Date().getTime() + (1000L * (hourToSecond + minuteToSecond + customerOrder.getEstSecond()));
+    long addedTime = calculateEstimatedTime(customerOrder.getEstHour(), customerOrder.getEstMinute(), customerOrder.getEstSecond());
 
     // set estimated time in dd/mm/yyyy format to be saved in database
     LocalDateTime estTime = LocalDateTime.ofInstant(Instant.ofEpochMilli(addedTime), TimeZone.getDefault().toZoneId());
@@ -203,7 +184,6 @@ public class CustomerOrderService {
       customerCart.getCustomerProfile()).orElseThrow(() ->
       new ResponseStatusException(HttpStatus.NOT_FOUND, "Customer order does not exists !"));
     customerOrder.setOrderFinished(LocalDateTime.now());
-
     customerOrder.setOrderIsActive(false);
     customerOrderRepository.save(customerOrder);
 
@@ -216,6 +196,35 @@ public class CustomerOrderService {
       customerOrder.getCustomerProfile().getId());
     ApiFuture<WriteResult> apiFuture = documentReference.delete();
 
+  }
+
+  public long calculateEstimatedTime(int estHour, int estMinute, int estSecond) {
+    // calculate estimated time
+    int hourToSecond = (estHour * 60) * 60;
+    int minuteToSecond = (estMinute * 60);
+
+    return new Date().getTime() + (1000L * (hourToSecond + minuteToSecond + estSecond));
+  }
+
+  public int checkNumberFromPreviousOrderOfTheDay() {
+    CustomerOrder previousCustomerOrder = customerOrderRepository
+      .findFirstByOrderProcessedIsNotNullAndDateTimeCreatedBetweenOrderByDateTimeCreatedDesc(
+        timeService.getStartOfTheDay(), timeService.getEndOfTheDay()).orElse(null);
+
+    int currentNumber;
+    // set order number from previous order +1 if available
+    if (previousCustomerOrder != null) {
+      currentNumber = previousCustomerOrder.getNumber() + 1;
+    } else {
+      currentNumber = 1;
+    }
+
+    return currentNumber;
+  }
+
+  public List<CustomerOrder> viewRecentSales() {
+    return customerOrderRepository.findAllByOrderFinishedIsNotNullAndOrderFinishedBetweenOrderByOrderFinishedDesc(
+    timeService.getPrevious3Hours(), timeService.getCurrentHour());
   }
 
   public long getTotalOrdersForCurrentMonth() {

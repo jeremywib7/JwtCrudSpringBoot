@@ -58,10 +58,6 @@ public class CustomerOrder {
   @JsonView(Views.OrderDateOnlyViews.class)
   private LocalDateTime orderFinished;
 
-//  private Date orderDateFinished;
-//
-//  private Time orderTimeFinished;
-
   @JsonFormat(pattern = "MM/dd/yyyy HH:mm:ss")
   @JsonDeserialize(using = LocalDateTimeDeserializer.class)
   @JsonSerialize(using = LocalDateTimeSerializer.class)

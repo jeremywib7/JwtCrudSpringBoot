@@ -2,22 +2,34 @@ package com.j23.server.services.waitingList;
 
 import com.google.api.core.ApiFuture;
 import com.google.cloud.firestore.DocumentReference;
+import com.google.cloud.firestore.DocumentSnapshot;
 import com.google.cloud.firestore.Firestore;
 import com.google.cloud.firestore.WriteResult;
 import com.google.firebase.cloud.FirestoreClient;
 import com.google.firebase.messaging.*;
+import com.j23.server.models.customer.CustomerProfile;
+import com.j23.server.models.customer.customerOrder.CustomerOrder;
 import com.j23.server.models.note.Note;
 import com.j23.server.models.waitingList.CountdownWaitingList;
+import com.j23.server.models.waitingList.EditTimerWaitingList;
 import com.j23.server.models.waitingList.WaitingList;
+import com.j23.server.repos.customer.CustomerProfileRepo;
+import com.j23.server.repos.customer.customerOrder.CustomerOrderRepository;
 import com.j23.server.services.customer.customerOrder.CustomerOrderService;
+import com.j23.server.services.time.TimeService;
 import com.j23.server.util.AppsConfig;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
+import org.springframework.web.server.ResponseStatusException;
 
 import java.time.Instant;
+import java.time.LocalDate;
 import java.time.LocalDateTime;
+import java.time.LocalTime;
 import java.util.*;
+import java.util.concurrent.ExecutionException;
 
 import static com.j23.server.util.AppsConfig.*;
 
@@ -28,6 +40,14 @@ public class WaitingListService {
 
   @Autowired
   private CustomerOrderService customerOrderService;
+
+  @Autowired
+  private CustomerOrderRepository customerOrderRepository;
+
+  @Autowired
+  private CustomerProfileRepo customerProfileRepo;
+
+  private TimeService timeService;
 
   @Autowired
   private WaitingListService waitingListService;
@@ -75,6 +95,30 @@ public class WaitingListService {
 
   }
 
+  public void updateWaitingListTimer(EditTimerWaitingList editTimerWaitingList) throws Exception {
+    // calculate estimated time from current time by HH:mm:ss
+    long addedTime = customerOrderService.calculateEstimatedTime(editTimerWaitingList.getEstHour(), editTimerWaitingList.getEstMinute(),
+      editTimerWaitingList.getEstSecond());
+
+    DocumentSnapshot document = getWaitingListData(editTimerWaitingList);
+    if (!document.exists()) {
+      throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "Waiting list not found");
+    }
+
+    WaitingList waitingList = document.toObject(WaitingList.class);
+    assert waitingList != null;
+    waitingList.setEstTime(addedTime);
+    addToCountdownWaitingList(waitingList);
+    updateWaitingListTime(waitingList, "PROCESSING", addedTime);
+  }
+
+  public DocumentSnapshot getWaitingListData(EditTimerWaitingList editTimerWaitingList) throws Exception {
+    Firestore dbFirestore = FirestoreClient.getFirestore();
+    DocumentReference documentReference = dbFirestore.collection("Waiting_List").document(editTimerWaitingList.getCustomerId());
+    ApiFuture<DocumentSnapshot> future =  documentReference.get();
+    return future.get();
+  }
+
   public void updateWaitingListStatus(WaitingList waitingList, String status, int steps) {
     // update status to waiting
     Firestore firestore = FirestoreClient.getFirestore();
@@ -82,6 +126,17 @@ public class WaitingListService {
     Map<String, Object> updates = new HashMap<>();
     updates.put("status", status);
     updates.put("steps", steps);
+
+    ApiFuture<WriteResult> writeResult = documentReference.update(updates);
+  }
+
+  public void updateWaitingListTime(WaitingList waitingList, String status, long time) {
+    // update status to waiting
+    Firestore firestore = FirestoreClient.getFirestore();
+    DocumentReference documentReference = firestore.collection("Waiting_List").document(waitingList.getId());
+    Map<String, Object> updates = new HashMap<>();
+    updates.put("status", status);
+    updates.put("estTime", time);
 
     ApiFuture<WriteResult> writeResult = documentReference.update(updates);
   }

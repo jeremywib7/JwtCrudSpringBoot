@@ -38,4 +38,6 @@ public interface CustomerOrderRepository extends JpaRepository<CustomerOrder, St
     "AND co.order_finished >= :startDate AND co.order_finished <= :endDate order by co.order_finished desc", nativeQuery = true)
   BigDecimal totalReveneu(@Param("startDate") LocalDateTime startDate, @Param("endDate") LocalDateTime endDate);
 
+
+
 }

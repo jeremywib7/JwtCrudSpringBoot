@@ -4,7 +4,9 @@ import com.google.api.core.ApiFuture;
 import com.google.cloud.firestore.*;
 import com.google.firebase.cloud.FirestoreClient;
 import com.j23.server.configuration.ResponseHandler;
+import com.j23.server.models.customer.customerOrder.CustomerOrder;
 import com.j23.server.models.note.Note;
+import com.j23.server.models.waitingList.EditTimerWaitingList;
 import com.j23.server.models.waitingList.WaitingList;
 import com.j23.server.services.waitingList.WaitingListService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -23,11 +25,11 @@ import java.util.stream.Collectors;
 @RequestMapping("/waitingList")
 public class WaitingListController {
 
-    @Autowired
-    private WaitingListService waitingListService;
+  @Autowired
+  private WaitingListService waitingListService;
 
-    @PostConstruct
-    public void getAllTimerList() throws ExecutionException, InterruptedException {
+  @PostConstruct
+  public void getAllTimerList() throws ExecutionException, InterruptedException {
 
 //        Firestore firestore = FirestoreClient.getFirestore();
 //
@@ -46,27 +48,35 @@ public class WaitingListController {
 //            }
 //
 //        });
-    }
+  }
 
-    @PutMapping("/update/status")
-    public ResponseEntity<Object> updateWaitingListStatus(@RequestBody WaitingList waitingList) {
-        waitingListService.updateWaitingListStatus(waitingList, waitingList.getStatus(), waitingList.getSteps());
+  @PutMapping("/update/status")
+  public ResponseEntity<Object> updateWaitingListStatus(@RequestBody WaitingList waitingList) {
+    waitingListService.updateWaitingListStatus(waitingList, waitingList.getStatus(), waitingList.getSteps());
 
-        return ResponseHandler.generateResponse("Successfully update customer waiting list status !",
-                HttpStatus.OK, null);
-    }
+    return ResponseHandler.generateResponse("Successfully update customer waiting list status !",
+      HttpStatus.OK, null);
+  }
 
-    @PutMapping("/update/status/ready-to-pickup")
-    public ResponseEntity<Object> updateWaitingListStatusReadyToPickup(@RequestBody WaitingList waitingList) {
-        waitingListService.updateStatusToReadyToPickup(waitingList);
+  @PutMapping("/update/status/ready-to-pickup")
+  public ResponseEntity<Object> updateWaitingListStatusReadyToPickup(@RequestBody WaitingList waitingList) {
+    waitingListService.updateStatusToReadyToPickup(waitingList);
 
-        return ResponseHandler.generateResponse("Successfully update customer waiting list status !",
-                HttpStatus.OK, null);
-    }
+    return ResponseHandler.generateResponse("Successfully update customer waiting list status !",
+      HttpStatus.OK, null);
+  }
 
-    @PostMapping("/send-notification")
-    public ResponseEntity<Object> sendNotification(@RequestBody Note note) {
-        return ResponseHandler.generateResponse("Successfully send notification !", HttpStatus.OK,
-                waitingListService.sendOrderDoneNotification(note));
-    }
+  @PutMapping("/update/timer")
+  public ResponseEntity<Object> updateWaitingListTimer(@RequestBody EditTimerWaitingList editTimerWaitingList) throws Exception {
+    waitingListService.updateWaitingListTimer(editTimerWaitingList);
+
+    return ResponseHandler.generateResponse("Successfully update customer timer!",
+      HttpStatus.OK, null);
+  }
+
+  @PostMapping("/send-notification")
+  public ResponseEntity<Object> sendNotification(@RequestBody Note note) {
+    return ResponseHandler.generateResponse("Successfully send notification !", HttpStatus.OK,
+      waitingListService.sendOrderDoneNotification(note));
+  }
 }

@@ -31,6 +31,7 @@ public class DashboardService {
     dashboard.setTotalRevenue(totalRevenue != null ? totalRevenue : new BigDecimal(0));
     dashboard.setTotalCustomers(customerProfileService.getTotalCustomers());
     dashboard.setTotalProducts(productService.getTotalProducts());
+    dashboard.setRecentOrder(customerOrderService.viewRecentSales());
 
     return dashboard;
 
