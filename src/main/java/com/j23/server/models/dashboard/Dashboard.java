@@ -5,6 +5,7 @@ import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
+import javax.persistence.Entity;
 import java.math.BigDecimal;
 import java.util.List;
 
@@ -18,5 +19,6 @@ public class Dashboard {
   private Long totalCustomers;
   private Long totalProducts;
   private List<CustomerOrder> recentOrder;
+  private List<TotalSalesProduct> top5BestSales;
 
 }

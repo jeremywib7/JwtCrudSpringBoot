@@ -13,6 +13,7 @@ import com.j23.server.repos.customer.customerCart.CustomerCartRepository;
 import com.j23.server.repos.customer.customerOrder.CustomerOrderRepository;
 import com.j23.server.repos.customer.customerOrder.HistoryProductOrderRepo;
 import com.j23.server.services.customer.customerCart.CustomerCartService;
+import com.j23.server.services.dashboard.TotalSalesProductService;
 import com.j23.server.services.time.TimeService;
 import com.j23.server.services.waitingList.WaitingListService;
 import lombok.extern.slf4j.Slf4j;
@@ -24,6 +25,7 @@ import org.springframework.web.server.ResponseStatusException;
 import java.math.BigDecimal;
 import java.time.*;
 import java.util.*;
+import java.util.stream.Collectors;
 
 @Service
 @Slf4j
@@ -46,6 +48,9 @@ public class CustomerOrderService {
 
   @Autowired
   private HistoryProductOrderRepo historyProductOrderRepo;
+
+  @Autowired
+  private TotalSalesProductService totalSalesProductService;
 
   @Autowired
   private TimeService timeService;
@@ -186,6 +191,13 @@ public class CustomerOrderService {
     customerOrder.setOrderFinished(LocalDateTime.now());
     customerOrder.setOrderIsActive(false);
     customerOrderRepository.save(customerOrder);
+
+    log.info("The cart : " + customerCart.getCartOrderedProduct());
+
+    // add to history total sales product
+    customerCart.getCartOrderedProduct().stream().map(cartOrderedProduct ->
+      totalSalesProductService.sumProductProfit(cartOrderedProduct.getProduct(), customerOrder.getTotalPrice())).collect(
+        Collectors.toSet());
 
     // delete or reset current customer cart
     customerCartRepository.delete(customerCart);

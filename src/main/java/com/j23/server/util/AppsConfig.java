@@ -24,6 +24,6 @@ public final class AppsConfig {
 
   // CONFIGURATION
   public static String MAIN_FRONTEND_URL = DEV_FRONT_END_URL;
-  public static String MAIN_SERVER_URL = PROD_SERVER_URL;
+  public static String MAIN_SERVER_URL = DEV_SERVER_URL;
 
 }

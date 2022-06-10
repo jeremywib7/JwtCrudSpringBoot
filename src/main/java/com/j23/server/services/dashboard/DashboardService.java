@@ -22,6 +22,9 @@ public class DashboardService {
   @Autowired
   private ProductService productService;
 
+  @Autowired
+  private TotalSalesProductService totalSalesProductService;
+
   public Dashboard loadDashboardData() {
 
     Dashboard dashboard = new Dashboard();
@@ -32,6 +35,7 @@ public class DashboardService {
     dashboard.setTotalCustomers(customerProfileService.getTotalCustomers());
     dashboard.setTotalProducts(productService.getTotalProducts());
     dashboard.setRecentOrder(customerOrderService.viewRecentSales());
+    dashboard.setTop5BestSales(totalSalesProductService.viewTop5Sales());
 
     return dashboard;
 
