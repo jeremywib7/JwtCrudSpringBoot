@@ -55,12 +55,33 @@ public class ProductService {
     breakfast.setUpdatedOn(LocalDateTime.now());
     productCategoryRepository.save(breakfast);
 
+    ProductCategory fastfood = new ProductCategory();
+    fastfood.setId("fastfood");
+    fastfood.setCategoryName("Fast Food");
+    fastfood.setCreatedOn(LocalDateTime.now());
+    fastfood.setUpdatedOn(LocalDateTime.now());
+    productCategoryRepository.save(fastfood);
+
     ProductCategory dinner = new ProductCategory();
     dinner.setId("dinner");
     dinner.setCategoryName("Dinner");
     dinner.setCreatedOn(LocalDateTime.now());
     dinner.setUpdatedOn(LocalDateTime.now());
     productCategoryRepository.save(dinner);
+
+    ProductCategory healthy = new ProductCategory();
+    healthy.setId("healthy");
+    healthy.setCategoryName("Healthy");
+    healthy.setCreatedOn(LocalDateTime.now());
+    healthy.setUpdatedOn(LocalDateTime.now());
+    productCategoryRepository.save(healthy);
+
+    ProductCategory juice = new ProductCategory();
+    juice.setId("juice");
+    juice.setCategoryName("Juice");
+    juice.setCreatedOn(LocalDateTime.now());
+    juice.setUpdatedOn(LocalDateTime.now());
+    productCategoryRepository.save(juice);
 
 
     // create 5 sample product
@@ -80,10 +101,10 @@ public class ProductService {
     satayAyam.setActive(true);
 
     ProductImage satayAyam_0 = new ProductImage();
-    satayAyam_0.setImageName("satayayam_0.jpeg");
+    satayAyam_0.setImageName("satayayam_0.jpg");
 
     ProductImage satayAyam_1 = new ProductImage();
-    satayAyam_1.setImageName("satayayam_1.jpeg");
+    satayAyam_1.setImageName("satayayam_1.jpg");
 
     List<ProductImage> listImages = new ArrayList<>();
     listImages.add(satayAyam_0);
@@ -92,11 +113,12 @@ public class ProductService {
 
     productRepository.save(satayAyam);
 
+
     Product banana = new Product();
     banana.setId("banana");
     banana.setName("A Banana");
     banana.setTotalCalories(101L);
-    banana.setDescription("A banana made with love");
+    banana.setDescription("A banana with very awesome taste");
     banana.setDiscount(false);
     banana.setUnitPrice(BigDecimal.valueOf(25000));
     banana.setDiscountedPrice(BigDecimal.valueOf(25000));
@@ -113,18 +135,63 @@ public class ProductService {
     banana.setImages(listImagesBanana);
     productRepository.save(banana);
 
+
+    Product caesarteaser = new Product();
+    caesarteaser.setId("caesar teaser");
+    caesarteaser.setName("Caesar Teaser");
+    caesarteaser.setTotalCalories(71L);
+    caesarteaser.setDescription("A salad wrapped in taco with fresh vegetables and meat");
+    caesarteaser.setDiscount(false);
+    caesarteaser.setUnitPrice(BigDecimal.valueOf(55000));
+    caesarteaser.setDiscountedPrice(BigDecimal.valueOf(55000));
+    caesarteaser.setCreatedOn(LocalDateTime.from(LocalDateTime.now()));
+    caesarteaser.setUpdatedOn(null);
+    caesarteaser.setCategory(healthy);
+    caesarteaser.setActive(true);
+
+    ProductImage caesarteaser_0 = new ProductImage();
+    caesarteaser_0.setImageName("caesar teaser_0.jpg");
+
+    List<ProductImage> listCaesarImages = new ArrayList<>();
+    listCaesarImages.add(caesarteaser_0);
+    caesarteaser.setImages(listCaesarImages);
+    productRepository.save(caesarteaser);
+
+
+    Product burger = new Product();
+    burger.setId("burger");
+    burger.setName("Burger");
+    burger.setTotalCalories(241L);
+    burger.setDescription("A burger made with special ingredients and premium australian beef");
+    burger.setDiscount(true);
+    burger.setUnitPrice(BigDecimal.valueOf(50000));
+    burger.setDiscountedPrice(BigDecimal.valueOf(40000));
+    burger.setCreatedOn(LocalDateTime.from(LocalDateTime.now()));
+    burger.setUpdatedOn(null);
+    burger.setCategory(dinner);
+    burger.setActive(true);
+
+    ProductImage burgerImage_0 = new ProductImage();
+    burgerImage_0.setImageName("burger_0.png");
+
+    List<ProductImage> listBurgerImages = new ArrayList<>();
+    listBurgerImages.add(burgerImage_0);
+    burger.setImages(listBurgerImages);
+    productRepository.save(burger);
+
+
     Product iceCream = new Product();
     iceCream.setId("icecream");
     iceCream.setName("Ice Cream");
     iceCream.setTotalCalories(101L);
-    iceCream.setDescription("A ice cream made with love");
+    iceCream.setDescription("A ice cream with secret sauces");
     iceCream.setDiscount(true);
     iceCream.setUnitPrice(BigDecimal.valueOf(10000));
     iceCream.setDiscountedPrice(BigDecimal.valueOf(8000));
     iceCream.setCreatedOn(LocalDateTime.now());
     iceCream.setUpdatedOn(null);
     iceCream.setCategory(dinner);
-    iceCream.setActive(false);
+    iceCream.setActive(true);
 
     ProductImage iceCream_1 = new ProductImage();
     iceCream_1.setImageName("icecream_0.jpeg");
@@ -133,6 +200,56 @@ public class ProductService {
     listImagesIceCream.add(iceCream_1);
     iceCream.setImages(listImagesIceCream);
     productRepository.save(iceCream);
+
+
+    Product orange_juice = new Product();
+    orange_juice.setId("orangejuice");
+    orange_juice.setName("Orange Juice");
+    orange_juice.setTotalCalories(51L);
+    orange_juice.setDescription("Orange juice made with premium orange fruit");
+    orange_juice.setDiscount(false);
+    orange_juice.setUnitPrice(BigDecimal.valueOf(10000));
+    orange_juice.setDiscountedPrice(BigDecimal.valueOf(10000));
+    orange_juice.setCreatedOn(LocalDateTime.now());
+    orange_juice.setUpdatedOn(null);
+    orange_juice.setCategory(juice);
+    orange_juice.setActive(true);
+
+    ProductImage orange_juice_0 = new ProductImage();
+    orange_juice_0.setImageName("orange juice_0.jpg");
+    ProductImage orange_juice_1 = new ProductImage();
+    orange_juice_1.setImageName("orange juice_1.jpg");
+
+    List<ProductImage> listOrangeJuiceImg = new ArrayList<>();
+    listOrangeJuiceImg.add(orange_juice_0);
+    listOrangeJuiceImg.add(orange_juice_1);
+    orange_juice.setImages(listOrangeJuiceImg);
+    productRepository.save(orange_juice);
+
+
+    Product wagyu_steak = new Product();
+    orange_juice.setId("wagyusteak");
+    orange_juice.setName("Orange Juice");
+    orange_juice.setTotalCalories(51L);
+    orange_juice.setDescription("Orange juice made with premium orange fruit");
+    orange_juice.setDiscount(false);
+    orange_juice.setUnitPrice(BigDecimal.valueOf(10000));
+    orange_juice.setDiscountedPrice(BigDecimal.valueOf(10000));
+    orange_juice.setCreatedOn(LocalDateTime.now());
+    orange_juice.setUpdatedOn(null);
+    orange_juice.setCategory(juice);
+    orange_juice.setActive(true);
+
+    ProductImage orange_juice_0 = new ProductImage();
+    orange_juice_0.setImageName("orange juice_0.jpg");
+    ProductImage orange_juice_1 = new ProductImage();
+    orange_juice_1.setImageName("orange juice_1.jpg");
+
+    List<ProductImage> listOrangeJuiceImg = new ArrayList<>();
+    listOrangeJuiceImg.add(orange_juice_0);
+    listOrangeJuiceImg.add(orange_juice_1);
+    orange_juice.setImages(listOrangeJuiceImg);
+    productRepository.save(orange_juice);
 
   }
 

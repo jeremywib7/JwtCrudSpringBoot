@@ -10,6 +10,8 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+import java.math.BigDecimal;
+
 @RestController
 @RequestMapping("/dashboard")
 public class DashboardController {
@@ -17,9 +19,18 @@ public class DashboardController {
   @Autowired
   private DashboardService dashboardService;
 
+  @Autowired
+  private TotalSalesProductService totalSalesProductService;
+
   @GetMapping()
   public ResponseEntity<Object> loadDashboardData() {
     return ResponseHandler.generateResponse("Successfully load dashboard data!", HttpStatus.OK, dashboardService
       .loadDashboardData());
   }
+
+//  @PostMapping({"/percentage"})
+//  public ResponseEntity<Object> getPercentage(@RequestParam BigDecimal partValue, @RequestParam BigDecimal totalValue) {
+//    return ResponseHandler.generateResponse("Successfully load dashboard data!", HttpStatus.OK, totalSalesProductService
+//      .getPercentage(totalValue, partValue));
+//  }
 }

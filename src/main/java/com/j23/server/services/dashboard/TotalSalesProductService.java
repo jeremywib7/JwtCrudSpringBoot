@@ -9,6 +9,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.math.BigDecimal;
+import java.math.RoundingMode;
 import java.util.List;
 import java.util.Optional;
 import java.util.stream.Collectors;
@@ -56,14 +57,18 @@ public class TotalSalesProductService {
     List<TotalSalesProduct> top5Sales = totalSalesProductRepository.findTop5ByTotalProfitIsAfterOrderByTotalProfitDesc(
       new BigDecimal(0));
 
-//    BigDecimal totalProfit = totalSalesProductRepository.sumTotalProfitForCurrentMonth();
+    BigDecimal totalProfit = totalSalesProductRepository.sumTotalProfitForCurrentMonth(timeService.getStartDateTimeOfCurrentMonth(),
+      timeService.getEndDateTimeOfCurrentMonth());
 
-//    top5Sales.stream().map(totalSalesProduct -> {
-//
-//    }).collect(Collectors.toSet());
+    top5Sales.forEach(totalSalesProduct -> {
+      totalSalesProduct.setPercentageProfit(getPercentage(totalProfit, totalSalesProduct.getTotalProfit()));
+    });
 
     return totalSalesProductRepository.findTop5ByTotalProfitIsAfterOrderByTotalProfitDesc(new BigDecimal(0));
   }
 
+  public BigDecimal getPercentage(BigDecimal totalValue, BigDecimal partValue) {
+    return partValue.divide(totalValue, RoundingMode.HALF_UP).multiply(new BigDecimal(100));
+  }
 
 }

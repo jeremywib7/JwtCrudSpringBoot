@@ -37,4 +37,6 @@ public class TotalSalesProduct {
 
   private BigDecimal totalProfit;
 
+  private BigDecimal percentageProfit;
+
 }
