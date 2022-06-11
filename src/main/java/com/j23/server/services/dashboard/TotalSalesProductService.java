@@ -11,6 +11,7 @@ import org.springframework.stereotype.Service;
 import java.math.BigDecimal;
 import java.util.List;
 import java.util.Optional;
+import java.util.stream.Collectors;
 
 @Service
 @Slf4j
@@ -50,6 +51,17 @@ public class TotalSalesProductService {
   }
 
   public List<TotalSalesProduct> viewTop5Sales() {
+
+    // view top 5 sales in current month
+    List<TotalSalesProduct> top5Sales = totalSalesProductRepository.findTop5ByTotalProfitIsAfterOrderByTotalProfitDesc(
+      new BigDecimal(0));
+
+//    BigDecimal totalProfit = totalSalesProductRepository.sumTotalProfitForCurrentMonth();
+
+//    top5Sales.stream().map(totalSalesProduct -> {
+//
+//    }).collect(Collectors.toSet());
+
     return totalSalesProductRepository.findTop5ByTotalProfitIsAfterOrderByTotalProfitDesc(new BigDecimal(0));
   }
 
