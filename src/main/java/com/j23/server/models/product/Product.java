@@ -27,6 +27,7 @@ import java.util.List;
 @Table(name = "product")
 @SQLDelete(sql = "UPDATE product SET deleted = true WHERE id=?")
 @Where(clause = "deleted=false")
+@JsonView(Views.BestSellerOnlyViews.class)
 public class Product implements Serializable {
 
   @Id

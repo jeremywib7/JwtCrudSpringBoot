@@ -1,5 +1,6 @@
 package com.j23.server.services.product;
 
+import com.j23.server.models.primengDropdown.PrimengDropdown;
 import com.j23.server.models.product.Product;
 import com.j23.server.models.product.ProductCategory;
 import com.j23.server.models.product.UnassignedProduct;
@@ -12,6 +13,7 @@ import org.springframework.web.server.ResponseStatusException;
 
 import javax.annotation.PostConstruct;
 import java.time.LocalDateTime;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.UUID;
 
@@ -115,6 +117,21 @@ public class ProductCategoryService {
         });
 
         return productCategoryList;
+    }
+
+    public List<PrimengDropdown> getAllProductCategoryInDropdown() {
+        List<PrimengDropdown> primengDropdowns = new ArrayList<>();
+
+        List<ProductCategory> productCategoryList = productCategoryRepository.findAll();
+        productCategoryList.forEach(productCategory -> {
+            PrimengDropdown primengDropdown = new PrimengDropdown();
+            primengDropdown.setLabel(productCategory.getCategoryName());
+            primengDropdown.setValue(productCategory.getId());
+
+            primengDropdowns.add(primengDropdown);
+        });
+
+        return primengDropdowns;
     }
 
 }

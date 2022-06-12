@@ -62,17 +62,17 @@ public class ProductController {
 
   // set required jwt to false
   // because this for customer
-  @GetMapping("/customer/all/table")
-  public ResponseEntity<Object> getAllProductsForCustomer(
-    @RequestParam(defaultValue = "") String searchKeyword,
-    @RequestParam(defaultValue = "name") String sortedFieldName,
-    @RequestParam(defaultValue = "1") int order,
-    @RequestParam(defaultValue = "0") int page,
-    @RequestParam(defaultValue = "10") int size
-  ) {
-    Page<Product> products = productService.findAllProductForTable(searchKeyword, page, size, sortedFieldName, order);
-    return ResponseHandler.generateResponse("Successfully fetch product in a table!", HttpStatus.OK, products);
-  }
+//  @GetMapping("/customer/all/table")
+//  public ResponseEntity<Object> getAllProductsForCustomer(
+//    @RequestParam(defaultValue = "") String searchKeyword,
+//    @RequestParam(defaultValue = "name") String sortedFieldName,
+//    @RequestParam(defaultValue = "1") int order,
+//    @RequestParam(defaultValue = "0") int page,
+//    @RequestParam(defaultValue = "10") int size
+//  ) {
+//    Page<Product> products = productService.findAllProductForTable(searchKeyword, page, size, sortedFieldName, order);
+//    return ResponseHandler.generateResponse("Successfully fetch product in a table!", HttpStatus.OK, products);
+//  }
 
 
   @PostMapping({"/add"})

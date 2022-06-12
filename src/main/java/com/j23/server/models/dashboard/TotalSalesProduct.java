@@ -1,10 +1,12 @@
 package com.j23.server.models.dashboard;
 
 import com.fasterxml.jackson.annotation.JsonFormat;
+import com.fasterxml.jackson.annotation.JsonView;
 import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
 import com.fasterxml.jackson.databind.annotation.JsonSerialize;
 import com.fasterxml.jackson.datatype.jsr310.deser.LocalDateTimeDeserializer;
 import com.fasterxml.jackson.datatype.jsr310.ser.LocalDateTimeSerializer;
+import com.j23.server.Views;
 import com.j23.server.models.product.Product;
 import lombok.AllArgsConstructor;
 import lombok.Data;
@@ -26,6 +28,7 @@ public class TotalSalesProduct {
   private String id = String.valueOf(UUID.randomUUID());
 
   @OneToOne
+  @JsonView(Views.BestSellerOnlyViews.class)
   private Product productDetail;
 
   @JsonFormat(pattern = "MM/dd/yyyy HH:mm:ss")

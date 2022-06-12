@@ -1,5 +1,6 @@
 package com.j23.server.services.dashboard;
 
+import com.fasterxml.jackson.annotation.JsonIncludeProperties;
 import com.j23.server.models.dashboard.TotalSalesProduct;
 import com.j23.server.models.product.Product;
 import com.j23.server.repos.dashboard.TotalSalesProductRepository;
@@ -65,6 +66,12 @@ public class TotalSalesProductService {
     });
 
     return totalSalesProductRepository.findTop5ByTotalProfitIsAfterOrderByTotalProfitDesc(new BigDecimal(0));
+  }
+
+  public List<TotalSalesProduct> viewTop5SalesOnly() {
+    // view top 5 sales in current month
+    return totalSalesProductRepository.findTop5ByTotalProfitIsAfterOrderByTotalProfitDesc(
+            new BigDecimal(0));
   }
 
   public BigDecimal getPercentage(BigDecimal totalValue, BigDecimal partValue) {

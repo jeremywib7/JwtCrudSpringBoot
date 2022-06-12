@@ -228,28 +228,28 @@ public class ProductService {
 
 
     Product wagyu_steak = new Product();
-    orange_juice.setId("wagyusteak");
-    orange_juice.setName("Orange Juice");
-    orange_juice.setTotalCalories(51L);
-    orange_juice.setDescription("Orange juice made with premium orange fruit");
-    orange_juice.setDiscount(false);
-    orange_juice.setUnitPrice(BigDecimal.valueOf(10000));
-    orange_juice.setDiscountedPrice(BigDecimal.valueOf(10000));
-    orange_juice.setCreatedOn(LocalDateTime.now());
-    orange_juice.setUpdatedOn(null);
-    orange_juice.setCategory(juice);
-    orange_juice.setActive(true);
+    wagyu_steak.setId("wagyusteak");
+    wagyu_steak.setName("Wagyu Steak");
+    wagyu_steak.setTotalCalories(121L);
+    wagyu_steak.setDescription("A wagyu steak made with premium quality");
+    wagyu_steak.setDiscount(false);
+    wagyu_steak.setUnitPrice(BigDecimal.valueOf(500000));
+    wagyu_steak.setDiscountedPrice(BigDecimal.valueOf(500000));
+    wagyu_steak.setCreatedOn(LocalDateTime.now());
+    wagyu_steak.setUpdatedOn(null);
+    wagyu_steak.setCategory(breakfast);
+    wagyu_steak.setActive(true);
 
-    ProductImage orange_juice_0 = new ProductImage();
-    orange_juice_0.setImageName("orange juice_0.jpg");
-    ProductImage orange_juice_1 = new ProductImage();
-    orange_juice_1.setImageName("orange juice_1.jpg");
+    ProductImage wagyusteak_0 = new ProductImage();
+    wagyusteak_0.setImageName("wagyusteak_0.jpg");
+    ProductImage wagyusteak_1 = new ProductImage();
+    wagyusteak_1.setImageName("wagyusteak_1.jpg");
 
-    List<ProductImage> listOrangeJuiceImg = new ArrayList<>();
-    listOrangeJuiceImg.add(orange_juice_0);
-    listOrangeJuiceImg.add(orange_juice_1);
-    orange_juice.setImages(listOrangeJuiceImg);
-    productRepository.save(orange_juice);
+    List<ProductImage> listWagyuSteakImages = new ArrayList<>();
+    listWagyuSteakImages.add(wagyusteak_0);
+    listWagyuSteakImages.add(wagyusteak_1);
+    wagyu_steak.setImages(listWagyuSteakImages);
+    productRepository.save(wagyu_steak);
 
   }
 

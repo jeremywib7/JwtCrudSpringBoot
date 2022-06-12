@@ -10,4 +10,11 @@ public class Views {
 
     }
 
+    // custoemr
+    public interface BestSellerOnlyViews {
+
+    }
+
+
+
 }
