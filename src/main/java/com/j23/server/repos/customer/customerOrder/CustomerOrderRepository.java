@@ -18,6 +18,8 @@ public interface CustomerOrderRepository extends JpaRepository<CustomerOrder, St
 
   Optional<CustomerOrder> findTopByCustomerProfileAndOrderIsActiveTrueOrderByDateTimeCreatedDesc(CustomerProfile customerProfile);
 
+  Optional<CustomerOrder> findTopByCustomerProfileAndOrderIsActiveFalseOrderByDateTimeCreatedDesc(CustomerProfile customerProfile);
+
   Optional<CustomerOrder> findTopByCustomerProfileAndOrderProcessedIsNullOrderByDateTimeCreatedDesc(CustomerProfile customerProfile);
 
   Optional<CustomerOrder> findByCustomerProfileAndOrderIsActiveTrue(CustomerProfile customerProfile);

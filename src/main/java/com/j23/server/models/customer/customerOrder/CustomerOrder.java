@@ -61,6 +61,13 @@ public class CustomerOrder {
   @JsonFormat(pattern = "MM/dd/yyyy HH:mm:ss")
   @JsonDeserialize(using = LocalDateTimeDeserializer.class)
   @JsonSerialize(using = LocalDateTimeSerializer.class)
+  @Column(name = "order_cancelled")
+  @JsonView(Views.OrderDateOnlyViews.class)
+  private LocalDateTime orderCancelled;
+
+  @JsonFormat(pattern = "MM/dd/yyyy HH:mm:ss")
+  @JsonDeserialize(using = LocalDateTimeDeserializer.class)
+  @JsonSerialize(using = LocalDateTimeSerializer.class)
   @UpdateTimestamp
   private LocalDateTime dateTimeUpdated;
 
