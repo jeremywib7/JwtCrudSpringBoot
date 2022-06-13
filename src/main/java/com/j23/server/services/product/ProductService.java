@@ -307,7 +307,13 @@ public class ProductService {
   }
 
   public Page<Product> findAllProductForTable(String searchKeyword, int page, int size, String sortedFieldName
-    , int order) {
+    , int order, String categoryName) {
+    System.out.println("The cat : " + categoryName);
+    if (categoryName != null) {
+      ProductCategory productCategory = productCategoryRepository.findByCategoryName(categoryName);
+      return productRepository.findAllByCategory(productCategory, PageRequest.of(page, size,
+        Sort.by(order == 1 ? Sort.Direction.ASC : Sort.Direction.DESC, sortedFieldName)));
+    }
 
     if (size < 5 || size > 50) {
       size = 10;

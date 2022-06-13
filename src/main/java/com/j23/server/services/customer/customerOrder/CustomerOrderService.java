@@ -210,6 +210,10 @@ public class CustomerOrderService {
 
   }
 
+  public void cancelOrder() {
+
+  }
+
   public long calculateEstimatedTime(int estHour, int estMinute, int estSecond) {
     // calculate estimated time
     int hourToSecond = (estHour * 60) * 60;

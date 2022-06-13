@@ -15,123 +15,126 @@ import javax.annotation.PostConstruct;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Objects;
 import java.util.UUID;
+import java.util.stream.IntStream;
 
 @Service
 public class ProductCategoryService {
 
-    @Autowired
-    private ProductCategoryRepository productCategoryRepository;
+  @Autowired
+  private ProductCategoryRepository productCategoryRepository;
 
-    @Autowired
-    private ProductRepository productRepository;
+  @Autowired
+  private ProductRepository productRepository;
 
-    public void addUnassignedCategory() {
-        ProductCategory productCategory = new ProductCategory();
-        productCategory.setId("akisjasas-asajek-ajsoaks-ejakjenafe");
-        productCategory.setCategoryName("Unassigned");
-        productCategory.setCreatedOn(LocalDateTime.now());
-        productCategory.setUpdatedOn(LocalDateTime.now());
-        productCategoryRepository.save(productCategory);
+  public void addUnassignedCategory() {
+    ProductCategory productCategory = new ProductCategory();
+    productCategory.setId("akisjasas-asajek-ajsoaks-ejakjenafe");
+    productCategory.setCategoryName("Unassigned");
+    productCategory.setCreatedOn(LocalDateTime.now());
+    productCategory.setUpdatedOn(LocalDateTime.now());
+    productCategoryRepository.save(productCategory);
+  }
+
+  public ProductCategory addProductCategory(ProductCategory productCategory) {
+
+    if (productCategoryRepository.existsByCategoryName(productCategory.getCategoryName())) {
+      throw new ResponseStatusException(HttpStatus.CONFLICT, "Product category already exists");
     }
 
-    public ProductCategory addProductCategory(ProductCategory productCategory) {
+    productCategory.setId(String.valueOf(UUID.randomUUID()));
 
-        if (productCategoryRepository.existsByCategoryName(productCategory.getCategoryName())) {
-            throw new ResponseStatusException(HttpStatus.CONFLICT, "Product category already exists");
-        }
+    LocalDateTime localDateTime = LocalDateTime.now();
+    productCategory.setCreatedOn(LocalDateTime.from(localDateTime));
 
-        productCategory.setId(String.valueOf(UUID.randomUUID()));
+    productCategory.setTotalProduct(0);
 
-        LocalDateTime localDateTime = LocalDateTime.now();
-        productCategory.setCreatedOn(LocalDateTime.from(localDateTime));
+    return productCategoryRepository.save(productCategory);
+  }
 
-        productCategory.setTotalProduct(0);
+  public ProductCategory updateProductCategory(ProductCategory productCategory) {
 
-        return productCategoryRepository.save(productCategory);
+    if (productCategoryRepository.existsByCategoryNameAndIdIsNotLike(productCategory.getCategoryName(),
+      productCategory.getId())) {
+      throw new ResponseStatusException(HttpStatus.CONFLICT, "Product category already exists");
     }
 
-    public ProductCategory updateProductCategory(ProductCategory productCategory) {
+    productCategory.setUpdatedOn(LocalDateTime.from(LocalDateTime.now()));
+    productCategory.setTotalProduct(productRepository.countAllByCategoryId(productCategory.getId()));
+    productCategory.setProducts(getAllProductOnCategory(productCategory.getId()));
 
-        if (productCategoryRepository.existsByCategoryNameAndIdIsNotLike(productCategory.getCategoryName(),
-                productCategory.getId())) {
-            throw new ResponseStatusException(HttpStatus.CONFLICT, "Product category already exists");
-        }
+    productCategoryRepository.save(productCategory);
 
-        productCategory.setUpdatedOn(LocalDateTime.from(LocalDateTime.now()));
-        productCategory.setTotalProduct(productRepository.countAllByCategoryId(productCategory.getId()));
-        productCategory.setProducts(getAllProductOnCategory(productCategory.getId()));
+    return productCategory;
+  }
 
-        productCategoryRepository.save(productCategory);
+  public List<ProductCategory> updateUnassignedProductCategory(List<UnassignedProduct> unassignedProducts) {
+    unassignedProducts.forEach(unassignedProduct -> {
+      ProductCategory productCategory = productCategoryRepository.findProductCategoryById(unassignedProduct.getCategoryId());
+      productCategory.setUpdatedOn(LocalDateTime.now());
 
-        return productCategory;
+      Product product = productRepository.findProductById(unassignedProduct.getProductId());
+      product.setCategory(productCategory);
+
+      productRepository.save(product);
+    });
+
+    return findAllProductCategory();
+  }
+
+  public void deleteProductCategory(List<String> productIdList, String productCategoryId) {
+    ProductCategory productCategory = productCategoryRepository.findProductCategoryById("akisjasas-asajek-ajsoaks-ejakjenafe");
+
+    // set product id category to unassigned before deleting category
+    if (productIdList != null) {
+      productIdList.forEach(value -> {
+        Product product = productRepository.findProductById(value);
+        product.setCategory(productCategory);
+        productRepository.save(product);
+      });
     }
 
-    public List<ProductCategory> updateUnassignedProductCategory(List<UnassignedProduct> unassignedProducts) {
-        unassignedProducts.forEach(unassignedProduct -> {
-            ProductCategory productCategory = productCategoryRepository.findProductCategoryById(unassignedProduct.getCategoryId());
-            productCategory.setUpdatedOn(LocalDateTime.now());
+    // delete product category
+    productCategoryRepository.deleteProductCategoryById(productCategoryId);
 
-            Product product = productRepository.findProductById(unassignedProduct.getProductId());
-            product.setCategory(productCategory);
+  }
 
-            productRepository.save(product);
-        });
+  public Integer getTotalProductOnCategory(String categoryId) {
+    return productRepository.countAllByCategoryId(categoryId);
+  }
 
-        return findAllProductCategory();
-    }
+  public List<Product> getAllProductOnCategory(String categoryId) {
+    return productRepository.findAllByCategoryId(categoryId);
+  }
 
-    public void deleteProductCategory(List<String> productIdList, String productCategoryId) {
-        ProductCategory productCategory = productCategoryRepository.findProductCategoryById("akisjasas-asajek-ajsoaks-ejakjenafe");
+  public List<ProductCategory> findAllProductCategory() {
+    List<ProductCategory> productCategoryList = productCategoryRepository.findAll();
 
-        // set product id category to unassigned before deleting category
-        if (productIdList != null) {
-            productIdList.forEach(value -> {
-                Product product = productRepository.findProductById(value);
-                product.setCategory(productCategory);
-                productRepository.save(product);
-            });
-        }
+    productCategoryList.forEach(productCategory -> {
+      productCategory.setTotalProduct(getTotalProductOnCategory(productCategory.getId()));
+      productCategory.setProducts(getAllProductOnCategory(productCategory.getId()));
 
-        // delete product category
-        productCategoryRepository.deleteProductCategoryById(productCategoryId);
+      productCategoryRepository.save(productCategory);
+    });
 
-    }
+    return productCategoryList;
+  }
 
-    public Integer getTotalProductOnCategory(String categoryId) {
-        return productRepository.countAllByCategoryId(categoryId);
-    }
+  public List<PrimengDropdown> getAllProductCategoryInDropdown() {
+    List<PrimengDropdown> primengDropdowns = new ArrayList<>();
 
-    public List<Product> getAllProductOnCategory(String categoryId) {
-        return productRepository.findAllByCategoryId(categoryId);
-    }
+    List<ProductCategory> productCategoryList = productCategoryRepository.findAllByCategoryNameIsNot("Unassigned");
 
-    public List<ProductCategory> findAllProductCategory() {
-        List<ProductCategory> productCategoryList = productCategoryRepository.findAll();
+    productCategoryList.forEach(productCategory -> {
+      PrimengDropdown primengDropdown = new PrimengDropdown();
+      primengDropdown.setLabel(productCategory.getCategoryName());
+      primengDropdown.setValue(productCategory.getId());
 
-        productCategoryList.forEach(productCategory -> {
-            productCategory.setTotalProduct(getTotalProductOnCategory(productCategory.getId()));
-            productCategory.setProducts(getAllProductOnCategory(productCategory.getId()));
+      primengDropdowns.add(primengDropdown);
+    });
 
-            productCategoryRepository.save(productCategory);
-        });
-
-        return productCategoryList;
-    }
-
-    public List<PrimengDropdown> getAllProductCategoryInDropdown() {
-        List<PrimengDropdown> primengDropdowns = new ArrayList<>();
-
-        List<ProductCategory> productCategoryList = productCategoryRepository.findAll();
-        productCategoryList.forEach(productCategory -> {
-            PrimengDropdown primengDropdown = new PrimengDropdown();
-            primengDropdown.setLabel(productCategory.getCategoryName());
-            primengDropdown.setValue(productCategory.getId());
-
-            primengDropdowns.add(primengDropdown);
-        });
-
-        return primengDropdowns;
-    }
+    return primengDropdowns;
+  }
 
 }

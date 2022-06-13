@@ -13,46 +13,46 @@ import org.springframework.web.bind.annotation.*;
 @RequestMapping("/customer")
 public class CustomerProfileController {
 
-    @Autowired
-    private CustomerProfileService customerProfileService;
+  @Autowired
+  private CustomerProfileService customerProfileService;
 
-    @GetMapping({"/profile/{customerId}"})
-    private ResponseEntity<Object> getCustomerById(@PathVariable("customerId") String customerId) {
-        CustomerProfile customerProfile = customerProfileService.getCustomerById(customerId);
+  @GetMapping({"/profile/{customerId}"})
+  private ResponseEntity<Object> getCustomerById(@PathVariable("customerId") String customerId) {
+    CustomerProfile customerProfile = customerProfileService.getCustomerById(customerId);
 
-        return ResponseHandler.generateResponse("Success fetch customer profile!", HttpStatus.OK,
-                customerProfile);
-    }
+    return ResponseHandler.generateResponse("Success fetch customer profile!", HttpStatus.OK,
+      customerProfile);
+  }
 
-    @GetMapping({"/profile/username/{username}"})
-    private ResponseEntity<Object> getCustomerByUsername(@PathVariable("username") String username) {
-        CustomerProfile customerProfile = customerProfileService.getCustomerByUsername(username);
+  @GetMapping({"/profile/username/{username}"})
+  private ResponseEntity<Object> getCustomerByUsername(@PathVariable("username") String username) {
+    CustomerProfile customerProfile = customerProfileService.getCustomerByUsername(username);
 
-        return ResponseHandler.generateResponse("Success fetch customer profile!", HttpStatus.OK,
-                customerProfile);
-    }
+    return ResponseHandler.generateResponse("Success fetch customer profile!", HttpStatus.OK,
+      customerProfile);
+  }
 
-    @PostMapping({"/register"})
-    private ResponseEntity<Object> registerCustomer(@RequestBody CustomerProfile customerProfile) {
-        CustomerCart result = customerProfileService.registerCustomer(customerProfile);
+  @PostMapping({"/register"})
+  private ResponseEntity<Object> registerCustomer(@RequestBody CustomerProfile customerProfile) {
+    CustomerCart result = customerProfileService.registerCustomer(customerProfile);
 
-        return ResponseHandler.generateResponse("Register success!", HttpStatus.OK, result);
-    }
+    return ResponseHandler.generateResponse("Register success!", HttpStatus.OK, result);
+  }
 
-    @PostMapping({"/update/profile"})
-    private ResponseEntity<Object> saveCustomerProfile(@RequestBody CustomerProfile customerProfile) {
-        CustomerProfile result = customerProfileService.saveCustomerProfile(customerProfile);
+  @PostMapping({"/update/profile"})
+  private ResponseEntity<Object> saveCustomerProfile(@RequestBody CustomerProfile customerProfile) {
+    CustomerProfile result = customerProfileService.saveCustomerProfile(customerProfile);
 
-        return ResponseHandler.generateResponse("Update profile success!", HttpStatus.OK, result);
-    }
+    return ResponseHandler.generateResponse("Update profile success!", HttpStatus.OK, result);
+  }
 
-    @PutMapping({"/update/messaging-token"})
-    private ResponseEntity<Object> updateCustomerMessagingToken(
-            @RequestParam String customerId,
-            @RequestParam String messagingToken) {
-        customerProfileService.updateMessagingToken(messagingToken, customerId);
+  @PutMapping({"/update/messaging-token"})
+  private ResponseEntity<Object> updateCustomerMessagingToken(
+    @RequestParam String customerId,
+    @RequestParam String messagingToken) {
+    customerProfileService.updateMessagingToken(messagingToken, customerId);
 
-        return ResponseHandler.generateResponse("Customer messaging token has been updated!", HttpStatus.OK,
-                null);
-    }
+    return ResponseHandler.generateResponse("Customer messaging token has been updated!", HttpStatus.OK,
+      null);
+  }
 }

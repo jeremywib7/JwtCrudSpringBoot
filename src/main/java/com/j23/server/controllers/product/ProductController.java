@@ -56,7 +56,7 @@ public class ProductController {
     @RequestParam(defaultValue = "0") int page,
     @RequestParam(defaultValue = "10") int size
   ) {
-    Page<Product> products = productService.findAllProductForTable(searchKeyword, page, size, sortedFieldName, order);
+    Page<Product> products = productService.findAllProductForTable(searchKeyword, page, size, sortedFieldName, order, null);
     return ResponseHandler.generateResponse("Successfully fetch product in a table!", HttpStatus.OK, products);
   }
 

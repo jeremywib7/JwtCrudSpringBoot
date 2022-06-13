@@ -15,6 +15,10 @@ public interface ProductCategoryRepository extends JpaRepository<ProductCategory
 
     ProductCategory findProductCategoryById(String id);
 
+    List<ProductCategory> findAllByCategoryNameIsNot(String categoryName);
+
+    ProductCategory findByCategoryName(String categoryName);
+
     boolean existsByCategoryName(String categoryName);
 
     //    for product category update modal
