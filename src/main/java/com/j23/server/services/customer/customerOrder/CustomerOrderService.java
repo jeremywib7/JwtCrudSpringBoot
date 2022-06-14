@@ -107,28 +107,29 @@ public class CustomerOrderService {
 
   }
 
-  public Page<CustomerOrder> viewCustomerOrdersBetweenDateByCustomerId(String customerId, int page, int size) {
+  public Page<CustomerOrder> viewCustomerOrdersBetweenDateByCustomerId(String customerId, int page, int size, LocalDate dateFrom,
+                                                                       LocalDate dateTill) {
     CustomerProfile customerProfile = customerProfileRepository.findById(customerId).orElseThrow(() ->
       new ResponseStatusException(HttpStatus.NOT_FOUND, "Customer does not exists !"));
+
+    LocalDateTime localDateTimeFrom;
+    LocalDateTime localDateTimeTill;
+
+    if (dateFrom == null) {
+      localDateTimeFrom = timeService.getStartDateTimeOfCurrentMonth();
+    } else {
+      localDateTimeFrom = LocalDateTime.of(dateFrom, LocalTime.MIDNIGHT);
+    }
+
+    if (dateTill == null) {
+      localDateTimeTill = timeService.getEndDateTimeOfCurrentMonth();
+    } else {
+      localDateTimeTill = LocalDateTime.of(dateTill, LocalTime.MAX);
+    }
 
     return customerOrderRepository.findCustomerOrdersByCustomerProfileAndDateTimeCreatedBetweenOrderByDateTimeCreatedDesc(
-      customerProfile, timeService.getStartDateTimeOfCurrentMonth(), timeService.getEndDateTimeOfCurrentMonth(),
+      customerProfile, localDateTimeFrom, localDateTimeTill,
       PageRequest.of(page, size));
-  }
-
-//  public Page<CustomerOrder> viewCustomerOrdersByCustomerId(String customerId) {
-//    CustomerProfile customerProfile = customerProfileRepository.findById(customerId).orElseThrow(() ->
-//      new ResponseStatusException(HttpStatus.NOT_FOUND, "Customer does not exists !"));
-//
-//    return customerOrderRepository.findCustomerOrdersByCustomerProfileOrderByDateTimeCreatedDesc(customerProfile);
-//  }
-
-  public List<CustomerOrder> viewCustomerOrdersByDateFilterAndCustomerId(String customerId, Pageable pageable) {
-
-    CustomerProfile customerProfile = customerProfileRepository.findById(customerId).orElseThrow(() ->
-      new ResponseStatusException(HttpStatus.NOT_FOUND, "Customer does not exists !"));
-
-    return customerOrderRepository.findAllByCustomerProfileOrderByDateTimeCreatedDesc(customerProfile);
   }
 
   public CustomerOrder viewCustomerOrderByCustomerUsername(String username) {
