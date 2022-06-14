@@ -4,6 +4,8 @@ import com.j23.server.configuration.ResponseHandler;
 import com.j23.server.models.customer.customerOrder.CustomerOrder;
 import com.j23.server.services.customer.customerOrder.CustomerOrderService;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -24,11 +26,20 @@ public class CustomerOrderController {
     return ResponseHandler.generateResponse("Successfully fetch product!", HttpStatus.OK, customerOrder);
   }
 
-  @GetMapping("/view")
-  private ResponseEntity<Object> viewCustomerOrdersByCustomerId(@RequestParam String customerId) {
-    List<CustomerOrder> customerOrders = customerOrderService.viewCustomerOrdersByCustomerId(customerId);
+  @PutMapping("/cancel")
+  private ResponseEntity<Object> cancelOrder(@RequestParam String customerId) {
+    customerOrderService.cancelOrder(customerId);
+    return ResponseHandler.generateResponse("order successfully cancelled!", HttpStatus.OK, null);
+  }
 
-    return ResponseHandler.generateResponse("Successfully view customer orders!", HttpStatus.OK, customerOrders);
+  @GetMapping("/view")
+  private ResponseEntity<Object> viewCustomerOrdersBetweenDateByCustomerId(
+    @RequestParam String customerId,
+    @RequestParam(defaultValue = "0") int page,
+    @RequestParam(defaultValue = "5") int size
+    ) {
+    return ResponseHandler.generateResponse("Successfully view customer orders!", HttpStatus.OK,
+      customerOrderService.viewCustomerOrdersBetweenDateByCustomerId(customerId, page, size));
   }
 
   @GetMapping("/view/active")
@@ -54,7 +65,7 @@ public class CustomerOrderController {
   @PostMapping("/pay")
   private ResponseEntity<Object> confirmPayOrder(
     @RequestBody CustomerOrder customerOrder
-    ) {
+  ) {
     CustomerOrder response = customerOrderService.confirmPayOrder(customerOrder);
     return ResponseHandler.generateResponse("Successfully confirm order as payed!", HttpStatus.OK, response);
   }

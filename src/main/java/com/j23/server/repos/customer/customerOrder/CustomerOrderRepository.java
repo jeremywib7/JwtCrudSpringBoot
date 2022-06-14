@@ -2,7 +2,8 @@ package com.j23.server.repos.customer.customerOrder;
 
 import com.j23.server.models.customer.CustomerProfile;
 import com.j23.server.models.customer.customerOrder.CustomerOrder;
-import com.j23.server.models.dashboard.TotalSalesProduct;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
@@ -18,13 +19,14 @@ public interface CustomerOrderRepository extends JpaRepository<CustomerOrder, St
 
   Optional<CustomerOrder> findTopByCustomerProfileAndOrderIsActiveTrueOrderByDateTimeCreatedDesc(CustomerProfile customerProfile);
 
-  Optional<CustomerOrder> findTopByCustomerProfileAndOrderIsActiveFalseOrderByDateTimeCreatedDesc(CustomerProfile customerProfile);
-
   Optional<CustomerOrder> findTopByCustomerProfileAndOrderProcessedIsNullOrderByDateTimeCreatedDesc(CustomerProfile customerProfile);
 
   Optional<CustomerOrder> findByCustomerProfileAndOrderIsActiveTrue(CustomerProfile customerProfile);
 
   List<CustomerOrder> findAllByCustomerProfileOrderByDateTimeCreatedDesc(CustomerProfile customerProfile);
+
+  Page<CustomerOrder> findCustomerOrdersByCustomerProfileAndDateTimeCreatedBetweenOrderByDateTimeCreatedDesc(
+    CustomerProfile customerProfile, LocalDateTime dateFrom, LocalDateTime dateEnd, Pageable pageable);
 
   Optional<CustomerOrder> findFirstByOrderProcessedIsNotNullAndDateTimeCreatedBetweenOrderByDateTimeCreatedDesc(
     LocalDateTime dateStart, LocalDateTime dateEnd);
