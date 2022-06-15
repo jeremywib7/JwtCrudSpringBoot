@@ -23,7 +23,7 @@ public class TimeService {
   }
 
   public LocalDateTime getPrevious3Hours() {
-    return LocalDateTime.of(LocalDate.now(), LocalTime.of(LocalTime.now().getHour() - 3, LocalTime.now().getMinute()));
+    return LocalDateTime.of(LocalDate.now(), LocalTime.of(LocalTime.now().minusHours(3).getHour(), LocalTime.now().getMinute()));
   }
 
   public LocalDateTime getCurrentHour() {
