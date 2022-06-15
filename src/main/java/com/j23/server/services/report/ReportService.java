@@ -65,7 +65,6 @@ public class ReportService {
                                              String path) throws Exception {
 
     InputStream in = getClass().getResourceAsStream(path);
-
     JasperReport jasperReport = JasperCompileManager.compileReport(in);
 
     HashMap<String, Object> map = new HashMap<>();
@@ -108,12 +107,8 @@ public class ReportService {
   // list of successful customer order from date range
   // default 1 month
   public List<CustomerOrder> loadDateRangeSaleReportData(LocalDateTime dateFrom, LocalDateTime dateTill) {
-
     // if null set 1 month range
     HashMap<String, LocalDateTime> checkMap = checkDateRangeNotNull(dateFrom, dateTill);
-    System.out.println("The from : " + checkMap.get("dateFrom"));
-    System.out.println("The till : " + checkMap.get("dateTill"));
-
     return customerOrderRepository.findAllByOrderFinishedIsNotNullAndOrderFinishedBetweenOrderByOrderFinishedDesc(
       checkMap.get("dateFrom"), checkMap.get("dateTill")
     );
