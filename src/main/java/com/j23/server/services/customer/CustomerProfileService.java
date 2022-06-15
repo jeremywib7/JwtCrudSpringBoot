@@ -12,7 +12,7 @@ import com.j23.server.models.customer.CustomerProfile;
 import com.j23.server.models.customer.customerCart.CustomerCart;
 import com.j23.server.repos.customer.CustomerProfileRepo;
 import com.j23.server.services.customer.customerCart.CustomerCartService;
-import com.j23.server.services.time.TimeService;
+import com.j23.server.util.FooProperties;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
@@ -32,11 +32,14 @@ public class CustomerProfileService {
   @Autowired
   private CustomerCartService customerCartService;
 
-  @Autowired
-  private TimeService timeService;
+  private final FooProperties fooProperties;
+
+  public CustomerProfileService(FooProperties fooProperties) {
+    this.fooProperties = fooProperties;
+  }
 
   public CustomerCart registerCustomer(CustomerProfile customerProfile) {
-
+//    String ip = this.fooProperties.getIP();
     if (customerProfileRepo.existsByUsername(customerProfile.getUsername())) {
       throw new ResponseStatusException(HttpStatus.CONFLICT, "Username already exists !");
     }

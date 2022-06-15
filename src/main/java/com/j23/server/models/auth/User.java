@@ -32,8 +32,7 @@ public class User {
     private boolean active;
     private String userPassword;
     private String gender;
-
-    @Column(unique=true)
+//    @Column(unique=true)
     private String email;
 
     @JsonFormat(pattern = "dd/MM/yyyy")
