@@ -2,6 +2,9 @@ package com.j23.server.services.customer.customerOrder;
 
 import com.google.api.core.ApiFuture;
 import com.google.cloud.firestore.*;
+import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.auth.FirebaseAuthException;
+import com.google.firebase.auth.UserRecord;
 import com.google.firebase.cloud.FirestoreClient;
 import com.j23.server.models.customer.customerCart.CustomerCart;
 import com.j23.server.models.customer.CustomerProfile;
@@ -58,6 +61,7 @@ public class CustomerOrderService {
   @Autowired
   private TimeService timeService;
 
+
   public CustomerOrder addOrder(String customerId) {
 
     // get customer cart info
@@ -77,7 +81,6 @@ public class CustomerOrderService {
     // set in order product list
     customerCart.getCartOrderedProduct().forEach(orderedProduct -> {
       HistoryProductOrder historyProductOrder = new HistoryProductOrder();
-      historyProductOrder.setId(String.valueOf(UUID.randomUUID()));
       historyProductOrder.setProduct(orderedProduct.getProduct());
       historyProductOrder.setName(orderedProduct.getProduct().getName());
       historyProductOrder.setQuantity(orderedProduct.getQuantity());

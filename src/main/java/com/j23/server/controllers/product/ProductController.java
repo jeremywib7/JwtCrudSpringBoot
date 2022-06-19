@@ -1,6 +1,7 @@
 package com.j23.server.controllers.product;
 
 import com.fasterxml.jackson.annotation.JsonView;
+import com.google.firebase.auth.FirebaseAuthException;
 import com.j23.server.configuration.ResponseHandler;
 import com.j23.server.models.product.Product;
 import com.j23.server.models.product.UnassignedProduct;
@@ -25,8 +26,7 @@ public class ProductController {
   private ProductService productService;
 
   @PostConstruct
-  public void onInit() {
-
+  public void onInit() throws FirebaseAuthException {
     productService.createTestProduct();
   }
 

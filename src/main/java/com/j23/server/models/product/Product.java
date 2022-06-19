@@ -72,7 +72,7 @@ public class Product implements Serializable {
 //  @JsonIgnore
   private boolean deleted = Boolean.FALSE;
 
-  @OneToMany(cascade = CascadeType.ALL, orphanRemoval = true)
+  @OneToMany(cascade = CascadeType.ALL, orphanRemoval = true, fetch = FetchType.EAGER)
   @JoinColumn(name = "product_id")
   private List<ProductImage> images;
 

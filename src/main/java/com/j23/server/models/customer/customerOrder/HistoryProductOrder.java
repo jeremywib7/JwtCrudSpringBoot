@@ -8,6 +8,7 @@ import lombok.ToString;
 
 import javax.persistence.*;
 import java.math.BigDecimal;
+import java.util.UUID;
 
 @Entity
 @Data
@@ -17,7 +18,7 @@ import java.math.BigDecimal;
 public class HistoryProductOrder {
 
   @Id
-  private String id;
+  private String id = String.valueOf(UUID.randomUUID());
 
   // to show if product changed
   // so product can be tracked
