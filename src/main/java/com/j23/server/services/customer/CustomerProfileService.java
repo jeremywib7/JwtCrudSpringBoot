@@ -44,13 +44,13 @@ public class CustomerProfileService {
       throw new ResponseStatusException(HttpStatus.CONFLICT, "Username already exists !");
     }
 
-    // save user auth in firebase
-    UserRecord.CreateRequest createRequest = new UserRecord.CreateRequest();
-    createRequest.setEmail(customerProfile.getEmail());
-    createRequest.setDisplayName(customerProfile.getUsername());
-    createRequest.setPassword(customerProfile.getPassword());
-
     try {
+      // save user auth in firebase
+      UserRecord.CreateRequest createRequest = new UserRecord.CreateRequest();
+      createRequest.setEmail(customerProfile.getEmail());
+      createRequest.setDisplayName(customerProfile.getUsername());
+      createRequest.setPassword(customerProfile.getPassword());
+
       UserRecord userRecord = FirebaseAuth.getInstance().createUser(createRequest);
       // get uid from firebase and set in user record
       customerProfile.setId(userRecord.getUid());
