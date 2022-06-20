@@ -52,16 +52,14 @@ public class CustomerProfileService {
 
     try {
       UserRecord userRecord = FirebaseAuth.getInstance().createUser(createRequest);
-
       // get uid from firebase and set in user record
       customerProfile.setId(userRecord.getUid());
+      return customerCartService.createCart(customerProfileRepo.save(customerProfile));
+
     } catch (FirebaseAuthException e) {
       log.error("Firebase auth exception" + e.getAuthErrorCode() + "code for username" + customerProfile.getUsername());
       throw new ResponseStatusException(HttpStatus.BAD_REQUEST, e.getMessage());
     }
-
-    return customerCartService.createCart(customerProfileRepo.save(customerProfile));
-
   }
 
   public CustomerProfile getCustomerById(String customerId) {
