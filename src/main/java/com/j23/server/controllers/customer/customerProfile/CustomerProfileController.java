@@ -1,5 +1,6 @@
 package com.j23.server.controllers.customer.customerProfile;
 
+import com.google.firebase.auth.FirebaseAuthException;
 import com.j23.server.configuration.ResponseHandler;
 import com.j23.server.models.customer.CustomerProfile;
 import com.j23.server.models.customer.customerCart.CustomerCart;
@@ -33,7 +34,7 @@ public class CustomerProfileController {
   }
 
   @PostMapping({"/register"})
-  private ResponseEntity<Object> registerCustomer(@RequestBody CustomerProfile customerProfile) {
+  private ResponseEntity<Object> registerCustomer(@RequestBody CustomerProfile customerProfile) throws FirebaseAuthException {
     CustomerCart result = customerProfileService.registerCustomer(customerProfile);
 
     return ResponseHandler.generateResponse("Register success!", HttpStatus.OK, result);

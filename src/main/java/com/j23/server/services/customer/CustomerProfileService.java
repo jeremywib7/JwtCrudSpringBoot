@@ -38,28 +38,30 @@ public class CustomerProfileService {
     this.fooProperties = fooProperties;
   }
 
-  public CustomerCart registerCustomer(CustomerProfile customerProfile) {
+  public CustomerCart registerCustomer(CustomerProfile customerProfile) throws FirebaseAuthException {
 //    String ip = this.fooProperties.getIP();
     if (customerProfileRepo.existsByUsername(customerProfile.getUsername())) {
       throw new ResponseStatusException(HttpStatus.CONFLICT, "Username already exists !");
     }
 
-    try {
-      // save user auth in firebase
-      UserRecord.CreateRequest createRequest = new UserRecord.CreateRequest();
-      createRequest.setEmail(customerProfile.getEmail());
-      createRequest.setDisplayName(customerProfile.getUsername());
-      createRequest.setPassword(customerProfile.getPassword());
+    // save user auth in firebase
+    UserRecord.CreateRequest createRequest = new UserRecord.CreateRequest();
+    createRequest.setEmail(customerProfile.getEmail());
+    createRequest.setDisplayName(customerProfile.getUsername());
+    createRequest.setPassword(customerProfile.getPassword());
 
-      UserRecord userRecord = FirebaseAuth.getInstance().createUser(createRequest);
-      // get uid from firebase and set in user record
-      customerProfile.setId(userRecord.getUid());
-      return customerCartService.createCart(customerProfileRepo.save(customerProfile));
+    UserRecord userRecord = FirebaseAuth.getInstance().createUser(createRequest);
+    // get uid from firebase and set in user record
+    customerProfile.setId(userRecord.getUid());
+    return customerCartService.createCart(customerProfileRepo.save(customerProfile));
 
-    } catch (FirebaseAuthException e) {
-      log.error("Firebase auth exception" + e.getAuthErrorCode() + "code for username" + customerProfile.getUsername());
-      throw new ResponseStatusException(HttpStatus.FORBIDDEN, e.getMessage());
-    }
+//    try {
+//
+//
+//    } catch (Exception e) {
+//      log.error("Firebase auth exception" + e.getMessage() + "code for username" + customerProfile.getUsername());
+//      throw new ResponseStatusException(HttpStatus.FORBIDDEN, e.getMessage());
+//    }
   }
 
   public CustomerProfile getCustomerById(String customerId) {
