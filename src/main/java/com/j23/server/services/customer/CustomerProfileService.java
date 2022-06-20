@@ -40,9 +40,9 @@ public class CustomerProfileService {
 
   public CustomerCart registerCustomer(CustomerProfile customerProfile) {
 //    String ip = this.fooProperties.getIP();
-    if (customerProfileRepo.existsByUsername(customerProfile.getUsername())) {
-      throw new ResponseStatusException(HttpStatus.CONFLICT, "Username already exists !");
-    }
+//    if (customerProfileRepo.existsByUsername(customerProfile.getUsername())) {
+//      throw new ResponseStatusException(HttpStatus.CONFLICT, "Username already exists !");
+//    }
 
     try {
       // save user auth in firebase
