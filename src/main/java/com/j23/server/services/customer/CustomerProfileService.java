@@ -58,7 +58,7 @@ public class CustomerProfileService {
 
     } catch (FirebaseAuthException e) {
       log.error("Firebase auth exception" + e.getAuthErrorCode() + "code for username" + customerProfile.getUsername());
-      throw new ResponseStatusException(HttpStatus.BAD_REQUEST, e.getMessage());
+      throw new ResponseStatusException(HttpStatus.FORBIDDEN, e.getMessage());
     }
   }
 
