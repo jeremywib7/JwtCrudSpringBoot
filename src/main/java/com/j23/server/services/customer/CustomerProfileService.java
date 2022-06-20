@@ -43,7 +43,6 @@ public class CustomerProfileService {
     if (customerProfileRepo.existsByUsername(customerProfile.getUsername())) {
       throw new ResponseStatusException(HttpStatus.CONFLICT, "Username already exists !");
     }
-
     // save user auth in firebase
     UserRecord.CreateRequest createRequest = new UserRecord.CreateRequest();
     createRequest.setEmail(customerProfile.getEmail());
@@ -54,14 +53,6 @@ public class CustomerProfileService {
     // get uid from firebase and set in user record
     customerProfile.setId(userRecord.getUid());
     return customerCartService.createCart(customerProfileRepo.save(customerProfile));
-
-//    try {
-//
-//
-//    } catch (Exception e) {
-//      log.error("Firebase auth exception" + e.getMessage() + "code for username" + customerProfile.getUsername());
-//      throw new ResponseStatusException(HttpStatus.FORBIDDEN, e.getMessage());
-//    }
   }
 
   public CustomerProfile getCustomerById(String customerId) {
