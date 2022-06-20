@@ -52,9 +52,9 @@ public class CustomerCartController {
     @RequestParam String customerId,
     @RequestParam String productId
   ) {
-    CustomerCart response = customerCartService.removeProductFromCart(customerId, productId);
+    customerCartService.removeProductFromCart(customerId, productId);
     return ResponseHandler.generateResponse("Successfully delete product from cart!", HttpStatus.OK,
-      response);
+      null);
   }
 
 }

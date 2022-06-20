@@ -13,5 +13,4 @@ public interface CustomerCartRepository extends JpaRepository<CustomerCart, Stri
 
   Optional<CustomerCart> findByCustomerProfile(CustomerProfile customerProfile);
 
-
 }

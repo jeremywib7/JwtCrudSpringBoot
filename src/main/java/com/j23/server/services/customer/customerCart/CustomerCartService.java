@@ -70,6 +70,7 @@ public class CustomerCartService {
     cartOrderedProduct.setId(String.valueOf(UUID.randomUUID()));
     cartOrderedProduct.setProduct(product);
     cartOrderedProduct.setQuantity(productQuantity);
+    cartOrderedProduct.setCustomerProfile(customerCart.getCustomerProfile());
     cartOrderedProduct = cartOrderedProductRepo.save(cartOrderedProduct);
 
     customerCart.setUpdatedOn(LocalDateTime.now());
@@ -97,22 +98,7 @@ public class CustomerCartService {
     return customerCartRepository.save(customerCart);
   }
 
-  public CustomerCart removeProductFromCart(String customerId, String productId) {
-    CustomerCart customerCart = getCustomerCart(customerId);
-
-    // find product to be updated
-    CartOrderedProduct cartOrderedProduct = customerCart.getCartOrderedProduct().stream()
-      .filter(orderedProduct1 -> productId.equals(orderedProduct1.getProduct().getId()))
-      .findAny()
-      .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "Product does not exists !"));
-
-    cartOrderedProductRepo.delete(cartOrderedProduct);
-    customerCart.getCartOrderedProduct().remove(cartOrderedProduct);
-
-    return customerCart;
+  public void removeProductFromCart(String customerId, String productId) {
+    cartOrderedProductRepo.deleteByCustomerProfileIdAndProductId(customerId, productId);
   }
-
-  // find index to update to
-//    int index = customerCart.getOrderedProduct().indexOf(orderedProduct);
-//    customerCart.getOrderedProduct().set(index, orderedProduct); // update index
 }

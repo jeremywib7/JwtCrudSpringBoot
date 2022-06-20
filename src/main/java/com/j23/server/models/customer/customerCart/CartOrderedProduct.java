@@ -1,11 +1,13 @@
 package com.j23.server.models.customer.customerCart;
 
 import com.fasterxml.jackson.annotation.JsonFormat;
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonIncludeProperties;
 import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
 import com.fasterxml.jackson.databind.annotation.JsonSerialize;
 import com.fasterxml.jackson.datatype.jsr310.deser.LocalDateTimeDeserializer;
 import com.fasterxml.jackson.datatype.jsr310.ser.LocalDateTimeSerializer;
+import com.j23.server.models.customer.CustomerProfile;
 import com.j23.server.models.product.Product;
 import lombok.*;
 import org.hibernate.annotations.CreationTimestamp;
@@ -29,6 +31,10 @@ public class CartOrderedProduct {
     @JsonIncludeProperties(value = {"id", "name", "unitPrice", "discount", "discountedPrice", "images", "active", "deleted"})
     @OneToOne(targetEntity = Product.class)
     private Product product;
+
+    @JsonIgnore
+    @OneToOne
+    private CustomerProfile customerProfile;
 
     @Min(0)
     @Max(100000)
