@@ -31,8 +31,8 @@ public interface ProductRepository extends JpaRepository<Product, String> {
   Page<Product> findAllByNameContaining(String name, Pageable pageable);
 
   @Query("SELECT p FROM Product p WHERE CONCAT(p.name, ' ', p.active, ' ', " +
-    "p.description, ' ',p.totalCalories,' ', p.unitPrice) LIKE %?1%")
-  Page<Product> findAllBySearchTableAndCategoryIdIsNot(String searchKeyword, Pageable pageable, String isNotThisCategory);
+    "p.description, ' ',p.totalCalories,' ', p.unitPrice) LIKE %?1% AND p.category.categoryName is not LIKE %?1% ")
+  Page<Product> findAllBySearchTableAndCategoryIdIsNotLike(String searchKeyword, Pageable pageable);
 
   Page<Product> findAllByCategory(ProductCategory category, Pageable pageable);
 
