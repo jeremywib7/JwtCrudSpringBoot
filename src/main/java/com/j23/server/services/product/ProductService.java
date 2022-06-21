@@ -325,8 +325,8 @@ public class ProductService {
             size = 10;
         }
 
-        return productRepository.findAllBySearchTableAndCategoryIdIsNotLike(searchKeyword, PageRequest.of(page, size,
-                Sort.by(order == 1 ? Sort.Direction.ASC : Sort.Direction.DESC, sortedFieldName)), "akisjasas-asajek-ajsoaks-ejakjenafe");
+        return productRepository.findAllBySearchTable(searchKeyword, PageRequest.of(page, size,
+                Sort.by(order == 1 ? Sort.Direction.ASC : Sort.Direction.DESC, sortedFieldName)));
     }
 
     public Product findProductById(String id) {

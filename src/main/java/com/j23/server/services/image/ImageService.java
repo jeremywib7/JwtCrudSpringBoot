@@ -86,11 +86,13 @@ public class ImageService {
         assert fullFileName != null;
         String pathOfFile = folderName + folderId + "/" + formattedFileName;
 
+        byte[] imageByteArray = multipartFile.getBytes();
+
         BlobId blobId = BlobId.of(BUCKET, pathOfFile);
         BlobInfo blobInfo = BlobInfo.newBuilder(blobId).setContentType("image/" + getExtension(fullFileName)).build();
 
-        File file = this.convertToFile(multipartFile, formattedFileName);  // to convert multipartFile to File
-        GOOGLE_CLOUD_STORAGE.create(blobInfo, Files.readAllBytes(file.toPath()));     // upload to firebase storage
+//        File file = this.convertToFile(multipartFile, formattedFileName);  // to convert multipartFile to File
+        GOOGLE_CLOUD_STORAGE.create(blobInfo, imageByteArray);     // upload to firebase storage
 
     }
 
