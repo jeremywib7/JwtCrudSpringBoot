@@ -316,7 +316,7 @@ public class ProductService {
             , int order, String categoryName) {
         System.out.println("The cat : " + categoryName);
         if (categoryName != null) {
-            ProductCategory productCategory = productCategoryRepository.findByCategoryName(categoryName);
+            ProductCategory productCategory = productCategoryRepository.findByCategoryNameAndCategoryNameIsNot(categoryName, "Unassigned");
             return productRepository.findAllByCategory(productCategory, PageRequest.of(page, size,
                     Sort.by(order == 1 ? Sort.Direction.ASC : Sort.Direction.DESC, sortedFieldName)));
         }
@@ -325,8 +325,8 @@ public class ProductService {
             size = 10;
         }
 
-        return productRepository.findAllBySearchTable(searchKeyword, PageRequest.of(page, size,
-                Sort.by(order == 1 ? Sort.Direction.ASC : Sort.Direction.DESC, sortedFieldName)));
+        return productRepository.findAllBySearchTableAndCategoryIdIsNot(searchKeyword, PageRequest.of(page, size,
+                Sort.by(order == 1 ? Sort.Direction.ASC : Sort.Direction.DESC, sortedFieldName)), "akisjasas-asajek-ajsoaks-ejakjenafe");
     }
 
     public Product findProductById(String id) {
