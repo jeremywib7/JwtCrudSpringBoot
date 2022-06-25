@@ -51,12 +51,12 @@ public class CustomerOrderController {
     private ResponseEntity<Object> viewActiveCustomerOrder(@RequestParam String customerId) {
         CustomerOrder customerOrders = customerOrderService.viewCurrentCustomerOrder(customerId);
 
-        return ResponseHandler.generateResponse("Successfully view customer order!", HttpStatus.OK, customerOrders);
+        return ResponseHandler.generateResponse("Successfully view active customer order!", HttpStatus.OK, customerOrders);
     }
 
     @GetMapping("/recent")
     private ResponseEntity<Object> viewRecentCustomerOrder() {
-        return ResponseHandler.generateResponse("Successfully view customer order!", HttpStatus.OK,
+        return ResponseHandler.generateResponse("Successfully view recent customer order!", HttpStatus.OK,
                 customerOrderService.viewRecentSales());
     }
 
@@ -64,7 +64,7 @@ public class CustomerOrderController {
     private ResponseEntity<Object> viewCustomerOrdersByCustomerUsername(@PathVariable("username") String username) {
         CustomerOrder customerOrder = customerOrderService.viewCustomerOrderByCustomerUsername(username);
 
-        return ResponseHandler.generateResponse("Successfully view customer orders!", HttpStatus.OK, customerOrder);
+        return ResponseHandler.generateResponse("Successfully view customer orders by username!", HttpStatus.OK, customerOrder);
     }
 
     @PostMapping("/pay")

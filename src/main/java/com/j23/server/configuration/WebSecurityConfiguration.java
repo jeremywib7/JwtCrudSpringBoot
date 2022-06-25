@@ -63,8 +63,8 @@ public class WebSecurityConfiguration extends WebSecurityConfigurerAdapter {
         // for customer
         "/customer/**",
         "/cart/**",
-        "/order",
-        "/order/**",
+        "/order/add",
+//        "/order/**",
         "/productview/**"
       ).permitAll()
       .antMatchers(HttpHeaders.ALLOW).permitAll()

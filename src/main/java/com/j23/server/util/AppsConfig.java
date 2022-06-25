@@ -3,6 +3,8 @@ package com.j23.server.util;
 public final class AppsConfig {
   public static final String appName = "selfservice/";
 
+  public static boolean IS_PRODUCTION = false;
+
   public static final String DEV_FRONT_END_URL = "http://localhost:4201/";
 
   public static final String DEV_SERVER_URL = "http://localhost:8080/";
@@ -25,5 +27,9 @@ public final class AppsConfig {
   // CONFIGURATION
   public static String MAIN_FRONTEND_URL = DEV_FRONT_END_URL;
   public static String MAIN_SERVER_URL = DEV_SERVER_URL;
+
+  // MIDTRANS
+  public static String MIDTRANS_SERVER_KEY = "SB-Mid-server-TTNlxI6thXHFeOeHRyj7dj_B";
+  public static String MIDTRANS_CLIENT_KEY = "SB-Mid-client-DhRq3WG08VqEtWo8";
 
 }
