@@ -42,7 +42,6 @@ public class JwtController {
             map.put("status", "ok");
         }
 
-
         return ResponseHandler.generateResponse("Successfully check JWT Expiry!", HttpStatus.OK, map);
     }
 }

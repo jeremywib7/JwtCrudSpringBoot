@@ -23,62 +23,58 @@ import java.util.Set;
 @Service
 public class JwtService implements UserDetailsService {
 
-    @Autowired
-    private UserRepo userRepo;
+  @Autowired
+  private UserRepo userRepo;
 
-    @Autowired
-    private CustomerProfileRepo customerProfileRepo;
+  @Autowired
+  private CustomerProfileRepo customerProfileRepo;
 
-    @Autowired
-    private JwtUtil jwtUtil;
+  @Autowired
+  private JwtUtil jwtUtil;
 
-    @Autowired
-    private AuthenticationManager authenticationManager;
+  @Autowired
+  private AuthenticationManager authenticationManager;
 
-    //     for internal
-    public JwtResponse createJwtTokenForUser(JwtRequest jwtRequest) {
-        String userName = jwtRequest.getUserName();
-        String userPass = jwtRequest.getUserPassword();
+  //     for internal
+  public JwtResponse createJwtTokenForUser(JwtRequest jwtRequest) {
+    String userName = jwtRequest.getUserName();
+    String userPass = jwtRequest.getUserPassword();
 
-        authenticate(userName, userPass);
+    authenticate(userName, userPass);
 
-        final UserDetails userDetails = loadUserByUsername(userName);
+    final UserDetails userDetails = loadUserByUsername(userName);
 
-        String newGeneratedToken = jwtUtil.generateJwtToken(userDetails);
-        String refreshToken = jwtUtil.generateRefreshToken(userDetails);
+    String newGeneratedToken = jwtUtil.generateJwtToken(userDetails);
+    String refreshToken = jwtUtil.generateRefreshToken(userDetails);
 
-        User user = userRepo.findByUsername(userName);
+    User user = userRepo.findByUsername(userName);
 
-        return new JwtResponse(user, newGeneratedToken, refreshToken);
+    return new JwtResponse(user, newGeneratedToken, refreshToken);
+  }
+
+  @Override
+  public UserDetails loadUserByUsername(String username) {
+    User user = userRepo.findUserByUsername(username).orElseThrow(() ->
+      new ResponseStatusException(HttpStatus.NOT_FOUND, "Username does not exists"));
+
+    return new org.springframework.security.core.userdetails.User(user.getUsername(), user.getUserPassword(),
+      getAuthorities(user));
+  }
+
+  private Set getAuthorities(User user) {
+    Set authorities = new HashSet();
+    authorities.add(new SimpleGrantedAuthority("ROLE_" + user.getRole().getRoleName()));
+
+    return authorities;
+  }
+
+  public void authenticate(String userName, String userPassword) {
+    try {
+      authenticationManager.authenticate(new UsernamePasswordAuthenticationToken(userName, userPassword));
+    } catch (DisabledException e) {
+      throw new ResponseStatusException(HttpStatus.FORBIDDEN, "User is disabled");
+    } catch (BadCredentialsException e) {
+      throw new ResponseStatusException(HttpStatus.UNAUTHORIZED, "Wrong username or password");
     }
-
-
-    @Override
-    public UserDetails loadUserByUsername(String username) throws UsernameNotFoundException {
-        User user = userRepo.findByUsername(username);
-
-        if (user != null) {
-            return new org.springframework.security.core.userdetails.User(user.getUsername(), user.getUserPassword(),
-                    getAuthorities(user));
-        } else {
-            throw new UsernameNotFoundException("Username is not valid");
-        }
-    }
-
-    private Set getAuthorities(User user) {
-        Set authorities = new HashSet();
-        authorities.add(new SimpleGrantedAuthority("ROLE_" + user.getRole().getRoleName()));
-
-        return authorities;
-    }
-
-    private void authenticate(String userName, String userPassword) {
-        try {
-            authenticationManager.authenticate(new UsernamePasswordAuthenticationToken(userName, userPassword));
-        } catch (DisabledException e) {
-            throw new ResponseStatusException(HttpStatus.FORBIDDEN,"User is disabled");
-        } catch (BadCredentialsException e) {
-            throw new ResponseStatusException(HttpStatus.UNAUTHORIZED,"Wrong username or password");
-        }
-    }
+  }
 }

@@ -72,7 +72,7 @@ public class CustomerOrderController {
             @RequestBody CustomerOrder customerOrder
     ) {
         CustomerOrder response = customerOrderService.confirmPayOrder(customerOrder);
-        return ResponseHandler.generateResponse("Successfully confirm order as payed!", HttpStatus.OK, response);
+        return ResponseHandler.generateResponse("Successfully confirm order as paid!", HttpStatus.OK, response);
     }
 
     @PutMapping("/completed")
