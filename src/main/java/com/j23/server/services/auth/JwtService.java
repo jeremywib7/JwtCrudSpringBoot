@@ -74,7 +74,7 @@ public class JwtService implements UserDetailsService {
     } catch (DisabledException e) {
       throw new ResponseStatusException(HttpStatus.FORBIDDEN, "User is disabled");
     } catch (BadCredentialsException e) {
-      throw new ResponseStatusException(HttpStatus.UNAUTHORIZED, "Wrong username or password");
+      throw new ResponseStatusException(HttpStatus.FORBIDDEN,"Wrong username or password");
     }
   }
 }
