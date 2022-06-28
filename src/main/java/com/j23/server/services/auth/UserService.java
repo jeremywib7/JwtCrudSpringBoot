@@ -8,9 +8,11 @@ import com.j23.server.repos.auth.UserRepo;
 import com.j23.server.services.encryptDecrypt.EncryptDecryptService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.rest.webmvc.ResourceNotFoundException;
+import org.springframework.http.HttpStatus;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
+import org.springframework.web.server.ResponseStatusException;
 
 import java.io.IOException;
 import java.time.LocalDate;
@@ -41,6 +43,9 @@ public class UserService {
   }
 
   public User updateUser(User user) {
+    if (userRepo.existsByUsernameAndIdIsNot(user.getUsername(), user.getId())) {
+        throw new ResponseStatusException(HttpStatus.CONFLICT, "Username already taken");
+    }
     return userRepo.save(user);
   }
 

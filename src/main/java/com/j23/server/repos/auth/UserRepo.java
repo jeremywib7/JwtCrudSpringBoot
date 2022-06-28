@@ -10,6 +10,7 @@ import java.util.Optional;
 @Repository
 public interface UserRepo extends JpaRepository<User, String> {
     boolean existsByUsername(String username);
+    boolean existsByUsernameAndIdIsNot(String username, String id);
 
     User findByUsername(String username);
 

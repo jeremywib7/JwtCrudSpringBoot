@@ -40,9 +40,9 @@ public class JwtService implements UserDetailsService {
     String userName = jwtRequest.getUserName();
     String userPass = jwtRequest.getUserPassword();
 
-    authenticate(userName, userPass);
-
     final UserDetails userDetails = loadUserByUsername(userName);
+
+    authenticate(userName, userPass);
 
     String newGeneratedToken = jwtUtil.generateJwtToken(userDetails);
     String refreshToken = jwtUtil.generateRefreshToken(userDetails);
@@ -55,7 +55,7 @@ public class JwtService implements UserDetailsService {
   @Override
   public UserDetails loadUserByUsername(String username) {
     User user = userRepo.findUserByUsername(username).orElseThrow(() ->
-      new ResponseStatusException(HttpStatus.NOT_FOUND, "Username does not exists"));
+      new ResponseStatusException(HttpStatus.BAD_REQUEST, "Username does not exists"));
 
     return new org.springframework.security.core.userdetails.User(user.getUsername(), user.getUserPassword(),
       getAuthorities(user));
@@ -74,7 +74,7 @@ public class JwtService implements UserDetailsService {
     } catch (DisabledException e) {
       throw new ResponseStatusException(HttpStatus.FORBIDDEN, "User is disabled");
     } catch (BadCredentialsException e) {
-      throw new ResponseStatusException(HttpStatus.FORBIDDEN,"Wrong username or password");
+      throw new ResponseStatusException(HttpStatus.FORBIDDEN,"Password is incorrect");
     }
   }
 }
