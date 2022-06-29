@@ -46,6 +46,8 @@ public interface ProductRepository extends JpaRepository<Product, String> {
 
   boolean existsById(String id);
 
+  boolean existsByNameAndIdIsNot(String name, String id);
+
   Integer countAllByCategoryId(String id);
 
   @Transactional
