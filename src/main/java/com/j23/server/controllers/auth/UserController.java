@@ -38,12 +38,7 @@ public class UserController {
 
     @PostMapping({"/register"})
     public ResponseEntity<Object> registerNewUser(@RequestBody User user) {
-        if (userRepo.existsByUsername(user.getUsername())) {
-            throw new ResponseStatusException(HttpStatus.CONFLICT, "Username already exists");
-        }
-
         User result = userService.registerNewUser(user);
-
         return ResponseHandler.generateResponse("Successfully registered user!", HttpStatus.OK, result);
     }
 

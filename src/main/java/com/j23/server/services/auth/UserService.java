@@ -63,6 +63,10 @@ public class UserService {
   }
 
   public User registerNewUser(User user) {
+    if (userRepo.existsByUsername(user.getUsername())) {
+      throw new ResponseStatusException(HttpStatus.CONFLICT, "Username already exists");
+    }
+
     user.setId(String.valueOf(UUID.randomUUID()));
     user.setUserPassword(getEncodedPassword("1234"));
     return userRepo.save(user);
