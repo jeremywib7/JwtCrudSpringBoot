@@ -268,11 +268,9 @@ public class ProductService {
 
   public Product updateProduct(Product product) {
 
-//    if (productCategoryRepository.existsByCategoryNameAndIdIsNotLike(productCategory.getCategoryName(),
-//      productCategory.getId())) {
-//      throw new ResponseStatusException(HttpStatus.CONFLICT, "Product category already exists");
-//    }
-
+    if (productRepository.existsByNameAndIdIsNot(product.getName(), product.getId())) {
+      throw new ResponseStatusException(HttpStatus.CONFLICT, "Product name already exists");
+    }
 
     LocalDateTime localDateTime = LocalDateTime.now();
     product.setUpdatedOn(LocalDateTime.from(localDateTime));
