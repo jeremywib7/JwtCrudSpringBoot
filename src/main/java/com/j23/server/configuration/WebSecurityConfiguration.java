@@ -64,6 +64,9 @@ public class WebSecurityConfiguration extends WebSecurityConfigurerAdapter {
                         "/customer/**",
                         "/cart/**",
                         "/order/add",
+                        "/order/view",
+                        "/order/view/active",
+
 //        "/order/**",
                         "/productview/**"
                 ).permitAll()
