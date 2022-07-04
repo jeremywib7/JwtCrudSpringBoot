@@ -80,8 +80,16 @@ public class CustomerOrderController {
             @RequestParam String customerId
     ) {
         customerOrderService.finishOrder(customerId);
-        return ResponseHandler.generateResponse("Customer order successfully completed!", HttpStatus.OK, null);
+        return ResponseHandler.generateResponse("Customer order successfully confirmed!", HttpStatus.OK, null);
     }
+
+  @DeleteMapping("/delete/waiting-list")
+  private ResponseEntity<Object> deleteWaitingListFirebase(
+    @RequestParam String customerId
+  ) {
+    customerOrderService.deleteWaitingListFirebase(customerId);
+    return ResponseHandler.generateResponse("Success delete waiting list!", HttpStatus.OK, null);
+  }
 
 }
 

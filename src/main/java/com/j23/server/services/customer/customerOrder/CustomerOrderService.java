@@ -216,8 +216,6 @@ public class CustomerOrderService {
     customerOrder.setOrderIsActive(false);
     customerOrderRepository.save(customerOrder);
 
-    log.info("The cart : " + customerCart.getCartOrderedProduct());
-
     // add to history total sales product
     customerCart.getCartOrderedProduct().stream().map(cartOrderedProduct ->
       totalSalesProductService.sumProductProfit(cartOrderedProduct.getProduct(), customerOrder.getTotalPrice())).collect(
@@ -226,12 +224,15 @@ public class CustomerOrderService {
     // delete or reset current customer cart
     customerCartRepository.delete(customerCart);
 
-    // remove from waiting list in firebase
-    Firestore firestore = FirestoreClient.getFirestore();
-    DocumentReference documentReference = firestore.collection("Waiting_List").document(
-      customerOrder.getCustomerProfile().getId());
-    ApiFuture<WriteResult> apiFuture = documentReference.delete();
+    WaitingList waitingList = new WaitingList();
+    waitingList.setId(customerId);
+    waitingListService.updateWaitingListStatus(waitingList, "COMPLETED", 4);
+  }
 
+  public void deleteWaitingListFirebase(String customerId) {
+    Firestore firestore = FirestoreClient.getFirestore();
+    DocumentReference documentReference = firestore.collection("Waiting_List").document(customerId);
+    ApiFuture<WriteResult> apiFuture = documentReference.delete();
   }
 
   public void cancelOrder(String customerId) {

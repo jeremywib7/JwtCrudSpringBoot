@@ -15,5 +15,7 @@ public interface CartOrderedProductRepo extends JpaRepository<CartOrderedProduct
   @Transactional
   void deleteByCustomerProfileIdAndProductId(String customerProfile_id, String product_id);
 
+  boolean existsByCustomerProfile(CustomerProfile customerProfile);
+
   List<CartOrderedProduct> findAllByProductId(String id);
 }

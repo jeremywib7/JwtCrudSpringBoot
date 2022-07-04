@@ -53,7 +53,7 @@ public class CustomerCartController {
     @RequestParam String productId
   ) {
     customerCartService.removeProductFromCart(customerId, productId);
-    return ResponseHandler.generateResponse("Successfully delete product from cart!", HttpStatus.OK,
+    return ResponseHandler.generateResponse("Successfully delete customer cart!", HttpStatus.OK,
       null);
   }
 

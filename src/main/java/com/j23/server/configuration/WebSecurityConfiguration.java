@@ -22,72 +22,73 @@ import org.springframework.security.web.authentication.UsernamePasswordAuthentic
 @EnableGlobalMethodSecurity(prePostEnabled = true)
 public class WebSecurityConfiguration extends WebSecurityConfigurerAdapter {
 
-    @Autowired
-    private JwtAuthenticationEntryPoint jwtAuthenticationEntryPoint;
+  @Autowired
+  private JwtAuthenticationEntryPoint jwtAuthenticationEntryPoint;
 
-    @Autowired
-    private JwtRequestFilter jwtRequestFilter;
+  @Autowired
+  private JwtRequestFilter jwtRequestFilter;
 
-    @Autowired
-    private UserDetailsService jwtService;
+  @Autowired
+  private UserDetailsService jwtService;
 
 
-    @Bean
-    @Override
-    public AuthenticationManager authenticationManagerBean() throws Exception {
-        return super.authenticationManagerBean();
-    }
+  @Bean
+  @Override
+  public AuthenticationManager authenticationManagerBean() throws Exception {
+    return super.authenticationManagerBean();
+  }
 
-    @Override
-    protected void configure(HttpSecurity httpSecurity) throws Exception {
-        httpSecurity.cors();
-        httpSecurity.csrf()
-                .disable()
-                .authorizeRequests().antMatchers(
-                        "/webjars/**", "/error",
-                        "/authenticate",
-                        "/checkJWT",
+  @Override
+  protected void configure(HttpSecurity httpSecurity) throws Exception {
+    httpSecurity.cors();
+    httpSecurity.csrf()
+      .disable()
+      .authorizeRequests().antMatchers(
+        "/webjars/**", "/error",
+        "/authenticate",
+        "/checkJWT",
 //        "/reports/user",
-                        "/waitingList",
+        "/waitingList",
 
-                        // for product display
-                        "/product/customer/all/table",
-                        "/images/customer/product/download",
+        // for product display
+        "/product/customer/all/table",
+        "/images/customer/product/download",
 
-                        // for report image
-                        "/images/sale-report",
+        // for report image
+        "/images/sale-report",
 
-                        // for downloading icon
-                        "/icon/download/main",
+        // for downloading icon
+        "/icon/download/main",
 
-                        // for customer
-                        "/customer/**",
-                        "/cart/**",
-                        "/order/add",
-                        "/order/view",
-                        "/order/view/active",
+        // for customer
+        "/customer/**",
+        "/cart/**",
+        "/order/add",
+        "/order/view",
+        "/order/view/active",
+        "/order/delete/waiting-list",
 
-//        "/order/**",
-                        "/productview/**"
-                ).permitAll()
-                .antMatchers(HttpHeaders.ALLOW).permitAll()
-                .anyRequest().authenticated()
-                .and()
-                .exceptionHandling().authenticationEntryPoint(new JwtAuthenticationEntryPoint())
-                .and()
-                .sessionManagement().sessionCreationPolicy(SessionCreationPolicy.STATELESS)
-        ;
-        httpSecurity.addFilterBefore(jwtRequestFilter, UsernamePasswordAuthenticationFilter.class);
-    }
 
-    @Bean
-    public PasswordEncoder passwordEncoder() {
-        return new BCryptPasswordEncoder();
-    }
+        "/productview/**"
+      ).permitAll()
+      .antMatchers(HttpHeaders.ALLOW).permitAll()
+      .anyRequest().authenticated()
+      .and()
+      .exceptionHandling().authenticationEntryPoint(new JwtAuthenticationEntryPoint())
+      .and()
+      .sessionManagement().sessionCreationPolicy(SessionCreationPolicy.STATELESS)
+    ;
+    httpSecurity.addFilterBefore(jwtRequestFilter, UsernamePasswordAuthenticationFilter.class);
+  }
 
-    @Autowired
-    public void configureGlobal(AuthenticationManagerBuilder authenticationManagerBuilder) throws Exception {
-        authenticationManagerBuilder.userDetailsService(jwtService).passwordEncoder(passwordEncoder());
-    }
+  @Bean
+  public PasswordEncoder passwordEncoder() {
+    return new BCryptPasswordEncoder();
+  }
+
+  @Autowired
+  public void configureGlobal(AuthenticationManagerBuilder authenticationManagerBuilder) throws Exception {
+    authenticationManagerBuilder.userDetailsService(jwtService).passwordEncoder(passwordEncoder());
+  }
 }
 

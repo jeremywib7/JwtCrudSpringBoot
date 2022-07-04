@@ -28,9 +28,4 @@ public class DashboardController {
       .loadDashboardData());
   }
 
-//  @PostMapping({"/percentage"})
-//  public ResponseEntity<Object> getPercentage(@RequestParam BigDecimal partValue, @RequestParam BigDecimal totalValue) {
-//    return ResponseHandler.generateResponse("Successfully load dashboard data!", HttpStatus.OK, totalSalesProductService
-//      .getPercentage(totalValue, partValue));
-//  }
 }
