@@ -78,6 +78,7 @@ public class TotalSalesProductService {
     BigDecimal checkNullTotalValue = totalValue != null ? totalValue : new BigDecimal(0);
     BigDecimal checkNullPartValue = partValue != null ? partValue : new BigDecimal(0);
 
+    assert partValue != null;
     return partValue.divide(totalValue, RoundingMode.HALF_UP).multiply(new BigDecimal(100));
   }
 
