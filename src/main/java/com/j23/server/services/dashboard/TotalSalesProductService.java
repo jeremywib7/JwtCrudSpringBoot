@@ -61,9 +61,11 @@ public class TotalSalesProductService {
     BigDecimal totalProfit = totalSalesProductRepository.sumTotalProfitForCurrentMonth(timeService.getStartDateTimeOfCurrentMonth(),
       timeService.getEndDateTimeOfCurrentMonth());
 
-    top5Sales.forEach(totalSalesProduct -> {
-      totalSalesProduct.setPercentageProfit(getPercentage(totalProfit, totalSalesProduct.getTotalProfit()));
-    });
+    if (totalProfit != null) {
+      top5Sales.forEach(totalSalesProduct -> {
+        totalSalesProduct.setPercentageProfit(getPercentage(totalProfit, totalSalesProduct.getTotalProfit()));
+      });
+    }
 
     return totalSalesProductRepository.findTop5ByTotalProfitIsAfterOrderByTotalProfitDesc(new BigDecimal(0));
   }
