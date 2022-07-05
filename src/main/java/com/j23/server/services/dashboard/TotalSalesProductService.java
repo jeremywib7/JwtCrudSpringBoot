@@ -75,6 +75,9 @@ public class TotalSalesProductService {
   }
 
   public BigDecimal getPercentage(BigDecimal totalValue, BigDecimal partValue) {
+    BigDecimal checkNullTotalValue = totalValue != null ? totalValue : new BigDecimal(0);
+    BigDecimal checkNullPartValue = partValue != null ? partValue : new BigDecimal(0);
+
     return partValue.divide(totalValue, RoundingMode.HALF_UP).multiply(new BigDecimal(100));
   }
 
