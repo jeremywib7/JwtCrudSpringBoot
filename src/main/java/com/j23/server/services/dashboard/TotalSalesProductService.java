@@ -55,8 +55,8 @@ public class TotalSalesProductService {
   public List<TotalSalesProduct> viewTop5Sales() {
 
     // view top 5 sales in current month
-    List<TotalSalesProduct> top5Sales = totalSalesProductRepository.findTop5ByTotalProfitIsAfterOrderByTotalProfitDesc(
-      new BigDecimal(0));
+    List<TotalSalesProduct> top5Sales = totalSalesProductRepository.findTop5ByTotalProfitIsAfterAndCreatedOnBetweenOrderByTotalProfitDesc(
+      new BigDecimal(0), timeService.getStartDateTimeOfCurrentMonth(), timeService.getEndDateTimeOfCurrentMonth());
 
     BigDecimal totalProfit = totalSalesProductRepository.sumTotalProfitForCurrentMonth(timeService.getStartDateTimeOfCurrentMonth(),
       timeService.getEndDateTimeOfCurrentMonth());

@@ -15,12 +15,15 @@ import java.util.Optional;
 @Repository
 public interface TotalSalesProductRepository extends JpaRepository<TotalSalesProduct, String> {
 
-  Optional<TotalSalesProduct> findByProductDetailAndCreatedOnBetween(Product productDetail, LocalDateTime dateFrom,
-                                                                     LocalDateTime dateTill);
+    Optional<TotalSalesProduct> findByProductDetailAndCreatedOnBetween(Product productDetail, LocalDateTime dateFrom,
+                                                                       LocalDateTime dateTill);
 
-  List<TotalSalesProduct> findTop5ByTotalProfitIsAfterOrderByTotalProfitDesc(BigDecimal totalProfit);
+    List<TotalSalesProduct> findTop5ByTotalProfitIsAfterOrderByTotalProfitDesc(BigDecimal totalProfit);
 
-  @Query(value = "SELECT SUM(t.total_profit) FROM total_sales_product t WHERE t.created_on >= :startDate AND t.created_on" +
-    "<= :endDate", nativeQuery = true)
-  BigDecimal sumTotalProfitForCurrentMonth(@Param("startDate") LocalDateTime startDate, @Param("endDate") LocalDateTime endDate);
+    List<TotalSalesProduct> findTop5ByTotalProfitIsAfterAndCreatedOnBetweenOrderByTotalProfitDesc(BigDecimal totalProfit,
+                                                                                                  LocalDateTime dateFrom, LocalDateTime dateEnd);
+
+    @Query(value = "SELECT SUM(t.total_profit) FROM total_sales_product t WHERE t.created_on >= :startDate AND t.created_on" +
+            "<= :endDate", nativeQuery = true)
+    BigDecimal sumTotalProfitForCurrentMonth(@Param("startDate") LocalDateTime startDate, @Param("endDate") LocalDateTime endDate);
 }
