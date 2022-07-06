@@ -67,7 +67,7 @@ public class TotalSalesProductService {
       });
     }
 
-    return totalSalesProductRepository.findTop5ByTotalProfitIsAfterOrderByTotalProfitDesc(new BigDecimal(0));
+    return top5Sales;
   }
 
   public List<TotalSalesProduct> viewTop5SalesOnly() {
