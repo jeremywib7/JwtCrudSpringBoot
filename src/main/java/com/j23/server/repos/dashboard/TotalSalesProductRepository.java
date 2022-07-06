@@ -21,7 +21,7 @@ public interface TotalSalesProductRepository extends JpaRepository<TotalSalesPro
     List<TotalSalesProduct> findTop5ByTotalProfitIsAfterOrderByTotalProfitDesc(BigDecimal totalProfit);
 
     List<TotalSalesProduct> findTop5ByTotalProfitIsAfterAndCreatedOnBetweenOrderByTotalProfitDesc(BigDecimal totalProfit,
-                                                                                                  LocalDateTime dateFrom, LocalDateTime dateEnd);
+                                                                                                  LocalDateTime dateFrom, LocalDateTime dateTill);
 
     @Query(value = "SELECT SUM(t.total_profit) FROM total_sales_product t WHERE t.created_on >= :startDate AND t.created_on" +
             "<= :endDate", nativeQuery = true)
