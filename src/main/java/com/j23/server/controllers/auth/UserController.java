@@ -54,6 +54,18 @@ public class UserController {
         return ResponseHandler.generateResponse("Successfully update user!", HttpStatus.OK, updateUser);
     }
 
+    @PutMapping("/change/password")
+    public ResponseEntity<Object> changeUserPassword(@RequestParam String username) {
+        userService.resetUserPassword(username);
+        return ResponseHandler.generateResponse("Successfully change password user!", HttpStatus.OK, null);
+    }
+
+    @PutMapping("/reset/password")
+    public ResponseEntity<Object> resetUserPassword(@RequestParam String username) {
+        userService.resetUserPassword(username);
+        return ResponseHandler.generateResponse("Successfully reset password user!", HttpStatus.OK, null);
+    }
+
     @GetMapping("/find")
     public ResponseEntity<Object> getUserByUsername(@RequestParam("username") String username) throws Exception {
         User user = userService.findUserByUsername(username);

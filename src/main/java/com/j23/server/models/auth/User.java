@@ -9,6 +9,7 @@ import lombok.Data;
 import lombok.Getter;
 import lombok.Setter;
 import lombok.ToString;
+import org.checkerframework.common.aliasing.qual.Unique;
 
 import javax.persistence.*;
 import java.time.LocalDate;
@@ -23,7 +24,7 @@ public class User {
     @Id
     private String id;
 
-    @Column(updatable = false)
+    @Column(updatable = false, unique=true)
     private String username;
 
     private String userFirstName;
