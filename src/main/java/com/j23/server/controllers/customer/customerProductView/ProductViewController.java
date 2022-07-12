@@ -2,7 +2,7 @@ package com.j23.server.controllers.customer.customerProductView;
 
 import com.j23.server.configuration.ResponseHandler;
 import com.j23.server.models.product.Product;
-import com.j23.server.services.product.ProductService;
+import com.j23.server.services.restaurant.product.ProductService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;

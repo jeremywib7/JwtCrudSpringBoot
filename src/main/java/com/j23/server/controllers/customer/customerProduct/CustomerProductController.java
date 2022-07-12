@@ -1,12 +1,11 @@
 package com.j23.server.controllers.customer.customerProduct;
 
-import com.fasterxml.jackson.annotation.JsonIncludeProperties;
 import com.fasterxml.jackson.annotation.JsonView;
 import com.j23.server.Views;
 import com.j23.server.configuration.ResponseHandler;
 import com.j23.server.models.product.Product;
-import com.j23.server.services.dashboard.TotalSalesProductService;
-import com.j23.server.services.product.ProductService;
+import com.j23.server.services.restaurant.dashboard.TotalSalesProductService;
+import com.j23.server.services.restaurant.product.ProductService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.http.HttpStatus;

@@ -64,10 +64,7 @@ public class UserService {
     }
 
     public User findUserByUsername(String username) throws Exception {
-
         String decryptedUsername = EncryptDecryptService.decrypt(username);
-        System.out.println("THE USER : " + decryptedUsername);
-
         return userRepo.findUserByUsername(decryptedUsername).orElseThrow(() ->
                 new UserNotFoundException("username " + username + " was not found"));
     }

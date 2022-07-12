@@ -10,7 +10,7 @@ import com.j23.server.models.product.Product;
 import com.j23.server.repos.customer.CustomerProfileRepo;
 import com.j23.server.repos.customer.customerOrder.CustomerOrderRepository;
 import com.j23.server.repos.customer.customerOrder.HistoryProductOrderRepo;
-import com.j23.server.services.dashboard.TotalSalesProductService;
+import com.j23.server.services.restaurant.dashboard.TotalSalesProductService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 

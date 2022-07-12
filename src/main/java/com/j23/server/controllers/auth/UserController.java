@@ -56,7 +56,7 @@ public class UserController {
 
     @PutMapping("/change/password")
     public ResponseEntity<Object> changeUserPassword(@RequestParam String username) {
-        userService.resetUserPassword(username);
+        userService.changeUserPassword(username);
         return ResponseHandler.generateResponse("Successfully change password user!", HttpStatus.OK, null);
     }
 
