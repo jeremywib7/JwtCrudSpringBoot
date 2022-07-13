@@ -27,7 +27,7 @@ public class ProductController {
 
   @PostConstruct
   public void onInit() throws FirebaseAuthException {
-    productService.createTestProduct();
+//    productService.createTestProduct();
   }
 
   @GetMapping("/all")

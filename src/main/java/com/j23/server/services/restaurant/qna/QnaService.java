@@ -2,18 +2,23 @@ package com.j23.server.services.restaurant.qna;
 
 import com.j23.server.models.qna.QnA;
 import com.j23.server.repos.qna.QnaRepository;
-import org.springframework.beans.factory.annotation.Autowired;
+import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
-import org.springframework.data.domain.PageRequest;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 @Service
+@Transactional
+@RequiredArgsConstructor
 public class QnaService {
 
-  @Autowired
-  private QnaRepository qnaRepository;
+  private final QnaRepository qnaRepository;
 
   public QnA addQna(QnA qnA) {
+    return qnaRepository.save(qnA);
+  }
+
+  public QnA updateQna(QnA qnA) {
     return qnaRepository.save(qnA);
   }
 

@@ -11,6 +11,7 @@ import org.hibernate.annotations.UpdateTimestamp;
 
 import javax.persistence.*;
 import javax.validation.constraints.Min;
+import javax.validation.constraints.NotBlank;
 import javax.validation.constraints.NotNull;
 import java.time.LocalDateTime;
 import java.util.UUID;
@@ -27,13 +28,15 @@ public class QnA {
 
   @Min(value = 0)
   @Column(unique = true)
+  @NotNull(message= "Number may not be empty")
   private Integer number;
 
   @Column(length = 100)
+  @NotBlank(message = "Question is mandatory")
   private String question;
 
   @Column(length = 200)
-  @NotNull(message = "Answer can't be null")
+  @NotBlank(message = "Answer is mandatory")
   private String answer;
 
   @CreationTimestamp
