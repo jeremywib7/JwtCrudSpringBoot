@@ -5,30 +5,35 @@ import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
 import com.fasterxml.jackson.databind.annotation.JsonSerialize;
 import com.fasterxml.jackson.datatype.jsr310.deser.LocalDateTimeDeserializer;
 import com.fasterxml.jackson.datatype.jsr310.ser.LocalDateTimeSerializer;
+import lombok.*;
 import org.hibernate.annotations.CreationTimestamp;
 import org.hibernate.annotations.UpdateTimestamp;
 
-import javax.persistence.Column;
-import javax.persistence.Entity;
-import javax.persistence.Id;
+import javax.persistence.*;
 import javax.validation.constraints.Min;
+import javax.validation.constraints.NotNull;
 import java.time.LocalDateTime;
 import java.util.UUID;
 
 @Entity
+@Data
+@NoArgsConstructor
+@AllArgsConstructor
 public class QnA {
 
   @Id
-  private String id = UUID.randomUUID().toString();
+  @GeneratedValue(strategy = GenerationType.AUTO)
+  private UUID id;
 
   @Min(value = 0)
-  @Column(unique = true, nullable = false)
+  @Column(unique = true)
   private Integer number;
 
-  @Column(length = 100, nullable = false)
+  @Column(length = 100)
   private String question;
 
-  @Column(length = 200, nullable = false)
+  @Column(length = 200)
+  @NotNull(message = "Answer can't be null")
   private String answer;
 
   @CreationTimestamp
@@ -44,4 +49,5 @@ public class QnA {
   @JsonSerialize(using = LocalDateTimeSerializer.class)
   @Column(name = "last_updated")
   private LocalDateTime updatedOn;
+
 }

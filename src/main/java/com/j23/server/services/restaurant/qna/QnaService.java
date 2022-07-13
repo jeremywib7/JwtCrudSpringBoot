@@ -10,10 +10,15 @@ import org.springframework.stereotype.Service;
 @Service
 public class QnaService {
 
-  QnaRepository qnaRepository;
+  @Autowired
+  private QnaRepository qnaRepository;
+
+  public QnA addQna(QnA qnA) {
+    return qnaRepository.save(qnA);
+  }
 
   public Page<QnA> getAllQna() {
-    qnaRepository.findAll(PageRequest.of(page, size));
+//    qnaRepository.findAll(PageRequest.of(page, size));
     return null;
   }
 }
