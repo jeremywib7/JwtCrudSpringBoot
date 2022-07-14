@@ -30,4 +30,14 @@ public class QnaController {
     return ResponseHandler.generateResponse("Successfully update qna!", HttpStatus.OK,
             qnaService.addQna(qnA));
   }
+
+  @GetMapping("/find-all")
+  public ResponseEntity<Object> findAllQna(
+          @RequestParam(defaultValue = " ") String search,
+          @RequestParam(defaultValue = "0") Integer page,
+          @RequestParam(defaultValue = "10") Integer size
+  ) {
+    return ResponseHandler.generateResponse("Successfully find all qna!", HttpStatus.OK,
+            qnaService.findAllQna(search, page, size));
+  }
 }

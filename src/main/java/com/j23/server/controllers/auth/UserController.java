@@ -33,7 +33,7 @@ public class UserController {
 
     @PostConstruct
     public void initRolesAndUsers() {
-        userService.initRolesAndUser();
+//        userService.initRolesAndUser();
     }
 
     @PostMapping({"/register"})

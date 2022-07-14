@@ -27,15 +27,14 @@ public class QnA {
   private UUID id;
 
   @Min(value = 0)
-  @Column(unique = true)
-  @NotNull(message= "Number may not be empty")
+  @Column(unique = true, nullable = false)
   private Integer number;
 
-  @Column(length = 100, unique = true)
+  @Column(length = 100, unique = true, nullable = false)
   @NotBlank(message = "Question is mandatory")
   private String question;
 
-  @Column(length = 200)
+  @Column(length = 200, nullable = false)
   @NotBlank(message = "Answer is mandatory")
   private String answer;
 
