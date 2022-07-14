@@ -31,7 +31,7 @@ public class QnA {
   @NotNull(message= "Number may not be empty")
   private Integer number;
 
-  @Column(length = 100)
+  @Column(length = 100, unique = true)
   @NotBlank(message = "Question is mandatory")
   private String question;
 
