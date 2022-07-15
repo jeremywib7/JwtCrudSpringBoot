@@ -11,6 +11,7 @@ import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.bind.annotation.*;
 
 import javax.validation.Valid;
+import java.util.UUID;
 
 @RestController
 @RequestMapping("v1/qna")
@@ -31,6 +32,12 @@ public class QnaController {
             qnaService.addQna(qnA));
   }
 
+  @DeleteMapping("/delete")
+  public ResponseEntity<Object> deleteQna(@RequestParam UUID id) {
+    return ResponseHandler.generateResponse("Successfully delete qna!", HttpStatus.OK,
+      null);
+  }
+
   @GetMapping("/find-all")
   public ResponseEntity<Object> findAllQna(
           @RequestParam(defaultValue = " ") String search,
@@ -40,4 +47,7 @@ public class QnaController {
     return ResponseHandler.generateResponse("Successfully find all qna!", HttpStatus.OK,
             qnaService.findAllQna(search, page, size));
   }
+
+
+
 }

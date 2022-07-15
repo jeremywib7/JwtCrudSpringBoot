@@ -4,6 +4,7 @@ import com.j23.server.configuration.ResponseHandler;
 import com.j23.server.models.product.ProductCategory;
 import com.j23.server.models.product.UnassignedProduct;
 import com.j23.server.services.restaurant.product.ProductCategoryService;
+import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -13,13 +14,11 @@ import javax.annotation.PostConstruct;
 import java.util.List;
 
 @RestController
-@CrossOrigin(allowCredentials = "true", origins = {"http://localhost:4200", "http://127.0.0.1:4200"})
 @RequestMapping("/category")
+@RequiredArgsConstructor
 public class ProductCategoryController {
 
-    @Autowired
-    private ProductCategoryService productCategoryService;
-
+    private final ProductCategoryService productCategoryService;
 
     @PostConstruct
     public void initRolesAndUsers() {

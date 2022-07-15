@@ -6,9 +6,10 @@ import com.j23.server.repos.qna.QnaRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
-import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+
+import java.util.UUID;
 
 @Service
 @Transactional
@@ -42,5 +43,9 @@ public class QnaService {
 
   public Page<QnA> findAllQna(String search, Integer page, Integer size) {
     return qnaRepository.findAllByQuestionContaining(search, PageRequest.of(page, size));
+  }
+
+  public void deleteQna(UUID id) {
+    qnaRepository.deleteById(id);
   }
 }
