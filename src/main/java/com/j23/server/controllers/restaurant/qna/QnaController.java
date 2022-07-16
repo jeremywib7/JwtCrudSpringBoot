@@ -34,6 +34,7 @@ public class QnaController {
 
   @DeleteMapping("/delete")
   public ResponseEntity<Object> deleteQna(@RequestParam UUID id) {
+    qnaService.deleteQna(id);
     return ResponseHandler.generateResponse("Successfully delete qna!", HttpStatus.OK,
       null);
   }
