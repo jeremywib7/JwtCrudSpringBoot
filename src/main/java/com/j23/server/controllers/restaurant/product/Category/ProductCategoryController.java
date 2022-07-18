@@ -17,7 +17,6 @@ import java.util.List;
 @RequestMapping("/category")
 @RequiredArgsConstructor
 public class ProductCategoryController {
-
     private final ProductCategoryService productCategoryService;
 
     @PostConstruct
