@@ -49,10 +49,8 @@ public class QnaService {
   }
 
   public void deleteQna(UUID id) {
-    try {
+//    try {
+//      System.out.println("The uuid : " + id);
       qnaRepository.deleteById(id);
-    } catch (EmptyResultDataAccessException exception) {
-      throw new ResponseStatusException(HttpStatus.NOT_FOUND, "Qna id not found");
-    }
   }
 }
