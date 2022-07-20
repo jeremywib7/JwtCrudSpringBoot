@@ -3,8 +3,6 @@ package com.j23.server.controllers.exception;
 import com.j23.server.models.utils.FieldError;
 import org.apache.logging.log4j.core.config.Order;
 import org.springframework.core.Ordered;
-import org.springframework.http.HttpStatus;
-import org.springframework.http.converter.HttpMessageNotReadableException;
 import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.MethodArgumentNotValidException;
 import org.springframework.web.bind.annotation.ControllerAdvice;
@@ -23,8 +21,6 @@ import static org.springframework.http.HttpStatus.BAD_REQUEST;
 @Order(Ordered.HIGHEST_PRECEDENCE)
 @ControllerAdvice
 public class HandleValidationExceptions {
-
-
 
   @ResponseStatus(BAD_REQUEST)
   @ResponseBody
