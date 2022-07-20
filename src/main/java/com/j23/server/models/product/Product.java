@@ -21,10 +21,6 @@ import java.util.List;
 
 @Entity
 @Data
-@Setter
-@Getter
-@ToString
-@Table(name = "product")
 @SQLDelete(sql = "UPDATE product SET deleted = true WHERE id=?")
 @Where(clause = "deleted=false")
 @JsonView(Views.BestSellerOnlyViews.class)
