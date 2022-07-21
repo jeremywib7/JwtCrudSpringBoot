@@ -4,10 +4,10 @@ import com.j23.server.controllers.exception.ConflictException;
 import com.j23.server.models.qna.QnA;
 import com.j23.server.repos.qna.QnaRepository;
 import lombok.RequiredArgsConstructor;
-import org.springframework.dao.EmptyResultDataAccessException;
+import lombok.extern.slf4j.Slf4j;
+import org.hibernate.JDBCException;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
-import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.server.ResponseStatusException;
@@ -16,6 +16,7 @@ import java.util.UUID;
 
 import static org.springframework.http.HttpStatus.NOT_FOUND;
 
+@Slf4j
 @Service
 @Transactional
 @RequiredArgsConstructor
@@ -27,15 +28,14 @@ public class QnaService {
     if (qnaRepository.existsByQuestion(qnA.getQuestion())) {
       throw new ConflictException("Question already exists");
     }
-    ;
 
-    QnA lastQna = qnaRepository.findTopByOrderByCreatedOnDesc();
+    QnA lastQna = qnaRepository.findFirstByOrderByNumberDesc();
     if (lastQna != null) {
+      System.out.println("The last number is : " + lastQna);
       qnA.setNumber(lastQna.getNumber() + 1);
     } else {
       qnA.setNumber(1);
     }
-
     return qnaRepository.save(qnA);
   }
 
@@ -43,8 +43,6 @@ public class QnaService {
     if (qnaRepository.existsByQuestionAndIdIsNot(qnA.getQuestion(), qnA.getId())) {
       throw new ConflictException("Question already exists");
     }
-    ;
-
     return qnaRepository.save(qnA);
   }
 

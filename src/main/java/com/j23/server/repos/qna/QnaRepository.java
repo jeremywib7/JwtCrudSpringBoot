@@ -16,7 +16,7 @@ public interface QnaRepository extends JpaRepository<QnA, UUID> {
 
   boolean existsByQuestionAndIdIsNot(@NotBlank(message = "Question is mandatory") String question, UUID id);
 
-  QnA findTopByOrderByCreatedOnDesc();
+  QnA findFirstByOrderByNumberDesc();
 
   Page<QnA> findAllByQuestionContaining(@NotBlank(message = "Question is mandatory") String question, Pageable pageable);
 }

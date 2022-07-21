@@ -59,7 +59,6 @@ public class CustomerOrderService {
 
 
   public CustomerOrder addOrder(String customerId) {
-
     // get customer cart info
     CustomerCart customerCart = customerCartService.getCustomerCart(customerId);
     customerCart.setPlacedInOrder(true);

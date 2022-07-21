@@ -4,10 +4,8 @@ import com.j23.server.configuration.ResponseHandler;
 import com.j23.server.models.qna.QnA;
 import com.j23.server.services.restaurant.qna.QnaService;
 import lombok.RequiredArgsConstructor;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.bind.annotation.*;
 
 import javax.validation.Valid;
@@ -27,7 +25,7 @@ public class QnaController {
   }
 
   @PutMapping("/update")
-  public ResponseEntity<Object> updateQna(@RequestBody QnA qnA) {
+  public ResponseEntity<Object> updateQna(@Valid @RequestBody QnA qnA) {
     return ResponseHandler.generateResponse("Successfully update qna!", HttpStatus.OK,
             qnaService.updateQna(qnA));
   }
@@ -48,7 +46,5 @@ public class QnaController {
     return ResponseHandler.generateResponse("Successfully find all qna!", HttpStatus.OK,
             qnaService.findAllQna(search, page, size));
   }
-
-
 
 }

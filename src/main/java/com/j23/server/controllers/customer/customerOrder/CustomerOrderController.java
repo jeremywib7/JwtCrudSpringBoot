@@ -25,7 +25,6 @@ public class CustomerOrderController {
     @PostMapping("/add")
     private ResponseEntity<Object> addOrder(@RequestParam String customerId) {
         CustomerOrder customerOrder = customerOrderService.addOrder(customerId);
-
         return ResponseHandler.generateResponse("Successfully fetch product!", HttpStatus.OK, customerOrder);
     }
 
@@ -50,7 +49,6 @@ public class CustomerOrderController {
     @GetMapping("/view/active")
     private ResponseEntity<Object> viewActiveCustomerOrder(@RequestParam String customerId) {
         CustomerOrder customerOrders = customerOrderService.viewCurrentCustomerOrder(customerId);
-
         return ResponseHandler.generateResponse("Successfully view active customer order!", HttpStatus.OK, customerOrders);
     }
 

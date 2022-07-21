@@ -19,7 +19,7 @@ import java.util.UUID;
 @NoArgsConstructor
 @AllArgsConstructor
 @EqualsAndHashCode(callSuper = true) // for extends base model
-@SQLDelete(sql = "UPDATE qna SET deleted_on = CURRENT_TIMESTAMP WHERE id=?")
+@SQLDelete(sql = "UPDATE qna a SET a.deleted_on = CURRENT_TIMESTAMP, number = null  WHERE id=?")
 @Where(clause = "deleted_on is null")
 public class QnA extends BaseModel {
   @Id
@@ -28,7 +28,7 @@ public class QnA extends BaseModel {
   private UUID id;
 
   @Min(value = 0)
-  @Column(unique = true, nullable = false)
+  @Column()
   private Integer number;
 
   @Column(length = 100, unique = true, nullable = false)
