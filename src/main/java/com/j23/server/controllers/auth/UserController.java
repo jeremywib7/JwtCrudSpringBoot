@@ -28,12 +28,9 @@ public class UserController {
     @Autowired
     private UserService userService;
 
-    @Autowired
-    private UserRepo userRepo;
-
     @PostConstruct
     public void initRolesAndUsers() {
-//        userService.initRolesAndUser();
+        userService.initRolesAndUser();
     }
 
     @PostMapping({"/register"})

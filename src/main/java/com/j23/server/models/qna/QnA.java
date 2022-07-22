@@ -33,14 +33,14 @@ public class QnA {
   private UUID id;
 
   @Min(value = 0)
-  @Column()
+  @Column(nullable = false, unique = true)
   private Integer number;
 
-  @Column(length = 100, nullable = false)
+  @Column(length = 100, nullable = false, unique = true)
   @NotBlank(message = "Question is mandatory")
   private String question;
 
-  @Column(length = 200, nullable = false)
+  @Column(length = 200, nullable = false,  unique = true)
   @NotBlank(message = "Answer is mandatory")
   private String answer;
 
@@ -48,7 +48,7 @@ public class QnA {
   @JsonFormat(pattern = "yyyy-MM-dd HH:mm:ss")
   @JsonDeserialize(using = LocalDateTimeDeserializer.class)
   @JsonSerialize(using = LocalDateTimeSerializer.class)
-  @Column(name = "date_created", updatable = false)
+  @Column(name = "date_created", nullable = false, updatable = false)
   private LocalDateTime createdOn;
 
   @UpdateTimestamp

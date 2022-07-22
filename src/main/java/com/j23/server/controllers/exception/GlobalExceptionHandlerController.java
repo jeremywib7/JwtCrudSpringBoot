@@ -21,8 +21,6 @@ import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
 import java.util.List;
 
-import static org.apache.commons.lang3.exception.ExceptionUtils.getMessage;
-import static org.apache.commons.lang3.exception.ExceptionUtils.getRootCauseMessage;
 import static org.springframework.http.HttpStatus.*;
 
 /**
@@ -32,7 +30,6 @@ import static org.springframework.http.HttpStatus.*;
 @ControllerAdvice
 @RequiredArgsConstructor
 public class GlobalExceptionHandlerController {
-
   private final GlobalExceptionHandlerService gehService;
 
 //  @ExceptionHandler(Exception.class)
