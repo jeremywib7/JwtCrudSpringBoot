@@ -8,6 +8,8 @@ import lombok.extern.slf4j.Slf4j;
 import org.hibernate.JDBCException;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.server.ResponseStatusException;
@@ -46,11 +48,13 @@ public class QnaService {
     return qnaRepository.save(qnA);
   }
 
-  public Page<QnA> findAllQna(String search, Integer page, Integer size) {
-    if (search == null) {
-      return qnaRepository.findAll(PageRequest.of(page, size));
+  public Page<QnA> findAllQna(String searchKeyword, int page, int size, String sortedFieldName
+    , int order) {
+    if (searchKeyword == null) {
+      return qnaRepository.findAll(PageRequest.of(page, size, Sort.by(order == 1 ? Sort.Direction.ASC : Sort.Direction.DESC, sortedFieldName)));
     }
-    return qnaRepository.findAllByQuestionContaining(search, PageRequest.of(page, size));
+    return qnaRepository.findAllByQuestionContaining(searchKeyword, PageRequest.of(page, size,
+      Sort.by(order == 1 ? Sort.Direction.ASC : Sort.Direction.DESC, sortedFieldName)));
   }
 
   public void deleteQna(UUID id) {
@@ -59,4 +63,10 @@ public class QnaService {
     }
     qnaRepository.deleteById(id);
   }
+
+  public Pageable findByPageSort(int page, int size, String sortedFieldName, int order) {
+    return PageRequest.of(page, size,
+      Sort.by(order == 1 ? Sort.Direction.ASC : Sort.Direction.DESC, sortedFieldName));
+  }
+
 }

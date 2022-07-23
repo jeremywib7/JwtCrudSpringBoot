@@ -12,6 +12,8 @@ import java.util.UUID;
 @Repository
 public interface QnaRepository extends JpaRepository<QnA, UUID> {
 
+  QnA findAllByQuestionStartsWithOrQuestionContains(@NotBlank(message = "Question is mandatory") String question, @NotBlank(message = "Question is mandatory") String question2);
+
   boolean existsByQuestion(@NotBlank(message = "Question is mandatory") String question);
 
   boolean existsByQuestionAndIdIsNot(@NotBlank(message = "Question is mandatory") String question, UUID id);

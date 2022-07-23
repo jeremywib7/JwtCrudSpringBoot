@@ -27,7 +27,7 @@ public class QnaController {
   @PutMapping("/update")
   public ResponseEntity<Object> updateQna(@Valid @RequestBody QnA qnA) {
     return ResponseHandler.generateResponse("Successfully update qna!", HttpStatus.OK,
-            qnaService.updateQna(qnA));
+      qnaService.updateQna(qnA));
   }
 
   @DeleteMapping("/delete")
@@ -39,12 +39,14 @@ public class QnaController {
 
   @GetMapping("/find-all")
   public ResponseEntity<Object> findAllQna(
-          @RequestParam(required = false) String search,
-          @RequestParam(defaultValue = "0") Integer page,
-          @RequestParam(defaultValue = "10") Integer size
+    @RequestParam(required = false) String searchKeyword,
+    @RequestParam(defaultValue = "name") String sortedFieldName,
+    @RequestParam(defaultValue = "1") int order,
+    @RequestParam(defaultValue = "0") Integer page,
+    @RequestParam(defaultValue = "10") Integer size
   ) {
     return ResponseHandler.generateResponse("Successfully find all qna!", HttpStatus.OK,
-            qnaService.findAllQna(search, page, size));
+      qnaService.findAllQna(searchKeyword, page, size, sortedFieldName, order));
   }
 
 }
