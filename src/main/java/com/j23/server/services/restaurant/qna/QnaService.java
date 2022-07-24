@@ -3,6 +3,7 @@ package com.j23.server.services.restaurant.qna;
 import com.j23.server.controllers.exception.ConflictException;
 import com.j23.server.models.qna.QnA;
 import com.j23.server.repos.qna.QnaRepository;
+import com.j23.server.services.pageable.PageService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.hibernate.JDBCException;
@@ -24,49 +25,45 @@ import static org.springframework.http.HttpStatus.NOT_FOUND;
 @RequiredArgsConstructor
 public class QnaService {
 
-  private final QnaRepository qnaRepository;
+    private final QnaRepository qnaRepository;
+    private final PageService pageService;
 
-  public QnA addQna(QnA qnA) {
-    if (qnaRepository.existsByQuestion(qnA.getQuestion())) {
-      throw new ConflictException("Question already exists");
+    public QnA addQna(QnA qnA) {
+        if (qnaRepository.existsByQuestion(qnA.getQuestion())) {
+            throw new ConflictException("Question already exists");
+        }
+
+        QnA lastQna = qnaRepository.findFirstByOrderByNumberDesc();
+        if (lastQna != null) {
+            System.out.println("The last number is : " + lastQna);
+            qnA.setNumber(lastQna.getNumber() + 1);
+        } else {
+            qnA.setNumber(1);
+        }
+        return qnaRepository.save(qnA);
     }
 
-    QnA lastQna = qnaRepository.findFirstByOrderByNumberDesc();
-    if (lastQna != null) {
-      System.out.println("The last number is : " + lastQna);
-      qnA.setNumber(lastQna.getNumber() + 1);
-    } else {
-      qnA.setNumber(1);
+    public QnA updateQna(QnA qnA) {
+        if (qnaRepository.existsByQuestionAndIdIsNot(qnA.getQuestion(), qnA.getId())) {
+            throw new ConflictException("Question already exists");
+        }
+        return qnaRepository.save(qnA);
     }
-    return qnaRepository.save(qnA);
-  }
 
-  public QnA updateQna(QnA qnA) {
-    if (qnaRepository.existsByQuestionAndIdIsNot(qnA.getQuestion(), qnA.getId())) {
-      throw new ConflictException("Question already exists");
+    public Page<QnA> findAllQna(String searchKeyword, int page, int size, String sortedFieldName, int order) {
+        if (searchKeyword == null) {
+            return qnaRepository.findAll(pageService.findByFieldOrder(page, size, sortedFieldName, order));
+        }
+        return qnaRepository.findAllByQuestionContaining(searchKeyword, pageService.findByFieldOrder(page, size,
+                sortedFieldName, order));
     }
-    return qnaRepository.save(qnA);
-  }
 
-  public Page<QnA> findAllQna(String searchKeyword, int page, int size, String sortedFieldName
-    , int order) {
-    if (searchKeyword == null) {
-      return qnaRepository.findAll(PageRequest.of(page, size, Sort.by(order == 1 ? Sort.Direction.ASC : Sort.Direction.DESC, sortedFieldName)));
+    public void deleteQna(UUID id) {
+        if (!qnaRepository.existsById(id)) {
+            throw new ResponseStatusException(NOT_FOUND, "Qna not found");
+        }
+        qnaRepository.deleteById(id);
     }
-    return qnaRepository.findAllByQuestionContaining(searchKeyword, PageRequest.of(page, size,
-      Sort.by(order == 1 ? Sort.Direction.ASC : Sort.Direction.DESC, sortedFieldName)));
-  }
 
-  public void deleteQna(UUID id) {
-    if (!qnaRepository.existsById(id)) {
-      throw new ResponseStatusException(NOT_FOUND, "Qna not found");
-    }
-    qnaRepository.deleteById(id);
-  }
-
-  public Pageable findByPageSort(int page, int size, String sortedFieldName, int order) {
-    return PageRequest.of(page, size,
-      Sort.by(order == 1 ? Sort.Direction.ASC : Sort.Direction.DESC, sortedFieldName));
-  }
 
 }

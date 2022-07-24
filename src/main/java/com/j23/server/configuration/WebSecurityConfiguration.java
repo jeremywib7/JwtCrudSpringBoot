@@ -60,15 +60,18 @@ public class WebSecurityConfiguration extends WebSecurityConfigurerAdapter {
         // for downloading icon
         "/icon/download/main",
 
+        // for midtrans
+        "/gopay/charge",
+
         // for customer
         "/customer/**",
         "/cart/**",
         "/order/add",
+        "/order/cancel",
         "/order/view",
         "/order/view/active",
         "/order/delete/waiting-list",
-
-
+        "/v1/qna/find-all",
         "/productview/**"
       ).permitAll()
       .antMatchers(HttpHeaders.ALLOW).permitAll()

@@ -56,8 +56,8 @@ public class UserService {
         userRepo.save(user);
     }
 
-    public void changeUserPassword(String username) {
-        User user = userRepo.findUserByUsername(username).orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND,
+    public void changeUserPassword(String id, String oldPassword, String newPassword) {
+        User user = userRepo.findById(id).orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND,
                 "User does not exists"));
         user.setUserPassword(getEncodedPassword("1234"));
         userRepo.save(user);

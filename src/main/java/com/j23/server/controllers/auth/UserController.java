@@ -52,8 +52,12 @@ public class UserController {
     }
 
     @PutMapping("/change/password")
-    public ResponseEntity<Object> changeUserPassword(@RequestParam String username) {
-        userService.changeUserPassword(username);
+    public ResponseEntity<Object> changeUserPassword(
+            @RequestParam String id,
+            @RequestParam String oldPassword,
+            @RequestParam String newPassword
+    ) {
+        userService.changeUserPassword(id, oldPassword, newPassword);
         return ResponseHandler.generateResponse("Successfully change password user!", HttpStatus.OK, null);
     }
 
@@ -66,7 +70,7 @@ public class UserController {
     @GetMapping("/find")
     public ResponseEntity<Object> getUserByUsername(@RequestParam("username") String username) throws Exception {
         User user = userService.findUserByUsername(username);
-      return ResponseHandler.generateResponse("Successfully get user!", HttpStatus.OK, user);
+        return ResponseHandler.generateResponse("Successfully get user!", HttpStatus.OK, user);
     }
 
     @DeleteMapping("/delete/{username}")

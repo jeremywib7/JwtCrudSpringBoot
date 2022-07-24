@@ -40,7 +40,7 @@ public class QnaController {
   @GetMapping("/find-all")
   public ResponseEntity<Object> findAllQna(
     @RequestParam(required = false) String searchKeyword,
-    @RequestParam(defaultValue = "name") String sortedFieldName,
+    @RequestParam(defaultValue = "question") String sortedFieldName,
     @RequestParam(defaultValue = "1") int order,
     @RequestParam(defaultValue = "0") Integer page,
     @RequestParam(defaultValue = "10") Integer size
