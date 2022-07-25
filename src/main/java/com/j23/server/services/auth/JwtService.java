@@ -52,6 +52,14 @@ public class JwtService implements UserDetailsService {
     return new JwtResponse(user, newGeneratedToken, refreshToken);
   }
 
+  public UserDetails loadUserById(String id) {
+    User user = userRepo.findById(id).orElseThrow(() ->
+      new ResponseStatusException(HttpStatus.BAD_REQUEST, "User doesn't exists"));
+
+    return new org.springframework.security.core.userdetails.User(user.getUsername(), user.getUserPassword(),
+      getAuthorities(user));
+  }
+
   @Override
   public UserDetails loadUserByUsername(String username) {
     User user = userRepo.findUserByUsername(username).orElseThrow(() ->

@@ -1,14 +1,17 @@
 package com.j23.server.services.auth;
 
 import com.j23.server.controllers.exception.UserNotFoundException;
+import com.j23.server.models.auth.ChangePassword;
 import com.j23.server.models.auth.Role;
 import com.j23.server.models.auth.User;
 import com.j23.server.repos.auth.RoleRepo;
 import com.j23.server.repos.auth.UserRepo;
 import com.j23.server.services.encryptDecrypt.EncryptDecryptService;
+import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.rest.webmvc.ResourceNotFoundException;
 import org.springframework.http.HttpStatus;
+import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
@@ -20,137 +23,138 @@ import java.util.List;
 import java.util.UUID;
 
 @Service
+@RequiredArgsConstructor
 public class UserService {
 
-    @Autowired
-    private UserRepo userRepo;
+  private final UserRepo userRepo;
 
-    @Autowired
-    private RoleRepo roleRepo;
+  private final JwtService jwtService;
 
-    @Autowired
-    public PasswordEncoder passwordEncoder() {
-        return new BCryptPasswordEncoder();
+  private final RoleRepo roleRepo;
+
+  public PasswordEncoder passwordEncoder() {
+    return new BCryptPasswordEncoder();
+  }
+
+
+  public List<User> findAllUser() {
+    return userRepo.findAll();
+  }
+
+  public User updateUser(User user) {
+    if (userRepo.existsByUsernameAndIdIsNot(user.getUsername(), user.getId())) {
+      throw new ResponseStatusException(HttpStatus.CONFLICT, "Username already taken");
+    }
+    return userRepo.save(user);
+  }
+
+  public void resetUserPassword(String username) {
+    User user = userRepo.findUserByUsername(username).orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND,
+      "User does not exists"));
+    user.setUserPassword(getEncodedPassword("1234"));
+    userRepo.save(user);
+  }
+
+  public void changeUserPassword(ChangePassword changePassword) {
+    User user = userRepo.findById(changePassword.getId()).orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND,
+      "User does not exists"));
+
+    // check if password match with old password
+    final UserDetails userDetails = jwtService.loadUserById(changePassword.getId());
+    jwtService.authenticate(user.getUsername(), changePassword.getOldPassword());
+
+    user.setUserPassword(getEncodedPassword(changePassword.getNewPassword()));
+    userRepo.save(user);
+  }
+
+  public User findUserByUsername(String username) throws Exception {
+    String decryptedUsername = EncryptDecryptService.decrypt(username);
+    return userRepo.findUserByUsername(decryptedUsername).orElseThrow(() ->
+      new UserNotFoundException("username " + username + " was not found"));
+  }
+
+  public void deleteUserByUsername(String username) {
+    userRepo.deleteById(username);
+  }
+
+  public User registerNewUser(User user) {
+    if (userRepo.existsByUsername(user.getUsername())) {
+      throw new ResponseStatusException(HttpStatus.CONFLICT, "Username already exists");
     }
 
-    @Autowired
-    public UserService(UserRepo userRepo) {
-        this.userRepo = userRepo;
-    }
+    user.setId(String.valueOf(UUID.randomUUID()));
+    user.setUserPassword(getEncodedPassword("1234"));
+    return userRepo.save(user);
+  }
 
-    public List<User> findAllUser() {
-        return userRepo.findAll();
-    }
-
-    public User updateUser(User user) {
-        if (userRepo.existsByUsernameAndIdIsNot(user.getUsername(), user.getId())) {
-            throw new ResponseStatusException(HttpStatus.CONFLICT, "Username already taken");
-        }
-        return userRepo.save(user);
-    }
-
-    public void resetUserPassword(String username) {
-        User user = userRepo.findUserByUsername(username).orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND,
-                "User does not exists"));
-        user.setUserPassword(getEncodedPassword("1234"));
-        userRepo.save(user);
-    }
-
-    public void changeUserPassword(String id, String oldPassword, String newPassword) {
-        User user = userRepo.findById(id).orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND,
-                "User does not exists"));
-        user.setUserPassword(getEncodedPassword("1234"));
-        userRepo.save(user);
-    }
-
-    public User findUserByUsername(String username) throws Exception {
-        String decryptedUsername = EncryptDecryptService.decrypt(username);
-        return userRepo.findUserByUsername(decryptedUsername).orElseThrow(() ->
-                new UserNotFoundException("username " + username + " was not found"));
-    }
-
-    public void deleteUserByUsername(String username) {
-        userRepo.deleteById(username);
-    }
-
-    public User registerNewUser(User user) {
-        if (userRepo.existsByUsername(user.getUsername())) {
-            throw new ResponseStatusException(HttpStatus.CONFLICT, "Username already exists");
-        }
-
-        user.setId(String.valueOf(UUID.randomUUID()));
-        user.setUserPassword(getEncodedPassword("1234"));
-        return userRepo.save(user);
-    }
-
-    public void initRolesAndUser() {
+  public void initRolesAndUser() {
 //        create role
-        Role adminRole = new Role();
-        adminRole.setRoleName("Admin");
-        adminRole.setRoleDescription("Admin role");
-        roleRepo.save(adminRole);
+    Role adminRole = new Role();
+    adminRole.setRoleName("Admin");
+    adminRole.setRoleDescription("Admin role");
+    roleRepo.save(adminRole);
 
-        Role userRole = new Role();
-        userRole.setRoleName("User");
-        userRole.setRoleDescription("User role");
-        roleRepo.save(userRole);
+    Role userRole = new Role();
+    userRole.setRoleName("User");
+    userRole.setRoleDescription("User role");
+    roleRepo.save(userRole);
 
-        Role customerRole = new Role();
-        customerRole.setRoleName("Customer");
-        customerRole.setRoleDescription("Customer role");
-        roleRepo.save(customerRole);
+    Role customerRole = new Role();
+    customerRole.setRoleName("Customer");
+    customerRole.setRoleDescription("Customer role");
+    roleRepo.save(customerRole);
 //
-        Role cashierRole = new Role();
-        cashierRole.setRoleName("Cashier");
-        cashierRole.setRoleDescription("Cashier role");
-        roleRepo.save(cashierRole);
+    Role cashierRole = new Role();
+    cashierRole.setRoleName("Cashier");
+    cashierRole.setRoleDescription("Cashier role");
+    roleRepo.save(cashierRole);
 
 
 //        create user with role
-        User adminUser = new User();
-        adminUser.setId("Iam Cool");
-        adminUser.setUserFirstName("Admin");
-        adminUser.setUserLastName("Admin");
-        adminUser.setGender("Male");
-        adminUser.setAddress("Purimas Regency B6 no 2");
-        adminUser.setBankAccount("1291892812");
-        adminUser.setEmail("jeremywib7@gmail.com");
-        adminUser.setDateJoined(LocalDate.now());
-        adminUser.setActive(true);
-        adminUser.setImageUrl("profile_picture.png");
-        adminUser.setUsername("Admin");
-        adminUser.setUserPassword(getEncodedPassword("admin@pass"));
-        adminUser.setPhoneNumber("081226974475");
-        adminUser.setRole(adminRole);
-        userRepo.save(adminUser);
+    User adminUser = new User();
+    adminUser.setId("Iam Cool");
+    adminUser.setUserFirstName("Admin");
+    adminUser.setUserLastName("Admin");
+    adminUser.setGender("Male");
+    adminUser.setAddress("Purimas Regency B6 no 2");
+    adminUser.setBankAccount("1291892812");
+    adminUser.setEmail("jeremywib7@gmail.com");
+    adminUser.setDateJoined(LocalDate.now());
+    adminUser.setActive(true);
+    adminUser.setImageUrl("profile_picture.png");
+    adminUser.setUsername("Admin");
+    adminUser.setUserPassword(getEncodedPassword("admin@pass"));
+    adminUser.setPhoneNumber("081226974475");
+    adminUser.setRole(adminRole);
+    userRepo.save(adminUser);
 
-        User customerUser = new User();
-        customerUser.setId("1234aa");
-        customerUser.setUserFirstName("John");
-        customerUser.setUserLastName("Doe");
-        adminUser.setGender("female");
-        adminUser.setEmail("mastah@gmail.com");
-        customerUser.setDateJoined(LocalDate.now());
-        customerUser.setActive(true);
-        customerUser.setImageUrl("profile_picture.png");
-        customerUser.setUsername("John");
-        customerUser.setUserPassword(getEncodedPassword("customer@pass"));
-        customerUser.setPhoneNumber("07182671267");
-        customerUser.setRole(customerRole);
-        userRepo.save(customerUser);
+    User customerUser = new User();
+    customerUser.setId("1234aa");
+    customerUser.setUserFirstName("John");
+    customerUser.setUserLastName("Doe");
+    adminUser.setGender("female");
+    adminUser.setEmail("mastah@gmail.com");
+    customerUser.setDateJoined(LocalDate.now());
+    customerUser.setActive(true);
+    customerUser.setImageUrl("profile_picture.png");
+    customerUser.setUsername("John");
+    customerUser.setUserPassword(getEncodedPassword("customer@pass"));
+    customerUser.setPhoneNumber("07182671267");
+    customerUser.setRole(customerRole);
+    userRepo.save(customerUser);
 
-    }
+  }
 
-    public void deleteSelectedUsers(List<String> usersId) {
-        usersId.forEach(userId -> {
-            try {
-                userRepo.deleteById(userId);
-            } catch (Exception ignored) {
-            }
-        });
-    }
+  public void deleteSelectedUsers(List<String> usersId) {
+    usersId.forEach(userId -> {
+      try {
+        userRepo.deleteById(userId);
+      } catch (Exception ignored) {
+      }
+    });
+  }
 
-    public String getEncodedPassword(String password) {
-        return passwordEncoder().encode(password);
-    }
+  public String getEncodedPassword(String password) {
+    return passwordEncoder().encode(password);
+  }
 }
