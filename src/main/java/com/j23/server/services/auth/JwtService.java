@@ -80,9 +80,9 @@ public class JwtService implements UserDetailsService {
     try {
       authenticationManager.authenticate(new UsernamePasswordAuthenticationToken(userName, userPassword));
     } catch (DisabledException e) {
-      throw new ResponseStatusException(HttpStatus.FORBIDDEN, "User is disabled");
+      throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "User is disabled");
     } catch (BadCredentialsException e) {
-      throw new ResponseStatusException(HttpStatus.FORBIDDEN,"Password is incorrect");
+      throw new ResponseStatusException(HttpStatus.BAD_REQUEST,"Password is incorrect");
     }
   }
 }

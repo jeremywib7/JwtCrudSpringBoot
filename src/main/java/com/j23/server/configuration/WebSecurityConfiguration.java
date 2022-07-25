@@ -61,7 +61,7 @@ public class WebSecurityConfiguration extends WebSecurityConfigurerAdapter {
         "/icon/download/main",
 
         // for midtrans
-        "/gopay/charge",
+        "/charge",
 
         // for customer
         "/customer/**",

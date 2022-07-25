@@ -42,7 +42,7 @@ public class UserController {
 
   @GetMapping("/all")
   public ResponseEntity<List<User>> getAllUser() {
-    List<User> users = (List<User>) userService.findAllUser();
+    List<User> users = userService.findAllUser();
     return new ResponseEntity<>(users, HttpStatus.OK);
   }
 
@@ -68,7 +68,7 @@ public class UserController {
 
   @GetMapping("/find")
   public ResponseEntity<Object> getUserByUsername(@RequestParam("username") String username) throws Exception {
-    User user = userService.findUserByUsername(username);
+    User user = userService.findUserByDecryptedUsername(username);
     return ResponseHandler.generateResponse("Successfully get user!", HttpStatus.OK, user);
   }
 

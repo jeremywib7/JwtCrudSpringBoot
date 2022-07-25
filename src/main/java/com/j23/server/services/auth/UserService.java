@@ -56,18 +56,18 @@ public class UserService {
   }
 
   public void changeUserPassword(ChangePassword changePassword) {
-    User user = userRepo.findById(changePassword.getId()).orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND,
+    User user = userRepo.findUserByUsername(changePassword.getUsername()).orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND,
       "User does not exists"));
 
     // check if password match with old password
-    final UserDetails userDetails = jwtService.loadUserById(changePassword.getId());
+    final UserDetails userDetails = jwtService.loadUserByUsername(changePassword.getUsername());
     jwtService.authenticate(user.getUsername(), changePassword.getOldPassword());
 
     user.setUserPassword(getEncodedPassword(changePassword.getNewPassword()));
     userRepo.save(user);
   }
 
-  public User findUserByUsername(String username) throws Exception {
+  public User findUserByDecryptedUsername(String username) throws Exception {
     String decryptedUsername = EncryptDecryptService.decrypt(username);
     return userRepo.findUserByUsername(decryptedUsername).orElseThrow(() ->
       new UserNotFoundException("username " + username + " was not found"));
