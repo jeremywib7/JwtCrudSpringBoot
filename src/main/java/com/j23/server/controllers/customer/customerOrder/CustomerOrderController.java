@@ -58,6 +58,13 @@ public class CustomerOrderController {
                 customerOrderService.viewRecentSales());
     }
 
+    @GetMapping("/view/byId/{id}")
+    private ResponseEntity<Object> viewCustomerOrdersByCustomerId(@PathVariable("id") String id) {
+        CustomerOrder customerOrder = customerOrderService.viewCustomerOrderByCustomerId(id);
+
+        return ResponseHandler.generateResponse("Successfully view customer orders by id!", HttpStatus.OK, customerOrder);
+    }
+
     @GetMapping("/view/byUsername/{username}")
     private ResponseEntity<Object> viewCustomerOrdersByCustomerUsername(@PathVariable("username") String username) {
         CustomerOrder customerOrder = customerOrderService.viewCustomerOrderByCustomerUsername(username);

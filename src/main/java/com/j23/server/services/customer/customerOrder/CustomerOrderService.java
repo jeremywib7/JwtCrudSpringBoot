@@ -129,6 +129,15 @@ public class CustomerOrderService {
       PageRequest.of(page, size));
   }
 
+  public CustomerOrder viewCustomerOrderByCustomerId(String id) {
+    CustomerProfile customerProfile = customerProfileRepository.findById(id).orElseThrow(() ->
+            new ResponseStatusException(HttpStatus.NOT_FOUND, "Customer does not exists !"));
+
+    return customerOrderRepository.findTopByCustomerProfileAndOrderProcessedIsNullOrderByDateTimeCreatedDesc(customerProfile)
+            .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "Customer order does not exists"));
+  }
+
+
   public CustomerOrder viewCustomerOrderByCustomerUsername(String username) {
     CustomerProfile customerProfile = customerProfileRepository.findByUsername(username).orElseThrow(() ->
       new ResponseStatusException(HttpStatus.NOT_FOUND, "Customer does not exists !"));
