@@ -1,35 +1,64 @@
 package com.j23.server.models.auth;
 
-import javax.persistence.Column;
-import javax.persistence.Entity;
-import javax.persistence.Id;
-import javax.persistence.Table;
-import javax.validation.constraints.NotEmpty;
-
+import jakarta.persistence.*;
 import lombok.*;
+import org.springframework.security.core.authority.SimpleGrantedAuthority;
+
+import java.util.HashSet;
+import java.util.List;
+import java.util.Set;
+import java.util.stream.Collectors;
 
 @Entity
+@RequiredArgsConstructor
+@NoArgsConstructor(force = true)
+@Getter
+@Setter
 public class Role {
+
     @Id
-    @NotEmpty(message = "roleName is required")
-    private String roleName;
+    @NonNull
+    private String name;
 
-    @NotEmpty(message = "roleDescription is required")
-    private String roleDescription;
+//    @OneToMany(mappedBy = "role", fetch = FetchType.LAZY)
+//    private Set<User> users = new HashSet<>();
 
-    public String getRoleName() {
-        return roleName;
-    }
+    @ManyToMany(fetch = FetchType.LAZY)
+    @JoinTable(name = "role_permissions",
+            joinColumns = @JoinColumn(name = "role_id"),
+            inverseJoinColumns = @JoinColumn(name = "permission_id"))
+    private Set<Permission> permissions = new HashSet<>();
 
-    public void setRoleName(String roleName) {
-        this.roleName = roleName;
-    }
+//    public List<SimpleGrantedAuthority> getAuthorities() {
+//        var authorities = getPermissions()
+//                .stream()
+//                .map(permission -> new SimpleGrantedAuthority(permission.getName()))
+//                .collect(Collectors.toList());
+//        authorities.add(new SimpleGrantedAuthority("ROLE_" + getName()));
+//        return authorities;
+//    }
+//
+//    USER(Collections.emptySet()),
+//    ADMIN(
+//            Set.of(
+//                    ADMIN_READ,
+//                    ADMIN_UPDATE,
+//                    ADMIN_DELETE,
+//                    ADMIN_CREATE,
+//                    MANAGER_READ,
+//                    MANAGER_UPDATE,
+//                    MANAGER_DELETE,
+//                    MANAGER_CREATE
+//            )
+//    ),
+//    MANAGER(
+//            Set.of(
+//                    MANAGER_READ,
+//                    MANAGER_UPDATE,
+//                    MANAGER_DELETE,
+//                    MANAGER_CREATE
+//            )
+//    );
 
-    public String getRoleDescription() {
-        return roleDescription;
-    }
 
-    public void setRoleDescription(String roleDescription) {
-        this.roleDescription = roleDescription;
-    }
 }

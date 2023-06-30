@@ -6,9 +6,12 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import com.j23.server.configuration.ResponseHandler;
 import com.j23.server.models.auth.ChangePassword;
 import com.j23.server.models.auth.User;
-import com.j23.server.repos.auth.UserRepo;
+import com.j23.server.request.auth.RegisterRequest;
+import com.j23.server.response.auth.AuthenticationResponse;
+import com.j23.server.services.auth.AuthenticationService;
 import com.j23.server.services.auth.UserService;
-import org.springframework.beans.factory.annotation.Autowired;
+import jakarta.validation.Valid;
+import lombok.RequiredArgsConstructor;
 import org.springframework.dao.EmptyResultDataAccessException;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -21,23 +24,18 @@ import java.util.List;
 
 @RestController
 @RequestMapping("/user")
+@RequiredArgsConstructor
 public class UserController {
 
   JsonNode json;
   ObjectMapper mapper = new ObjectMapper();
 
-  @Autowired
-  private UserService userService;
-
-  @PostConstruct
-  public void initRolesAndUsers() {
-    userService.initRolesAndUser();
-  }
+  private final UserService userService;
+  private final AuthenticationService authenticationService;
 
   @PostMapping({"/register"})
-  public ResponseEntity<Object> registerNewUser(@RequestBody User user) {
-    User result = userService.registerNewUser(user);
-    return ResponseHandler.generateResponse("Successfully registered user!", HttpStatus.OK, result);
+  public ResponseEntity<AuthenticationResponse> registerNewUser(@Valid @RequestBody RegisterRequest registerRequest) {
+    return ResponseEntity.ok(authenticationService.register(registerRequest));
   }
 
   @GetMapping("/all")

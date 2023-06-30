@@ -11,12 +11,9 @@ import com.j23.server.models.note.Note;
 import com.j23.server.models.waitingList.CountdownWaitingList;
 import com.j23.server.models.waitingList.EditTimerWaitingList;
 import com.j23.server.models.waitingList.WaitingList;
-import com.j23.server.repos.customer.CustomerProfileRepo;
-import com.j23.server.repos.customer.customerOrder.CustomerOrderRepository;
-import com.j23.server.services.customer.customerOrder.CustomerOrderService;
-import com.j23.server.services.restaurant.time.TimeService;
+import com.j23.server.services.util.HelperService;
+import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 import org.springframework.web.server.ResponseStatusException;
@@ -30,21 +27,11 @@ import static com.j23.server.util.AppsConfig.*;
 
 @Service
 @Slf4j
+@RequiredArgsConstructor
 public class WaitingListService {
 
-  @Autowired
-  private CustomerOrderService customerOrderService;
 
-  @Autowired
-  private CustomerOrderRepository customerOrderRepository;
-
-  @Autowired
-  private CustomerProfileRepo customerProfileRepo;
-
-  private TimeService timeService;
-
-  @Autowired
-  private WaitingListService waitingListService;
+  private final HelperService helperService;
 
   public List<CountdownWaitingList> countdownWaitingLists = new ArrayList<>();
 
@@ -91,7 +78,7 @@ public class WaitingListService {
 
   public void updateWaitingListTimer(EditTimerWaitingList editTimerWaitingList) throws Exception {
     // calculate estimated time from current time by HH:mm:ss
-    long addedTime = customerOrderService.calculateEstimatedTime(editTimerWaitingList.getEstHour(), editTimerWaitingList.getEstMinute(),
+    long addedTime = helperService.calculateEstimatedTime(editTimerWaitingList.getEstHour(), editTimerWaitingList.getEstMinute(),
       editTimerWaitingList.getEstSecond());
 
     DocumentSnapshot document = getWaitingListData(editTimerWaitingList);
@@ -151,7 +138,7 @@ public class WaitingListService {
     note.setUsername(waitingList.getUsername());
     note.setMessagingToken(waitingList.getMessagingToken());
 
-    waitingListService.sendOrderDoneNotification(note);
+    sendOrderDoneNotification(note);
   }
 
   // send push notification using fcm
@@ -210,9 +197,7 @@ public class WaitingListService {
         .build())
       .setToken(note.getMessagingToken());
 
-//        if (note.getData() != null) builder.putAllData(note.getData());
-
-    String response = null;
+    String response;
     try {
       response = FirebaseMessaging.getInstance().send(builder.build());
       log.trace(response);

@@ -36,7 +36,7 @@ public class ProductService {
   private ProductCategoryRepository productCategoryRepository;
 
 
-  public void createTestProduct() throws FirebaseAuthException {
+  public void createTestProduct() {
 
     // create 2 sample category
 

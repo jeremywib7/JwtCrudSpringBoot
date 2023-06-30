@@ -57,7 +57,6 @@ public class ReportService {
 
     JRBeanCollectionDataSource beanCollectionDataSource = new JRBeanCollectionDataSource(customerOrderList);
 
-
     return generatePdf(SALES_REPORT_TITLE, beanCollectionDataSource, SALES_REPORT_PATH);
   }
 

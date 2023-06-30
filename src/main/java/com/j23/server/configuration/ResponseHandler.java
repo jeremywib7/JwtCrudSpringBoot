@@ -8,7 +8,6 @@ import java.util.Map;
 
 public class ResponseHandler {
     public static ResponseEntity<Object> generateResponse(String message, HttpStatus status, Object responseObj) {
-//        Map<String, Object> map = new HashMap<>();
         Map<String, Object> map = new LinkedHashMap<>();
         map.put("status", status.value());
         map.put("message", message);

@@ -1,12 +1,12 @@
 package com.j23.server.models.customer.customerOrder;
 
 import com.j23.server.models.product.Product;
+import jakarta.persistence.*;
 import lombok.Data;
 import lombok.Getter;
 import lombok.Setter;
 import lombok.ToString;
 
-import javax.persistence.*;
 import java.math.BigDecimal;
 import java.util.UUID;
 

@@ -47,6 +47,7 @@ public class CustomerProfileService {
     UserRecord.CreateRequest createRequest = new UserRecord.CreateRequest();
     createRequest.setEmail(customerProfile.getEmail());
     createRequest.setDisplayName(customerProfile.getUsername());
+    createRequest.setDisplayName(customerProfile.getUsername());
     createRequest.setPassword(customerProfile.getPassword());
 
     UserRecord userRecord = FirebaseAuth.getInstance().createUser(createRequest);

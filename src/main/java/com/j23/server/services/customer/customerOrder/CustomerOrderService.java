@@ -16,6 +16,8 @@ import com.j23.server.services.customer.customerCart.CustomerCartService;
 import com.j23.server.services.restaurant.dashboard.TotalSalesProductService;
 import com.j23.server.services.restaurant.time.TimeService;
 import com.j23.server.services.restaurant.waitingList.WaitingListService;
+import com.j23.server.services.util.HelperService;
+import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
@@ -31,31 +33,26 @@ import java.util.stream.Collectors;
 
 @Service
 @Slf4j
+@RequiredArgsConstructor
 public class CustomerOrderService {
 
-  @Autowired
-  private CustomerOrderRepository customerOrderRepository;
+  private final CustomerOrderRepository customerOrderRepository;
 
-  @Autowired
-  private CustomerProfileRepo customerProfileRepository;
+  private final CustomerProfileRepo customerProfileRepository;
 
-  @Autowired
-  private CustomerCartRepository customerCartRepository;
+  private final HelperService helperService;
 
-  @Autowired
-  private CustomerCartService customerCartService;
+  private final CustomerCartRepository customerCartRepository;
 
-  @Autowired
-  private WaitingListService waitingListService;
+  private final CustomerCartService customerCartService;
 
-  @Autowired
-  private HistoryProductOrderRepo historyProductOrderRepo;
+  private final WaitingListService waitingListService;
 
-  @Autowired
-  private TotalSalesProductService totalSalesProductService;
+  private final HistoryProductOrderRepo historyProductOrderRepo;
 
-  @Autowired
-  private TimeService timeService;
+  private final TotalSalesProductService totalSalesProductService;
+
+  private final TimeService timeService;
 
 
   public CustomerOrder addOrder(String customerId) {
@@ -174,7 +171,7 @@ public class CustomerOrderService {
 
     // update customer order
     // calculate estimated time
-    long addedTime = calculateEstimatedTime(customerOrder.getEstHour(), customerOrder.getEstMinute(), customerOrder.getEstSecond());
+    long addedTime = helperService.calculateEstimatedTime(customerOrder.getEstHour(), customerOrder.getEstMinute(), customerOrder.getEstSecond());
 
     // set estimated time in dd/mm/yyyy format to be saved in database
     LocalDateTime estTime = LocalDateTime.ofInstant(Instant.ofEpochMilli(addedTime), TimeZone.getDefault().toZoneId());
@@ -251,14 +248,6 @@ public class CustomerOrderService {
 
     // delete or reset current customer cart
     customerCartRepository.delete(customerCart);
-  }
-
-  public long calculateEstimatedTime(int estHour, int estMinute, int estSecond) {
-    // calculate estimated time
-    int hourToSecond = (estHour * 60) * 60;
-    int minuteToSecond = (estMinute * 60);
-
-    return new Date().getTime() + (1000L * (hourToSecond + minuteToSecond + estSecond));
   }
 
   public int checkNumberFromPreviousOrderOfTheDay() {

@@ -3,12 +3,12 @@ package com.j23.server.controllers.restaurant.qna;
 import com.j23.server.configuration.ResponseHandler;
 import com.j23.server.models.qna.QnA;
 import com.j23.server.services.restaurant.qna.QnaService;
+import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
-import javax.validation.Valid;
 import java.util.UUID;
 
 @RestController
